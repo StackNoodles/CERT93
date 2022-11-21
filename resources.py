@@ -345,37 +345,37 @@ incidents_collection = None
 sounds_collection = None
 
 
-def init() -> bool:
+def init() -> tuple:
     """ Initialise l'ensemble des ressources. """
 
     global characters_collection
     if not characters_collection:
         characters_collection = __CharactersCollection()
         if not characters_collection.init():
-            return False
+            return {100, "Erreur lors de l'initialisation des personnages"}
 
     global tiles_collection
     if not tiles_collection:
         tiles_collection = __TilesCollection()
         if not tiles_collection.init():
-            return False
+            return {200, "Erreur lors de l'initialisation des tuiles"}
 
     global assets_collection
     if not assets_collection:
         assets_collection = __AssetsCollection()
         if not assets_collection.init():
-            return False
+            return {300, "Erreur lors de l'initialisation des assets"}
 
     global incidents_collection
     if not incidents_collection:
         incidents_collection = __IncidentsCollection()
         if not incidents_collection.init():
-            return False
+            return {400, "Erreur lors de l'initialisation des incidents"}
 
     global sounds_collection
     if not sounds_collection:
         sounds_collection = __SoundsCollection()
         if not sounds_collection.init():
-            return False
+            return {500, "Erreur lors de l'initialisation des sons"}
 
-    return True
+    return {999, "Initialisation réussie"}

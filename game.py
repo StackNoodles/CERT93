@@ -153,10 +153,8 @@ class Game:
                 return
 
             if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP :
-                print('handle event keyboard')
                 input_manager.inputs.manage_keyboard_event(event)
             elif event.type == pygame.JOYBUTTONUP or event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYAXISMOTION :
-                print('handle event gampad')
                 input_manager.inputs.manage_gamepad_event(event)
 
     def __handle_incidents(self) -> None:

@@ -106,29 +106,41 @@ class Game:
             self.__players[Player.PLAYER_TWO].character = level.characters[1]
 
             # Deux joueurs, donc deux vues
-            view = View(self.__screen, level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
-            view.center_on_screen((self.__screen.get_width() / 4, self.__screen.get_height() / 2))
-            views[Player.PLAYER_ONE] = view
+            # view = View(self.__screen, level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
+            # view.center_on_screen((self.__screen.get_width() / 4, self.__screen.get_height() / 2))
+            views[Player.PLAYER_ONE] = self.__set_view(level,Player.PLAYER_ONE,1)
 
-            character = self.__players[Player.PLAYER_ONE].character
-            view.center_in_office(character.feet_position)
+            # character = self.__players[Player.PLAYER_ONE].character
+            # view.center_in_office(character.feet_position)
 
-            view = View(self.__screen, level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
-            view.center_on_screen((3 * self.__screen.get_width() / 4, self.__screen.get_height() / 2))
-            views[Player.PLAYER_TWO] = view
+            # view = View(self.__screen, level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
+            # view.center_on_screen((3 * self.__screen.get_width() / 4, self.__screen.get_height() / 2))
+            views[Player.PLAYER_TWO] = self.__set_view(level,Player.PLAYER_TWO,3)
 
-            character = self.__players[Player.PLAYER_TWO].character
-            view.center_in_office(character.feet_position)
+            # character = self.__players[Player.PLAYER_TWO].character
+            # view.center_in_office(character.feet_position)
         else:
             # Un seul joueur, donc une seule vue
-            view = View(self.__screen, level.office, View.WIDTH_ONE_PLAYER, View.HEIGHT)
-            view.center_on_screen((self.__screen.get_width() / 2, self.__screen.get_height() / 2))
-            views[Player.PLAYER_ONE] = view
-
-            character = self.__players[Player.PLAYER_ONE].character
-            view.center_in_office(character.feet_position)
+            # view = View(self.__screen, level.office, View.WIDTH_ONE_PLAYER, View.HEIGHT)
+            # view.center_on_screen((self.__screen.get_width() / 2, self.__screen.get_height() / 2))
+            # character = self.__players[0].character
+            # view.center_in_office(character.feet_position)
+            views[Player.PLAYER_ONE] = self.__set_view(level,Player.PLAYER_ONE,1)
 
         return views
+
+    def __set_view(self,level:Level,index:int,multiplier:int) -> View:
+        if len(self.__players) > 1:
+            view = View(self.__screen, level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
+            view.center_on_screen((multiplier*self.__screen.get_width() / 2*len(self.__players), self.__screen.get_height() / 2))
+            character = self.__players[index].character
+            view.center_in_office(character.feet_position)
+        else:
+            view = View(self.__screen, level.office, View.WIDTH_ONE_PLAYER, View.HEIGHT)
+            view.center_on_screen((multiplier*self.__screen.get_width() / 2*len(self.__players), self.__screen.get_height() / 2))
+            character = self.__players[index].character
+            view.center_in_office(character.feet_position)
+        return view
 
     def __handle_events(self) -> None:
         """

@@ -2,7 +2,25 @@ import pygame
 import settings
 
 from expertise import Expertise
+from error_codes import Error_codes
 
+SUCCESS_CODE = Error_codes.SUCCES
+ERROR_CODES = {
+    Error_codes.SUCCES : "Tout s'est passé comme prévu",
+    Error_codes.IMG_CHAR : "Erreur lors de du chargement des images de personnages",
+    Error_codes.IMG_TILES : "Erreur lors de du chargement des images de tuiles",
+    Error_codes.SQUARES_TILES : "Erreur lors de la creation des tuiles, elle ne sont pas carrées",
+    Error_codes.IMG_ASSETS : "Erreur lors de du chargement des images des actifs",
+    Error_codes.SQUARES_ASSETS : "Erreur lors de la creation des actifs, ils ne sont pas carrées",
+    Error_codes.IMG_INCIDENTS : "Erreur lors de du chargement des images des incidents",
+    Error_codes.SQUARES_INCIDENTS : "Erreur lors de la creation des incidents, ils ne sont pas carrées",
+    Error_codes.SOUND_PHONE : "Erreur lors du chargement du son de telephone",
+    Error_codes.SOUND_HANGUP : "Erreur lors du chargement du son de raccrochage du telepghone",
+    Error_codes.SOUND_SOLVE : "Erreur lors du chargement du son de resolution",
+    Error_codes.SOUND_FAIL : "Erreur lors du chargement du son d'echec",
+    Error_codes.SOUND_AMBIENCE : "Erreur lors du chargement du son d'ambience de burreau",
+    Error_codes.SOUND_MUSIC : "Erreur lors du chargement de la musique de fond"
+}
 
 class __CharactersCollection:
     """ Collection de personnages utilisée par l'objet global characters_collection (voir plus bas). """
@@ -10,20 +28,19 @@ class __CharactersCollection:
     def __init__(self) -> None:
         self.__surfaces = None
 
-    def init(self) -> bool:
+    def init(self) -> int:
         """
         Initialise l'instance unique de resources.characters_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: True si l'initialisation s'est bien passée, False sinon
+        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
         """
 
         # charge l'image contenant tous les personnages
         characters_sheet = pygame.image.load(settings.CHARACTERS_FILENAME).convert_alpha()
         if not characters_sheet:
-            return False
-
+            return Error_codes.SUCCES
         # découpe la surface de personnages en surfaces individuelles (une pour chaque personnage)
         height = characters_sheet.get_height()
         width = characters_sheet.get_width() / settings.NB_CHARACTERS
@@ -34,8 +51,8 @@ class __CharactersCollection:
             source_area = pygame.Rect(i * width, 0, width, height)
             character_surface.blit(characters_sheet, (0, 0), source_area)
             self.__surfaces.append(character_surface)
-
-        return True
+            
+        return SUCCESS_CODE
 
     def get(self, character_id: int) -> pygame.Surface or None:
         """
@@ -56,23 +73,23 @@ class __TilesCollection:
     def __init__(self) -> None:
         self.__surfaces = None
 
-    def init(self) -> bool:
+    def init(self) -> int:
         """
         Initialise l'instance unique de resources.tiles_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: True si l'initialisation s'est bien passée, False sinon
+        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
         """
 
         # charge l'image contenant toutes les tuiles
         tiles_sheet = pygame.image.load(settings.TILES_FILENAME).convert()
         if not tiles_sheet:
-            return False
+            return Error_codes.IMG_TILES
 
         # s'assure que les tuiles soient carrées
         if tiles_sheet.get_width() % tiles_sheet.get_height() != 0:
-            return False
+            return Error_codes.SQUARES_TILES
 
         # découpe la surface de tuiles en surfaces individuelles (une pour chaque tuile)
         height = width = tiles_sheet.get_height()
@@ -83,7 +100,7 @@ class __TilesCollection:
             tile_surface.blit(tiles_sheet, (0, 0), source_area)
             self.__surfaces.append(tile_surface)
 
-        return True
+        return SUCCESS_CODE
 
     def get(self, tile_id: int) -> pygame.Surface or None:
         """
@@ -97,7 +114,7 @@ class __TilesCollection:
 
         return None
 
-    def tile_size(self) -> tuple:
+    def tile_size(self) -> int:
         """
         Retourne les dimensions d'une image de tuile.
         :return: Dimensions d'une tuile (largeur, hauteur)
@@ -152,23 +169,23 @@ class __AssetsCollection:
     def __init__(self) -> None:
         self.__surfaces = None
 
-    def init(self) -> bool:
+    def init(self) -> int:
         """
         Initialise l'instance unique de resources.assets_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: True si l'initialisation s'est bien passée, False sinon
+        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
         """
 
         # charge l'image contenant tous les actifs
         assets_sheet = pygame.image.load(settings.ASSETS_FILENAME).convert_alpha()
         if not assets_sheet:
-            return False
+            return Error_codes.IMG_ASSETS
 
         # s'assure que les actifs soient carrés
         if assets_sheet.get_width() % assets_sheet.get_height() != 0:
-            return False
+            return Error_codes.SQUARES_ASSETS
 
         # découpe la surface d'actifs en surfaces individuelles (une pour chaque actif)
         height = width = assets_sheet.get_height()
@@ -179,7 +196,7 @@ class __AssetsCollection:
             asset_surface.blit(assets_sheet, (0, 0), source_area)
             self.__surfaces.append(asset_surface)
 
-        return True
+        return SUCCESS_CODE
 
     def get(self, asset_id: int) -> pygame.Surface or None:
         """
@@ -203,24 +220,24 @@ class __IncidentsCollection:
     def __init__(self) -> None:
         self.__incident_surfaces = None
 
-    def init(self) -> bool:
+    def init(self) -> int:
         """
         Initialise l'instance unique de resources.incidents_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: True si l'initialisation s'est bien passée, False sinon
+        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
         """
 
         # Chargement de l'image contenant toutes images reliées aux incidents:
         #   17 images de minuterie (pleine à terminée) et 7 images pour les icônes
         incidents_sheet = pygame.image.load(settings.INCIDENTS_FILENAME).convert_alpha()
         if not incidents_sheet:
-            return False
+            return Error_codes.IMG_INCIDENTS
 
         # Vérifications que les images soient carrées
         if incidents_sheet.get_width() % incidents_sheet.get_height() != 0:
-            return False
+            return Error_codes.SQUARES_INCIDENTS
 
         # Découpage de la surface chargée en surfaces individuelles (une pour chaque image de minuterie)
         height = width = incidents_sheet.get_height()
@@ -249,7 +266,7 @@ class __IncidentsCollection:
                 series.append(combined_surface)
             self.__incident_surfaces.append(series)
 
-        return True
+        return SUCCESS_CODE
 
     def get(self, timer_id: int, expertise: Expertise) -> pygame.Surface or None:
         """
@@ -274,49 +291,49 @@ class __SoundsCollection:
         self.__surfaces = None
         self.__sounds = None
 
-    def init(self) -> bool:
+    def init(self) -> int:
         """
         Initialise l'instance unique de resources.sounds_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: True si l'initialisation s'est bien passée, False sinon
+        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
         """
         self.__sounds = {}
 
         sound = pygame.mixer.Sound(settings.PHONE_RING_SOUND_FILENAME)
         if not sound:
-            return False
+            return Error_codes.SOUND_PHONE
         self.__sounds['HELPDESK-PHONE-RING'] = sound
 
         sound = pygame.mixer.Sound(settings.PHONE_HANGUP_SOUND_FILENAME)
         if not sound:
-            return False
+            return Error_codes.SOUND_HANGUP
         self.__sounds['HELPDESK-PHONE-HANGUP'] = sound
 
         sound = pygame.mixer.Sound(settings.SOLVE_SOUND_FILENAME)
         if not sound:
-            return False
+            return Error_codes.SOUND_SOLVE
         self.__sounds['INCIDENT-SOLVE'] = sound
 
         sound = pygame.mixer.Sound(settings.FAILURE_SOUND_FILENAME)
         if not sound:
-            return False
+            return Error_codes.SOUND_FAIL
         self.__sounds['INCIDENT-FAIL'] = sound
 
         sound = pygame.mixer.Sound(settings.OFFICE_AMBIENCE_SOUND)
         if not sound:
-            return False
+            return Error_codes.SOUND_AMBIENCE
         sound.set_volume(0.25)
         self.__sounds['OFFICE-AMBIENCE'] = sound
 
         sound = pygame.mixer.Sound(settings.BACKGROUND_MUSIC)
         if not sound:
-            return False
+            return Error_codes.SOUND_MUSIC
         sound.set_volume(0.25)
         self.__sounds['BACKGROUND-MUSIC'] = sound
 
-        return True
+        return SUCCESS_CODE
 
     def get(self, name: str) -> pygame.mixer.Sound or None:
         """
@@ -345,37 +362,42 @@ incidents_collection = None
 sounds_collection = None
 
 
-def init() -> bool:
+def init() -> int:
     """ Initialise l'ensemble des ressources. """
 
     global characters_collection
     if not characters_collection:
         characters_collection = __CharactersCollection()
-        if not characters_collection.init():
-            return False
+        return_code = characters_collection.init()
+        if return_code != SUCCESS_CODE:
+            return return_code
 
     global tiles_collection
     if not tiles_collection:
         tiles_collection = __TilesCollection()
-        if not tiles_collection.init():
-            return False
+        return_code = tiles_collection.init()
+        if return_code != SUCCESS_CODE:
+            return return_code
 
     global assets_collection
     if not assets_collection:
         assets_collection = __AssetsCollection()
-        if not assets_collection.init():
-            return False
+        return_code = assets_collection.init()
+        if return_code != SUCCESS_CODE:
+            return return_code
 
     global incidents_collection
     if not incidents_collection:
         incidents_collection = __IncidentsCollection()
-        if not incidents_collection.init():
-            return False
+        return_code = incidents_collection.init()
+        if return_code != SUCCESS_CODE:
+            return return_code
 
     global sounds_collection
     if not sounds_collection:
         sounds_collection = __SoundsCollection()
-        if not sounds_collection.init():
-            return False
+        return_code = sounds_collection.init()
+        if return_code != SUCCESS_CODE:
+            return return_code
 
-    return True
+    return SUCCESS_CODE

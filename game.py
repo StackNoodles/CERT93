@@ -18,7 +18,6 @@ from fps import FPS
 from player import Player
 from view import View
 
-
 class Game:
     """ Une partie. """
 
@@ -43,6 +42,8 @@ class Game:
         self.__views = self.__setup_views(self.__level)
 
         self.__fps = FPS()
+        
+        self.__CENTER_SCREEN_ONE_PLAYER = (self.__screen.get_width() / 2, self.__screen.get_height() / 2)
 
     def run(self) -> None:
         """ Exécute la partie (boucle de jeu). """
@@ -106,14 +107,14 @@ class Game:
 
             # Deux joueurs, donc deux vues
             view = View(self.__screen, level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
-            view.center_on_screen(self.__screen.get_width() / 4, self.__screen.get_height() / 2)
+            view.center_on_screen((self.__screen.get_width() / 4, self.__screen.get_height() / 2))
             views[Player.PLAYER_ONE] = view
 
             character = self.__players[Player.PLAYER_ONE].character
             view.center_in_office(character.feet_position)
 
             view = View(self.__screen, level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
-            view.center_on_screen(3 * self.__screen.get_width() / 4, self.__screen.get_height() / 2)
+            view.center_on_screen((3 * self.__screen.get_width() / 4, self.__screen.get_height() / 2))
             views[Player.PLAYER_TWO] = view
 
             character = self.__players[Player.PLAYER_TWO].character
@@ -121,7 +122,7 @@ class Game:
         else:
             # Un seul joueur, donc une seule vue
             view = View(self.__screen, level.office, View.WIDTH_ONE_PLAYER, View.HEIGHT)
-            view.center_on_screen(self.__screen.get_width() / 2, self.__screen.get_height() / 2)
+            view.center_on_screen((self.__screen.get_width() / 2, self.__screen.get_height() / 2))
             views[Player.PLAYER_ONE] = view
 
             character = self.__players[Player.PLAYER_ONE].character
@@ -218,11 +219,11 @@ class Game:
 
         # Création de la vue pour le joueur 2
         view = View(self.__screen, self.__level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
-        view.center_on_screen(3 * self.__screen.get_width() / 4, self.__screen.get_height() / 2)
+        view.center_on_screen((3 * self.__screen.get_width() / 4, self.__screen.get_height() / 2))
         self.__views[Player.PLAYER_TWO] = view
 
         # Ajustement de la taille et de la position de la vue pour le joueur 1
-        self.__views[Player.PLAYER_ONE].center_on_screen(self.__screen.get_width() / 4, self.__screen.get_height() / 2)
+        self.__views[Player.PLAYER_ONE].center_on_screen((self.__screen.get_width() / 4, self.__screen.get_height() / 2))
         self.__views[Player.PLAYER_ONE].resize(View.WIDTH_TWO_PLAYERS, View.HEIGHT)
 
         # Attribution d'un personnage au joueur 2
@@ -248,7 +249,7 @@ class Game:
         del self.__players[Player.PLAYER_TWO]
 
         # Ajustement de la taille et de la position de la vue du joueur 1
-        self.__views[Player.PLAYER_ONE].center_on_screen(self.__screen.get_width() / 2, self.__screen.get_height() / 2)
+        self.__views[Player.PLAYER_ONE].center_on_screen((self.__screen.get_width() / 2, self.__screen.get_height() / 2))
         self.__views[Player.PLAYER_ONE].resize(View.WIDTH_ONE_PLAYER, View.HEIGHT)
 
     def __change_focus_if_needed(self) -> None:

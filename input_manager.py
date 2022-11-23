@@ -128,7 +128,7 @@ class __InputManager:
         """
         return pygame.joystick.get_count()
 
-    def manage_keyboard_event(self, event: pygame.event) -> None:
+    def manage_keyboard_event(self, event: pygame.event) -> bool:
         """
         Gère un événement du clavier.
         :param event: l'événement généré par pygame
@@ -150,7 +150,7 @@ class __InputManager:
 
             # Événements liés au joueur 2
             self.trigger_event_keyboard_up(event,player_two_input,self.__INPUT_KEYBROAD_PLAYER_TWO)
-
+        return True
     def trigger_event_keyboard_down(self, event,player_input,INPUT_KEYBROAD):
 
         input_x, input_y = player_input.movement

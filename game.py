@@ -132,14 +132,15 @@ class Game:
     def __set_view(self,level:Level,index:int,multiplier:int) -> View:
         if len(self.__players) > 1:
             view = View(self.__screen, level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
-            view.center_on_screen((multiplier*self.__screen.get_width() / 2*len(self.__players), self.__screen.get_height() / 2))
-            character = self.__players[index].character
-            view.center_in_office(character.feet_position)
+            
         else:
             view = View(self.__screen, level.office, View.WIDTH_ONE_PLAYER, View.HEIGHT)
-            view.center_on_screen((multiplier*self.__screen.get_width() / 2*len(self.__players), self.__screen.get_height() / 2))
-            character = self.__players[index].character
-            view.center_in_office(character.feet_position)
+            
+           
+        view.center_on_screen((multiplier*self.__screen.get_width() / 2*len(self.__players), self.__screen.get_height() / 2))
+        character = self.__players[index].character
+        view.center_in_office(character.feet_position)
+        
         return view
 
     def __handle_events(self) -> None:

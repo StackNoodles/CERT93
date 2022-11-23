@@ -1,34 +1,40 @@
 # Ensemble des paramètres de l'application
+import configparser
 
-SCREEN_WIDTH = 1366
-SCREEN_HEIGHT = 768
+config = configparser.ConfigParser(inline_comment_prefixes="#")
+config.read("config/config.ini")
 
-ACTIONABLE_DISTANCE = 32  # en pixels
 
-BACKDROP_FILENAME = 'img/cert_backdrop.png'
-CHARACTERS_FILENAME = 'img/cert_characters.png'
-TILES_FILENAME = 'img/cert_tileset.png'
-ASSETS_FILENAME = 'img/cert_equipements.png'
-INCIDENTS_FILENAME = 'img/cert_incidents.png'
-OFFICE_FILENAME = 'bin/office.pickle'
+SCREEN_WIDTH = int(config.get("Settings", "SCREEN_WIDTH"))
+SCREEN_HEIGHT = int(config.get("Settings", "SCREEN_HEIGHT"))
 
-BACKGROUND_MUSIC = 'snd/650556__stephiequeen__communicate-song-loop.ogg'
-OFFICE_AMBIENCE_SOUND = 'snd/407292__nightwatcher98__office-ambience-MODIFIED.mp3'
-PHONE_RING_SOUND_FILENAME = 'snd/24929__acclivity__phoneringing.mp3'
-PHONE_HANGUP_SOUND_FILENAME = 'snd/334982__paulocorona__hanging-phone-MODIFIED.wav'
-FAILURE_SOUND_FILENAME = 'snd/572936__bloodpixelhero__error.wav'
-SOLVE_SOUND_FILENAME = 'snd/511484__mlaudio__success-bell.wav'
+ACTIONABLE_DISTANCE = int(config.get("Settings", "ACTIONABLE_DISTANCE"))  # en pixels
 
-HELPDESK_ASSET_ID = 0
-HELPDESK_MIN_SOLVING_TIME = 5  # temps minimum pour prendre un appel
-HELPDESK_MAX_SOLVING_TIME = 60  # temps maximum pour prendre un appel
+BACKDROP_FILENAME = config.get("Images", "BACKDROP_FILENAME")
+CHARACTERS_FILENAME = config.get("Images", "CHARACTERS_FILENAME")
+TILES_FILENAME = config.get("Images", "TILES_FILENAME")
+ASSETS_FILENAME = config.get("Images", "ASSETS_FILENAME")
+INCIDENTS_FILENAME = config.get("Images", "INCIDENTS_FILENAME")
 
-NB_CHARACTERS = 8
-NB_SKILLS = 7
+OFFICE_FILENAME = config.get("Assets", "OFFICE_FILENAME")
 
-TIME_PER_LEVEL = 300  # en secondes
+BACKGROUND_MUSIC = config.get("Sounds", "BACKGROUND_MUSIC")
+OFFICE_AMBIENCE_SOUND = config.get("Sounds", "OFFICE_AMBIENCE_SOUND")
+PHONE_RING_SOUND_FILENAME = config.get("Sounds", "PHONE_RING_SOUND_FILENAME")
+PHONE_HANGUP_SOUND_FILENAME = config.get("Sounds", "PHONE_HANGUP_SOUND_FILENAME")
+FAILURE_SOUND_FILENAME = config.get("Sounds", "FAILURE_SOUND_FILENAME")
+SOLVE_SOUND_FILENAME = config.get("Sounds", "SOLVE_SOUND_FILENAME")
 
-NB_INCIDENT_TIMER_IMAGES = 17
-TIMER_PERCENTAGE_SLICE_SIZE = 100 / (NB_INCIDENT_TIMER_IMAGES - 1)
+HELPDESK_ASSET_ID = int(config.get("Settings", "HELPDESK_ASSET_ID"))
+HELPDESK_MIN_SOLVING_TIME = int(config.get("Settings", "HELPDESK_MIN_SOLVING_TIME"))  # temps minimum pour prendre un appel
+HELPDESK_MAX_SOLVING_TIME = int(config.get("Settings", "HELPDESK_MAX_SOLVING_TIME"))  # temps maximum pour prendre un appel
+
+NB_CHARACTERS = int(config.get("Settings", "NB_CHARACTERS"))
+NB_SKILLS = int(config.get("Settings", "NB_SKILLS"))
+
+TIME_PER_LEVEL = int(config.get("Settings", "TIME_PER_LEVEL"))  # en secondes
+
+NB_INCIDENT_TIMER_IMAGES = int(config.get("Settings", "NB_INCIDENT_TIMER_IMAGES"))
+TIMER_PERCENTAGE_SLICE_SIZE = int(config.get("Settings", "TIMER_PERCENTAGE_SLICE_SIZE")) / (NB_INCIDENT_TIMER_IMAGES - 1)
 
 INACTIVITY_THRESHOLD = 5  # en secondes

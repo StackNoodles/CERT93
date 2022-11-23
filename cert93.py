@@ -1,6 +1,7 @@
 #! python3
 
 import pygame
+from error_codes import ERROR_CODES_TEXT, Error_codes
 import incidents
 import input_manager
 import resources
@@ -9,8 +10,6 @@ import time
 
 from game import Game
 from helper_tools import create_level_pickles
-
-ERROR_CODES = resources.ERROR_CODES
 
 def __run_game() -> None:
 
@@ -24,7 +23,12 @@ def __run_game() -> None:
     screen = pygame.display.set_mode((settings.SCREEN_WIDTH, settings.SCREEN_HEIGHT))
 
     # Initialisation des ressources spécifiques au jeu
-    print(ERROR_CODES[resources.init()])
+    return_code = resources.init()
+    
+    print(ERROR_CODES_TEXT[return_code])
+    if return_code != Error_codes.SUCCES:
+        quit()
+        
     input_manager.init()
     incidents.init()
 

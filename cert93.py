@@ -8,6 +8,9 @@ import resources
 import settings
 import time
 
+from tkinter import *
+from tkinter import messagebox
+
 from game import Game
 from helper_tools import create_level_pickles
 
@@ -24,9 +27,9 @@ def __run_game() -> None:
 
     # Initialisation des ressources spécifiques au jeu
     return_code = resources.init()
-    
-    print(ERROR_CODES_TEXT[return_code])
     if return_code != Error_codes.SUCCES:
+        pygame.quit()
+        messagebox.showerror("ERREUR", ERROR_CODES_TEXT[return_code] + "\n(Code : " + str(return_code) + ")")
         quit()
         
     input_manager.init()

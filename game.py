@@ -119,11 +119,13 @@ class Game:
 
         view_width = View.WIDTH_ONE_PLAYER
         multiplier = 1
+        #Si la liste de joueurs est plus grande que 1, alors on set le view_width à 2 joueurs
         if len(self.__players) > 1:
             view_width = View.WIDTH_TWO_PLAYERS
+           #S'il s'agit du player2 on set le multiplier à 3 
             if index==1:
                 multiplier = 3
-           
+        # On set la view   
         view = View(self.__screen, level.office, view_width, View.HEIGHT)
         view.center_on_screen((multiplier*self.__screen.get_width() / 2*len(self.__players), self.__screen.get_height() / 2))
         character = self.__players[index].character

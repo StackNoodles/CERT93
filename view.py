@@ -64,13 +64,14 @@ class View:
         x, y = pixel_center
         self.__office_rect = self.__center_to_rect(x, y)
 
-    def center_on_screen(self, x: float, y: float) -> None:
+    def center_on_screen(self, pixel_center: tuple) -> None:
         """
         Centre la vue sur l'écran (endroit où positionner la vue sur l'écran).
         :param x: position horizontale où placer le centre de la vue
         :param y: position verticale où placer le centre de la vue
         :return: aucun
         """
+        x, y = pixel_center
         self.__screen_rect = self.__center_to_rect(x, y)
 
     def draw(self) -> None:
@@ -113,7 +114,7 @@ class View:
         # repositionnement à l'écran (enregistrement du rectangle décrivant la zone)
         cx = self.__screen_rect.x + (self.__screen_rect.width / 2)
         cy = self.__screen_rect.y + (self.__screen_rect.height / 2)
-        self.center_on_screen(cx, cy)
+        self.center_on_screen((cx, cy))
 
     @property
     def screen_rect(self) -> pygame.Rect:

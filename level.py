@@ -104,8 +104,15 @@ class Level:
             return None
 
         characters = []
+        characters_names = []
         for character_data in characters_data:
-            name = character_data[0]
+            if character_data[0] in characters_names:
+                characters_names.append(character_data[0])
+                name = character_data[0]+"#"+characters_names.count(character_data[0])
+            else:
+                name = character_data[0]
+                characters_names.append(character_data[0])
+            
             character_id = character_data[1]
             expertise = character_data[2]
             speed = character_data[3]

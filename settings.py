@@ -34,6 +34,8 @@ NB_SKILLS = int(config.get("Settings", "NB_SKILLS"))
 
 TIME_PER_LEVEL = int(config.get("Settings", "TIME_PER_LEVEL"))  # en secondes
 
+DEFAULT_TIME_TO_SOLVE = int(config.get("Settings", "DEFAULT_TIME_TO_SOLVE"))
+
 NB_INCIDENT_TIMER_IMAGES = int(config.get("Settings", "NB_INCIDENT_TIMER_IMAGES"))
 TIMER_PERCENTAGE_SLICE_SIZE = int(config.get("Settings", "TIMER_PERCENTAGE_SLICE_SIZE")) / (NB_INCIDENT_TIMER_IMAGES - 1)
 

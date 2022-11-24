@@ -53,7 +53,15 @@ class Helpdesk(Asset):
             # Redistribution de l'incident vers un actif autre que le centre d'appels
             # en le renvoyant à travers le spawner
             incident_type = random.choice(self.__incident_types)
-            time_to_solve = settings.DEFAULT_TIME_TO_SOLVE
+
+            time_to_solve_min = 30
+            time_to_solve_max = 60
+
+            if settings.DEFAULT_TIME_TO_SOLVE_MIN >0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > 0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > settings.DEFAULT_TIME_TO_SOLVE_MIN:
+                time_to_solve_min = settings.DEFAULT_TIME_TO_SOLVE_MIN
+                time_to_solve_max = settings.DEFAULT_TIME_TO_SOLVE_MAX
+
+            time_to_solve = random.randint(time_to_solve_min, time_to_solve_max)
             incident = Incident(incident_type, time_to_solve)
             incidents.spawner.put(incident)
 

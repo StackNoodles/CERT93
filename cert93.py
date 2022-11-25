@@ -42,9 +42,9 @@ def __run_game() -> None:
 
 
 if __name__ == '__main__':
+    create_level_pickles(1)
     try :
         __run_game()
     except KeyboardInterrupt:
         pygame.quit()
         quit()
-    #create_level_pickles(3)

@@ -1,4 +1,5 @@
-# Ensemble des paramètres de l'application
+# Importation des parametres et assets du jeu selon le fichier de configuration
+
 import configparser
 
 config = configparser.ConfigParser(inline_comment_prefixes="#")

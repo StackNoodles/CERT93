@@ -54,14 +54,17 @@ class Helpdesk(Asset):
             # en le renvoyant à travers le spawner
             incident_type = random.choice(self.__incident_types)
 
-            time_to_solve_min = 30
-            time_to_solve_max = 60
+            #Initialisation des temps par défaut a 30/60
+            __time_to_solve_min = 30
+            __time_to_solve_max = 60
 
+            #Si les temps des settings sont valides, utiliser ceux cis plutot
             if settings.DEFAULT_TIME_TO_SOLVE_MIN >0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > 0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > settings.DEFAULT_TIME_TO_SOLVE_MIN:
-                time_to_solve_min = settings.DEFAULT_TIME_TO_SOLVE_MIN
-                time_to_solve_max = settings.DEFAULT_TIME_TO_SOLVE_MAX
+                __time_to_solve_min = settings.DEFAULT_TIME_TO_SOLVE_MIN
+                __time_to_solve_max = settings.DEFAULT_TIME_TO_SOLVE_MAX
 
-            time_to_solve = random.randint(time_to_solve_min, time_to_solve_max)
+            #Randomizer le time to solve par defaut et creer l'incident
+            time_to_solve = random.randint(__time_to_solve_min, __time_to_solve_max)
             incident = Incident(incident_type, time_to_solve)
             incidents.spawner.put(incident)
 

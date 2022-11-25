@@ -103,13 +103,18 @@ class Level:
             print(f"Erreur de lecture : {characters_filename}")
             return None
 
+        
         characters = []
         characters_names = []
+
+        #Verification de si le nom existe deja
         for character_data in characters_data:
             if character_data[0] in characters_names:
+                #Si oui, on le rajoute quand meme et on ajouter un #x au nom
                 characters_names.append(character_data[0])
                 name = character_data[0]+"#"+characters_names.count(character_data[0])
             else:
+                #Si non, on le rajouter et le donne tel quel
                 name = character_data[0]
                 characters_names.append(character_data[0])
             

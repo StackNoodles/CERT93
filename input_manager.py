@@ -64,10 +64,10 @@ class PlayerInput:
 
 class __InputManager:
     """ Gestionnaire d'entrée (clavier ou gamepads). """
-    __INPUT_KEYBROAD_PLAYER_ONE = {'up': pygame.K_w,'down': pygame.K_s,'right': pygame.K_d,'left': pygame.K_a,
+    __INPUT_KEYBOARD_PLAYER_ONE = {'up': pygame.K_w, 'down': pygame.K_s, 'right': pygame.K_d, 'left': pygame.K_a,
                                     'switch_plus': pygame.K_2,'switch_minus': pygame.K_1,'action': pygame.K_f}
 
-    __INPUT_KEYBROAD_PLAYER_TWO = {'up': pygame.K_UP, 'down': pygame.K_DOWN, 'right': pygame.K_RIGHT, 'left': pygame.K_LEFT,
+    __INPUT_KEYBOARD_PLAYER_TWO = {'up': pygame.K_UP, 'down': pygame.K_DOWN, 'right': pygame.K_RIGHT, 'left': pygame.K_LEFT,
                                     'switch_plus': pygame.K_0, 'switch_minus': pygame.K_9, 'action': pygame.K_p}
 
     __PLAYER_ONE = 0
@@ -139,50 +139,63 @@ class __InputManager:
 
         if event.type == pygame.KEYDOWN:
             # Événements liés au joueur 1
-            self.trigger_event_keyboard_down(event,player_one_input,self.__INPUT_KEYBROAD_PLAYER_ONE)
+            self.trigger_event_keyboard_down(event, player_one_input, self.__INPUT_KEYBOARD_PLAYER_ONE)
 
             # Événements liés au joueur 2
-            self.trigger_event_keyboard_down(event,player_two_input,self.__INPUT_KEYBROAD_PLAYER_TWO)
+            self.trigger_event_keyboard_down(event, player_two_input, self.__INPUT_KEYBOARD_PLAYER_TWO)
 
         elif event.type == pygame.KEYUP:
             # Événements liés au joueur 1
-            self.trigger_event_keyboard_up(event,player_one_input,self.__INPUT_KEYBROAD_PLAYER_ONE)
+            self.trigger_event_keyboard_up(event, player_one_input, self.__INPUT_KEYBOARD_PLAYER_ONE)
 
             # Événements liés au joueur 2
-            self.trigger_event_keyboard_up(event,player_two_input,self.__INPUT_KEYBROAD_PLAYER_TWO)
+            self.trigger_event_keyboard_up(event, player_two_input, self.__INPUT_KEYBOARD_PLAYER_TWO)
         return True
-    def trigger_event_keyboard_down(self, event,player_input,INPUT_KEYBROAD):
-
+    def trigger_event_keyboard_down(self, event, player_input, INPUT_KEYBOARD):
+        """
+        Gère les evenements liée aux touches du clavié appuyée d'un joueur
+        param: event: l'événement généré par pygame,
+                      player_input : movement d'un joueur,
+                      INPUT_KEYBOARD : touche possible d'un joueur
+        return : aucun
+        """
         input_x, input_y = player_input.movement
         activity = False
 
-        if event.key == INPUT_KEYBROAD['left']:
+        if event.key == INPUT_KEYBOARD['left']:
             input_x = -1.0
             activity = True
-        elif event.key == INPUT_KEYBROAD['right']:
+        elif event.key == INPUT_KEYBOARD['right']:
             input_x = 1.0
             activity = True
 
-        if event.key == INPUT_KEYBROAD['up']:
+        if event.key == INPUT_KEYBOARD['up']:
             input_y = -1.0
             activity = True
-        elif event.key == INPUT_KEYBROAD['down']:
+        elif event.key == INPUT_KEYBOARD['down']:
             input_y = 1.0
             activity = True
 
         if activity:
             player_input.movement = input_x, input_y
 
-        if event.key == INPUT_KEYBROAD['switch_plus']:
+        if event.key == INPUT_KEYBOARD['switch_plus']:
             player_input.focus_next_button = True
             player_input.focus_prev_button = False
-        elif event.key == INPUT_KEYBROAD['switch_minus']:
+        elif event.key == INPUT_KEYBOARD['switch_minus']:
             player_input.focus_prev_button = True
             player_input.focus_next_button = False
-        elif event.key == INPUT_KEYBROAD['action']:
+        elif event.key == INPUT_KEYBOARD['action']:
             player_input.solve_button = True
 
     def trigger_event_keyboard_up(self, event, player_input, INPUT_KEYBROAD):
+        """
+        Gère les evenements liée aux touches du clavié relachée d'un joueur
+        param: event: l'événement généré par pygame,
+                      player_input : movement d'un joueur,
+                      INPUT_KEYBOARD : touche possible d'un joueur
+        return : aucun
+        """
         input_x, input_y = player_input.movement
         activity = False
 
@@ -203,6 +216,7 @@ class __InputManager:
             player_input.focus_prev_button = False
         elif event.key == INPUT_KEYBROAD['action']:
             player_input.solve_button = False
+
     def manage_gamepad_event(self, event: pygame.event) -> None:
         """
         Gère un événement de contrôleur de jeu (gamepad).
@@ -232,31 +246,36 @@ class __InputManager:
                 self.trigger_event_gamepad(event, player_two_input)
 
 
-    def trigger_event_gamepad(self, event: pygame.event, player_one_input):
-
+    def trigger_event_gamepad(self, event: pygame.event, player_input):
+        """
+        Gère les evenements liée aux touches du gamepad d'un joueur
+        param: event: l'événement généré par pygame,
+                      player_input : movement d'un joueur,
+        return : aucun
+        """
         if event.type == JOYBUTTONDOWN:
             if event.button == 5:
-                player_one_input.focus_next_button = True
-                player_one_input.focus_prev_button = False
+                player_input.focus_next_button = True
+                player_input.focus_prev_button = False
             elif event.button == 4:
-                player_one_input.focus_next_button = False
-                player_one_input.focus_prev_button = True
+                player_input.focus_next_button = False
+                player_input.focus_prev_button = True
 
             if event.button == 3:
-                player_one_input.solve_button = True
+                player_input.solve_button = True
 
         if event.type == JOYBUTTONUP:
             if event.button == 5:
-                player_one_input.focus_next_button = False
+                player_input.focus_next_button = False
             elif event.button == 4:
-                player_one_input.focus_prev_button = False
+                player_input.focus_prev_button = False
 
             if event.button == 3:
-                player_one_input.solve_button = False
+                player_input.solve_button = False
 
         if event.type == JOYAXISMOTION:
-            input_x, input_y = player_one_input.movement
-            previous_input_x, previous_input_y = player_one_input.movement
+            input_x, input_y = player_input.movement
+            previous_input_x, previous_input_y = player_input.movement
             if event.axis == 0:  # axe horizontal
                 input_x = event.value
             if event.axis == 4:  # axe vertical
@@ -270,7 +289,7 @@ class __InputManager:
 
             # Application du mouvement si il y a un changement (va aussi toucher l'indicateur d'activité)
             if input_x != previous_input_x or input_y != previous_input_y:
-                player_one_input.movement = input_x, input_y
+                player_input.movement = input_x, input_y
 
     def player_input(self, player_id: int) -> PlayerInput:
         """

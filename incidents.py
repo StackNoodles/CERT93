@@ -27,7 +27,8 @@ class Incident(Thread):
         self.__time_to_solve = time_to_solve
         self.__remaining_time = time_to_solve
 
-        self.__event = Event()  # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
+        # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
+        self.__event = Event()
 
     def run(self) -> None:
         """ Méthode principale exécutée par la tâche d'incident. """
@@ -69,31 +70,50 @@ class Incident(Thread):
 
 class __IncidentSpawner(Thread):
     """ Générateur d'incidents. """
-    __DEFAULT_MIN_TIME_BETWEEN_INDICENTS = 1  # en secondes
-    __DEFAULT_MAX_TIME_BETWEEN_INDICENTS = 30  # en secondes
 
-    __TIME_BEFORE_FIRST_INCIDENT = 2  # en secondes
+    # __DEFAULT_MIN_TIME_BETWEEN_INDICENTS = 1  # en secondes
+    # __DEFAULT_MAX_TIME_BETWEEN_INDICENTS = 30  # en secondes
+
+    # __TIME_BEFORE_FIRST_INCIDENT = 2  # en secondes
 
     def __init__(self) -> None:
         """ Initialise le générateur d'incidents. """
         super().__init__()
 
+        max_time_between_indicents = 30
+        min_time_between_incidents = 1
+        """Si le temps max par défaut est plus grand que 0 dans les settings et que le temps min par 
+        défaut est plus grand que 0 dans les settings et que le temps max est plus grand que le
+         temps min alors on attribue aux variables le temps qui se trouve dans les settings"""
+        if settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS > 0 and settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS > 0 and settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS > settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS:
+            max_time_between_indicents = settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS
+            min_time_between_incidents = settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS
+
         self.__queue = Queue()  # queue dans laquelle on place les incidents générés
-        self.__event = Event()  # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
+        # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
+        self.__event = Event()
 
-        self.__min_time_between = self.__DEFAULT_MIN_TIME_BETWEEN_INDICENTS
-        self.__max_time_between = self.__DEFAULT_MAX_TIME_BETWEEN_INDICENTS
+        self.__min_time_between = min_time_between_incidents
+        self.__max_time_between = max_time_between_indicents
 
-        self.__creating_incidents = True  # va créer des incidents seulement si __creating_incidents est True
+        # va créer des incidents seulement si __creating_incidents est True
+        self.__creating_incidents = True
 
     def run(self) -> None:
+        time_before_incident = 2
+        """Si le temps avant le premier incident qui se trouve dans les settings est plus grand que 
+        0 alors on attribue ce temps à la variable"""
+        if settings.TIME_BEFORE_FIRST_INCIDENT > 0:
+            time_before_incident = settings.TIME_BEFORE_FIRST_INCIDENT
         """ Méthode principale exécutée par la tâche du générateur d'incidents. """
         # attendre un certain temps avant de générer le premier incident
-        self.__create_and_send_next_incident(self.__TIME_BEFORE_FIRST_INCIDENT, self.__TIME_BEFORE_FIRST_INCIDENT + 2)
+        self.__create_and_send_next_incident(
+            time_before_incident, time_before_incident + 2)
 
         # tant que la tâche exécute, on génère des événements
         while not self.__event.is_set():
-            self.__create_and_send_next_incident(self.__min_time_between, self.__max_time_between)
+            self.__create_and_send_next_incident(
+                self.__min_time_between, self.__max_time_between)
 
     def pause(self) -> None:
         """ Pause la génération d'incidents. """
@@ -142,7 +162,8 @@ class __IncidentSpawner(Thread):
 
         if self.__creating_incidents:
             # Création d'un incident pour le centre d'appels (tous les incidents entrent par le centre d'appels)
-            time_to_solve = random.randint(settings.HELPDESK_MIN_SOLVING_TIME, settings.HELPDESK_MAX_SOLVING_TIME)
+            time_to_solve = random.randint(
+                settings.HELPDESK_MIN_SOLVING_TIME, settings.HELPDESK_MAX_SOLVING_TIME)
             incident = Incident(Expertise.HELPDESK, time_to_solve)
 
             # Envoi de l'incident sur la queue d'incidents

@@ -18,6 +18,7 @@ from fps import FPS
 from player import Player
 from view import View
 
+
 class Game:
     """ Une partie. """
 
@@ -27,14 +28,16 @@ class Game:
         :param screen: surface représentant l'écran pygame
         """
         self.__screen = screen
-        self.__backdrop_surface = pygame.image.load(settings.BACKDROP_FILENAME).convert()
+        self.__backdrop_surface = pygame.image.load(
+            settings.BACKDROP_FILENAME).convert()
 
         self.__running = False
 
         self.__score = Score()
 
         if input_manager.inputs.get_gamepad_count() == 2:
-            self.__players = [Player(Player.PLAYER_ONE), Player(Player.PLAYER_TWO)]
+            self.__players = [Player(Player.PLAYER_ONE),
+                              Player(Player.PLAYER_TWO)]
         else:
             self.__players = [Player(Player.PLAYER_ONE)]
 
@@ -42,8 +45,9 @@ class Game:
         self.__views = self.__setup_views(self.__level)
 
         self.__fps = FPS()
-        
-        self.__CENTER_SCREEN_ONE_PLAYER = (self.__screen.get_width() / 2, self.__screen.get_height() / 2)
+
+        self.__CENTER_SCREEN_ONE_PLAYER = (
+            self.__screen.get_width() / 2, self.__screen.get_height() / 2)
 
     def run(self) -> None:
         """ Exécute la partie (boucle de jeu). """
@@ -106,31 +110,35 @@ class Game:
             self.__players[Player.PLAYER_TWO].character = level.characters[1]
 
             # Deux joueurs, donc deux vues
-            views[Player.PLAYER_ONE] = self.__set_view(level,Player.PLAYER_ONE)
-            views[Player.PLAYER_TWO] = self.__set_view(level,Player.PLAYER_TWO)
+            views[Player.PLAYER_ONE] = self.__set_view(
+                level, Player.PLAYER_ONE)
+            views[Player.PLAYER_TWO] = self.__set_view(
+                level, Player.PLAYER_TWO)
 
         else:
             # Un seul joueur, donc une seule vue
-            views[Player.PLAYER_ONE] = self.__set_view(level,Player.PLAYER_ONE)
+            views[Player.PLAYER_ONE] = self.__set_view(
+                level, Player.PLAYER_ONE)
 
         return views
 
-    def __set_view(self,level:Level,index:int) -> View:
+    def __set_view(self, level: Level, index: int) -> View:
 
         view_width = View.WIDTH_ONE_PLAYER
         multiplier = 1
-        #Si la liste de joueurs est plus grande que 1, alors on set le view_width à 2 joueurs
+        # Si la liste de joueurs est plus grande que 1, alors on set le view_width à 2 joueurs
         if len(self.__players) > 1:
             view_width = View.WIDTH_TWO_PLAYERS
-           #S'il s'agit du player2 on set le multiplier à 3 
-            if index==1:
+           # S'il s'agit du player2 on set le multiplier à 3
+            if index == 1:
                 multiplier = 3
-        # On set la view   
+        # On set la view
         view = View(self.__screen, level.office, view_width, View.HEIGHT)
-        view.center_on_screen((multiplier*self.__screen.get_width() / 2*len(self.__players), self.__screen.get_height() / 2))
+        view.center_on_screen((multiplier*self.__screen.get_width() /
+                              2*len(self.__players), self.__screen.get_height() / 2))
         character = self.__players[index].character
         view.center_in_office(character.feet_position)
-        
+
         return view
 
     def __handle_events(self) -> None:
@@ -143,9 +151,9 @@ class Game:
                 self.__running = False
                 return
 
-            if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP :
+            if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
                 input_manager.inputs.manage_keyboard_event(event)
-            elif event.type == pygame.JOYBUTTONUP or event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYAXISMOTION :
+            elif event.type == pygame.JOYBUTTONUP or event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYAXISMOTION:
                 input_manager.inputs.manage_gamepad_event(event)
 
     def __handle_incidents(self) -> None:
@@ -223,13 +231,17 @@ class Game:
         self.__players.append(player)
 
         # Création de la vue pour le joueur 2
-        view = View(self.__screen, self.__level.office, View.WIDTH_TWO_PLAYERS, View.HEIGHT)
-        view.center_on_screen((3 * self.__screen.get_width() / 4, self.__screen.get_height() / 2))
+        view = View(self.__screen, self.__level.office,
+                    View.WIDTH_TWO_PLAYERS, View.HEIGHT)
+        view.center_on_screen(
+            (3 * self.__screen.get_width() / 4, self.__screen.get_height() / 2))
         self.__views[Player.PLAYER_TWO] = view
 
         # Ajustement de la taille et de la position de la vue pour le joueur 1
-        self.__views[Player.PLAYER_ONE].center_on_screen((self.__screen.get_width() / 4, self.__screen.get_height() / 2))
-        self.__views[Player.PLAYER_ONE].resize(View.WIDTH_TWO_PLAYERS, View.HEIGHT)
+        self.__views[Player.PLAYER_ONE].center_on_screen(
+            (self.__screen.get_width() / 4, self.__screen.get_height() / 2))
+        self.__views[Player.PLAYER_ONE].resize(
+            View.WIDTH_TWO_PLAYERS, View.HEIGHT)
 
         # Attribution d'un personnage au joueur 2
         for character in self.__level.characters:
@@ -254,8 +266,10 @@ class Game:
         del self.__players[Player.PLAYER_TWO]
 
         # Ajustement de la taille et de la position de la vue du joueur 1
-        self.__views[Player.PLAYER_ONE].center_on_screen((self.__screen.get_width() / 2, self.__screen.get_height() / 2))
-        self.__views[Player.PLAYER_ONE].resize(View.WIDTH_ONE_PLAYER, View.HEIGHT)
+        self.__views[Player.PLAYER_ONE].center_on_screen(
+            (self.__screen.get_width() / 2, self.__screen.get_height() / 2))
+        self.__views[Player.PLAYER_ONE].resize(
+            View.WIDTH_ONE_PLAYER, View.HEIGHT)
 
     def __change_focus_if_needed(self) -> None:
         """
@@ -273,16 +287,19 @@ class Game:
 
             # Sélection du prochain personnage disponible
             current_index = self.__level.characters.index(current_character)
-            next_index = (current_index + index_delta + nb_characters) % nb_characters
+            next_index = (current_index + index_delta +
+                          nb_characters) % nb_characters
             next_character = self.__level.characters[next_index]
             while next_character in [p.character for p in self.__players]:
-                next_index = (next_index + index_delta + nb_characters) % nb_characters
+                next_index = (next_index + index_delta +
+                              nb_characters) % nb_characters
                 next_character = self.__level.characters[next_index]
             player.character = next_character
 
             # Repositionnement de la vue sur ce nouveau personnage
             new_character = player.character
-            self.__views[player.number].center_in_office(new_character.feet_position)
+            self.__views[player.number].center_in_office(
+                new_character.feet_position)
 
         # Vérification s'il est possible d'effectuer le changement et si un changement est demandé
         if len(self.__level.characters) > len(self.__players):
@@ -292,10 +309,12 @@ class Game:
                 inputs = input_manager.inputs.player_input(player.number)
                 if inputs.focus_next_button:
                     inputs.focus_next_button = False
-                    change_focus(character, 1)  # on avance jusqu'au prochain disponible
+                    # on avance jusqu'au prochain disponible
+                    change_focus(character, 1)
                 elif inputs.focus_prev_button:
                     inputs.focus_prev_button = False
-                    change_focus(character, -1)  # on recule jusqu'au prochain disponible
+                    # on recule jusqu'au prochain disponible
+                    change_focus(character, -1)
 
     def __move_characters_if_needed(self, delta_time: float) -> None:
         """
@@ -310,12 +329,14 @@ class Game:
             if abs(movement[0]) > 0.0 or abs(movement[1]) > 0.0:
                 # il y a mouvement sur au moins un des deux axes
                 character = player.character
-                next_feet_position = character.compute_next_feet_position(movement, delta_time)
+                next_feet_position = character.compute_next_feet_position(
+                    movement, delta_time)
                 if self.__level.office.in_navmesh(next_feet_position):
                     # déplacement du personnage
                     character.feet_position = next_feet_position
                     # repositionnement de la vue puisque le personnage s'est déplacé
-                    self.__views[player.number].center_in_office(character.feet_position)
+                    self.__views[player.number].center_in_office(
+                        character.feet_position)
 
     def __solve_incidents_if_needed(self) -> None:
         """
@@ -341,7 +362,8 @@ class Game:
         distance_found = settings.ACTIONABLE_DISTANCE + 1
 
         for asset in self.__level.assets:
-            distance = find_distance(asset.center_position, character.feet_position)
+            distance = find_distance(
+                asset.center_position, character.feet_position)
             if distance <= settings.ACTIONABLE_DISTANCE:
                 if asset_found:
                     # un actif avait déjà été trouvé, on vérifie donc si celui-ci est plus proche du personnage

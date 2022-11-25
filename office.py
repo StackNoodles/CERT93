@@ -18,7 +18,8 @@ class Office:
         self.__surface = None
         self.__tile_size = None
 
-        self.__ambience_sound = resources.sounds_collection.get('OFFICE-AMBIENCE')
+        self.__ambience_sound = resources.sounds_collection.get(
+            'OFFICE-AMBIENCE')
         self.__ambience_enabled = False
 
         self.__assets = {}
@@ -35,14 +36,18 @@ class Office:
         width = len(floor_and_walls)
         height = len(floor_and_walls[0])
 
-        self.__floor_and_walls = [[Tile(Tile.VOID, (0, 0)) for _ in range(height)] for _ in range(width)]
+        self.__floor_and_walls = [
+            [Tile(Tile.VOID, (0, 0)) for _ in range(height)] for _ in range(width)]
 
         tile = resources.tiles_collection.get(0)
         self.__tile_size = tile.get_width()
 
-        surface = pygame.Surface((width * self.__tile_size, height * self.__tile_size))
+        surface = pygame.Surface(
+            (width * self.__tile_size, height * self.__tile_size))
 
-        __DELTAS = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (0, 0)]
+        __DELTAS = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0),
+                    (-1, -1), (0, -1), (1, -1), (0, 0)]
+        __BORDER_WIDTH = 5
 
         for y in range(height):
             for x in range(width):
@@ -50,41 +55,95 @@ class Office:
                 if tile_id >= Tile.FLOOR:
                     pos_x = x * self.__tile_size
                     pos_y = y * self.__tile_size
-                    self.__floor_and_walls[x][y] = Tile(tile_id, (pos_x, pos_y))
+                    self.__floor_and_walls[x][y] = Tile(
+                        tile_id, (pos_x, pos_y))
                     if tile_id == Tile.FLOOR:
                         self.__floor_and_walls[x][y].walkable = True
+                        
+                    if not (tile := resources.tiles_collection.get(tile_id).copy()):
+                        break
 
-                    isBorder = False
+                    # Recuperation de la matrice autour de la case (9*9)
                     outline = [[-1 for _ in range(3)]for _ in range(3)]
-                    mask = [
-                        [0, 0, 0],
-                        [0, 0, 0],
-                        [0, 0, 0]
-                    ]
                     for delta in __DELTAS:
                         try:
-                            outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[x + delta[0]][y + delta[1]] if x + delta[0] > -1 and y + delta[1] > -1 else -1
+                            # On met -1 si on est au bord du tableau
+                            outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[x + delta[0]
+                                                                                  ][y + delta[1]] if x + delta[0] > -1 and y + delta[1] > -1 else -1
                         except IndexError:
                             outline[delta[0] + 1][delta[1] + 1] = -1
-                    
-                    # print(str(outline[0][0]) + ", " + str(outline[1][0]) + ", " + str(outline[2][0]) + "\n" + str(outline[0][1]) + ", " + str(outline[1][1]) + ", " + str(outline[2][1]) + "\n"+ str(outline[2][2]) + ", " + str(outline[0][2]) + ", " + str(outline[1][2])+ "\n")
 
-                    nombreVides = 0
+                    # Pour determiner le type de bord (ne fonctionne pas dans certains cas spécifique : bordure droite, angle fermé, ...) à changer.
+                    emptyCases = 0
                     for i in range(len(outline)):
                         for j in range(len(outline[i])):
-                            if outline[i][j] == -1 :
-                                nombreVides += 1
+                            if outline[i][j] == -1:
+                                emptyCases += 1
 
-                    # if nombreVides == 3:
-                    #     tile = resources.tiles_collection.get(5)
-                    #     surface.blit(tile, (pos_x, pos_y))
-                    # elif nombreVides == 5:
-                    #     tile = resources.tiles_collection.get(6)
-                    #     surface.blit(tile, (pos_x, pos_y))
-                    # else:
-                    
-                    if tile := resources.tiles_collection.get(tile_id):
-                        surface.blit(tile, (pos_x, pos_y))
+                    # Angle exterieur
+                    if emptyCases > 3:
+                        # Haut Gauche
+                        if outline[1][0] == -1 and outline[0][1] == -1:
+                            surface.blit(tile, (pos_x + __BORDER_WIDTH, pos_y + __BORDER_WIDTH),
+                                         (__BORDER_WIDTH, __BORDER_WIDTH, self.__tile_size, self.__tile_size))
+                        # Bas Gauche
+                        elif outline[1][2] == -1 and outline[0][1] == -1:
+                            surface.blit(tile, (pos_x + __BORDER_WIDTH, pos_y - __BORDER_WIDTH),
+                                         (__BORDER_WIDTH,  -__BORDER_WIDTH, self.__tile_size, self.__tile_size))
+                        # Haut Droite
+                        elif outline[1][0] == -1 and outline[2][1] == -1:
+                            surface.blit(tile, (pos_x - __BORDER_WIDTH, pos_y + __BORDER_WIDTH),
+                                         (-__BORDER_WIDTH, __BORDER_WIDTH, self.__tile_size, self.__tile_size))
+                        # Bas Droite
+                        elif outline[1][2] == -1 and outline[2][1] == -1:
+                            surface.blit(tile, (pos_x - __BORDER_WIDTH, pos_y - __BORDER_WIDTH),
+                                         (-__BORDER_WIDTH, -__BORDER_WIDTH, self.__tile_size, self.__tile_size))
+
+                     # Bordure plate
+                    elif emptyCases > 1:
+                        # Gauche
+                        if outline[0][1] == -1:
+                            surface.blit(tile, (pos_x + __BORDER_WIDTH, pos_y),
+                                         (__BORDER_WIDTH, 0, self.__tile_size, self.__tile_size))
+                        # Haut
+                        elif outline[1][0] == -1:
+                            surface.blit(tile, (pos_x, pos_y + __BORDER_WIDTH),
+                                         (0, __BORDER_WIDTH, self.__tile_size, self.__tile_size))
+                        # Droite
+                        elif outline[2][1] == -1:
+                            surface.blit(tile, (pos_x - __BORDER_WIDTH, pos_y),
+                                         (-__BORDER_WIDTH, 0, self.__tile_size, self.__tile_size))
+                        # Bas
+                        elif outline[1][2] == -1:
+                            surface.blit(tile, (pos_x, pos_y - __BORDER_WIDTH),
+                                         (0, -__BORDER_WIDTH, self.__tile_size, self.__tile_size))
+
+                    # Angle interieur
+                    else :
+                        # Haut Gauche
+                        if outline[0][0] == -1:
+                            for k in range(5):
+                                for l in range(5): 
+                                    tile.set_at((k, l), 0)
+                        # Haut Droite
+                        elif outline[0][2] == -1:
+                            for k in range(5):
+                                for l in range(6): 
+                                    tile.set_at((k, self.__tile_size - l), 0)
+                        # Bas Gauche
+                        elif outline[2][0] == -1:
+                            for k in range(6):
+                                for l in range(5): 
+                                    tile.set_at((self.__tile_size - k, l), 0)
+                        # Bas Droite
+                        elif outline[2][2] == -1:
+                            for k in range(6):
+                                for l in range(6): 
+                                    tile.set_at((self.__tile_size - k, self.__tile_size - l), 0)
+
+                    # Tout le reste
+                        surface.blit(tile, (pos_x, pos_y),
+                                     (0, 0, self.__tile_size, self.__tile_size))
 
         self.__surface = surface
 

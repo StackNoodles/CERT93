@@ -112,7 +112,7 @@ def map2pickles(map_filename: str, fw_filename: str, c_filename: str, a_filename
         print(f"Erreur lors de la création du cornichon : {a_filename}")
 
 
-__DELTAS = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, 1)]
+__DELTAS = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
 
 
 def __flood_fill(starting_point: tuple, symbol: int, office: list) -> None:

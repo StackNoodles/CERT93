@@ -42,6 +42,8 @@ class Office:
 
         surface = pygame.Surface((width * self.__tile_size, height * self.__tile_size))
 
+        __DELTAS = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (0, 0)]
+
         for y in range(height):
             for x in range(width):
                 tile_id = floor_and_walls[x][y]
@@ -51,6 +53,36 @@ class Office:
                     self.__floor_and_walls[x][y] = Tile(tile_id, (pos_x, pos_y))
                     if tile_id == Tile.FLOOR:
                         self.__floor_and_walls[x][y].walkable = True
+
+                    isBorder = False
+                    outline = [[-1 for _ in range(3)]for _ in range(3)]
+                    mask = [
+                        [0, 0, 0],
+                        [0, 0, 0],
+                        [0, 0, 0]
+                    ]
+                    for delta in __DELTAS:
+                        try:
+                            outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[x + delta[0]][y + delta[1]] if x + delta[0] > -1 and y + delta[1] > -1 else -1
+                        except IndexError:
+                            outline[delta[0] + 1][delta[1] + 1] = -1
+                    
+                    # print(str(outline[0][0]) + ", " + str(outline[1][0]) + ", " + str(outline[2][0]) + "\n" + str(outline[0][1]) + ", " + str(outline[1][1]) + ", " + str(outline[2][1]) + "\n"+ str(outline[2][2]) + ", " + str(outline[0][2]) + ", " + str(outline[1][2])+ "\n")
+
+                    nombreVides = 0
+                    for i in range(len(outline)):
+                        for j in range(len(outline[i])):
+                            if outline[i][j] == -1 :
+                                nombreVides += 1
+
+                    # if nombreVides == 3:
+                    #     tile = resources.tiles_collection.get(5)
+                    #     surface.blit(tile, (pos_x, pos_y))
+                    # elif nombreVides == 5:
+                    #     tile = resources.tiles_collection.get(6)
+                    #     surface.blit(tile, (pos_x, pos_y))
+                    # else:
+                    
                     if tile := resources.tiles_collection.get(tile_id):
                         surface.blit(tile, (pos_x, pos_y))
 

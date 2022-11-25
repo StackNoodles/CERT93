@@ -80,35 +80,35 @@ class __IncidentSpawner(Thread):
         """ Initialise le générateur d'incidents. """
         super().__init__()
 
-        max_time_between_indicents = 30
-        min_time_between_incidents = 1
+        __max_time_between_indicents = 30
+        __min_time_between_incidents = 1
         """Si le temps max par défaut est plus grand que 0 dans les settings et que le temps min par 
         défaut est plus grand que 0 dans les settings et que le temps max est plus grand que le
          temps min alors on attribue aux variables le temps qui se trouve dans les settings"""
         if settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS > 0 and settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS > 0 and settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS > settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS:
-            max_time_between_indicents = settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS
-            min_time_between_incidents = settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS
+            __max_time_between_indicents = settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS
+            __min_time_between_incidents = settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS
 
         self.__queue = Queue()  # queue dans laquelle on place les incidents générés
         # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
         self.__event = Event()
 
-        self.__min_time_between = min_time_between_incidents
-        self.__max_time_between = max_time_between_indicents
+        self.__min_time_between = __min_time_between_incidents
+        self.__max_time_between = __max_time_between_indicents
 
         # va créer des incidents seulement si __creating_incidents est True
         self.__creating_incidents = True
 
     def run(self) -> None:
-        time_before_incident = 2
+        __time_before_incident = 2
         """Si le temps avant le premier incident qui se trouve dans les settings est plus grand que 
         0 alors on attribue ce temps à la variable"""
         if settings.TIME_BEFORE_FIRST_INCIDENT > 0:
-            time_before_incident = settings.TIME_BEFORE_FIRST_INCIDENT
+            __time_before_incident = settings.TIME_BEFORE_FIRST_INCIDENT
         """ Méthode principale exécutée par la tâche du générateur d'incidents. """
         # attendre un certain temps avant de générer le premier incident
         self.__create_and_send_next_incident(
-            time_before_incident, time_before_incident + 2)
+            __time_before_incident, __time_before_incident + 2)
 
         # tant que la tâche exécute, on génère des événements
         while not self.__event.is_set():

@@ -63,86 +63,63 @@ class Office:
                     if not (tile := resources.tiles_collection.get(tile_id).copy()):
                         break
 
+                    # Cropping
                     # Recuperation de la matrice autour de la case (9*9)
                     outline = [[-1 for _ in range(3)]for _ in range(3)]
                     for delta in __DELTAS:
+                        # On met -1 si on est a un bord de la liste
                         try:
-                            # On met -1 si on est au bord du tableau
                             outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[x + delta[0]
                                                                                   ][y + delta[1]] if x + delta[0] > -1 and y + delta[1] > -1 else -1
                         except IndexError:
                             outline[delta[0] + 1][delta[1] + 1] = -1
 
-                    # Pour determiner le type de bord (ne fonctionne pas dans certains cas spécifique : bordure droite, angle fermé, ...) à changer.
-                    emptyCases = 0
-                    for i in range(len(outline)):
-                        for j in range(len(outline[i])):
-                            if outline[i][j] == -1:
-                                emptyCases += 1
+                    # Bords adjacents à un vide (et angles exterieurs par extension)
+                    # Gauche
+                    if outline[0][1] == -1:
+                        for k in range(__BORDER_WIDTH):
+                                for l in range(self.__tile_size):
+                                        tile.set_at((k, l), 0)
+                    # Haut
+                    if outline[1][0] == -1:
+                        for k in range(self.__tile_size):
+                                for l in range(__BORDER_WIDTH):
+                                        tile.set_at((k, l), 0)
+                    # Droite
+                    if outline[2][1] == -1: 
+                        for k in range(__BORDER_WIDTH + 1): # On ajoute 1 pour atteindre le max
+                                for l in range(self.__tile_size):
+                                        tile.set_at((self.__tile_size - k, l), 0)
+                    # Bas
+                    if outline[1][2] == -1:
+                        for k in range(self.__tile_size):
+                                for l in range(__BORDER_WIDTH + 1):
+                                        tile.set_at((k, self.__tile_size - l), 0)
 
-                    # Angle exterieur
-                    if emptyCases > 3:
-                        # Haut Gauche
-                        if outline[1][0] == -1 and outline[0][1] == -1:
-                            surface.blit(tile, (pos_x + __BORDER_WIDTH, pos_y + __BORDER_WIDTH),
-                                         (__BORDER_WIDTH, __BORDER_WIDTH, self.__tile_size, self.__tile_size))
-                        # Bas Gauche
-                        elif outline[1][2] == -1 and outline[0][1] == -1:
-                            surface.blit(tile, (pos_x + __BORDER_WIDTH, pos_y - __BORDER_WIDTH),
-                                         (__BORDER_WIDTH,  -__BORDER_WIDTH, self.__tile_size, self.__tile_size))
-                        # Haut Droite
-                        elif outline[1][0] == -1 and outline[2][1] == -1:
-                            surface.blit(tile, (pos_x - __BORDER_WIDTH, pos_y + __BORDER_WIDTH),
-                                         (-__BORDER_WIDTH, __BORDER_WIDTH, self.__tile_size, self.__tile_size))
-                        # Bas Droite
-                        elif outline[1][2] == -1 and outline[2][1] == -1:
-                            surface.blit(tile, (pos_x - __BORDER_WIDTH, pos_y - __BORDER_WIDTH),
-                                         (-__BORDER_WIDTH, -__BORDER_WIDTH, self.__tile_size, self.__tile_size))
+                    # Angles interieurs
+                    # Haut Gauche
+                    if outline[0][0] == -1:
+                        for k in range(__BORDER_WIDTH):
+                            for l in range(__BORDER_WIDTH): 
+                                tile.set_at((k, l), 0)
+                    # Haut Droite
+                    elif outline[0][2] == -1:
+                        for k in range(__BORDER_WIDTH):
+                            for l in range(__BORDER_WIDTH + 1): 
+                                tile.set_at((k, self.__tile_size - l), 0)
+                    # Bas Gauche
+                    elif outline[2][0] == -1:
+                        for k in range(__BORDER_WIDTH + 1):
+                            for l in range(__BORDER_WIDTH): 
+                                tile.set_at((self.__tile_size - k, l), 0)
+                    # Bas Droite
+                    elif outline[2][2] == -1:
+                        for k in range(__BORDER_WIDTH + 1):
+                            for l in range(__BORDER_WIDTH + 1): 
+                                tile.set_at((self.__tile_size - k, self.__tile_size - l), 0)
 
-                     # Bordure plate
-                    elif emptyCases > 1:
-                        # Gauche
-                        if outline[0][1] == -1:
-                            surface.blit(tile, (pos_x + __BORDER_WIDTH, pos_y),
-                                         (__BORDER_WIDTH, 0, self.__tile_size, self.__tile_size))
-                        # Haut
-                        elif outline[1][0] == -1:
-                            surface.blit(tile, (pos_x, pos_y + __BORDER_WIDTH),
-                                         (0, __BORDER_WIDTH, self.__tile_size, self.__tile_size))
-                        # Droite
-                        elif outline[2][1] == -1:
-                            surface.blit(tile, (pos_x - __BORDER_WIDTH, pos_y),
-                                         (-__BORDER_WIDTH, 0, self.__tile_size, self.__tile_size))
-                        # Bas
-                        elif outline[1][2] == -1:
-                            surface.blit(tile, (pos_x, pos_y - __BORDER_WIDTH),
-                                         (0, -__BORDER_WIDTH, self.__tile_size, self.__tile_size))
-
-                    # Angle interieur
-                    else :
-                        # Haut Gauche
-                        if outline[0][0] == -1:
-                            for k in range(5):
-                                for l in range(5): 
-                                    tile.set_at((k, l), 0)
-                        # Haut Droite
-                        elif outline[0][2] == -1:
-                            for k in range(5):
-                                for l in range(6): 
-                                    tile.set_at((k, self.__tile_size - l), 0)
-                        # Bas Gauche
-                        elif outline[2][0] == -1:
-                            for k in range(6):
-                                for l in range(5): 
-                                    tile.set_at((self.__tile_size - k, l), 0)
-                        # Bas Droite
-                        elif outline[2][2] == -1:
-                            for k in range(6):
-                                for l in range(6): 
-                                    tile.set_at((self.__tile_size - k, self.__tile_size - l), 0)
-
-                    # Tout le reste
-                        surface.blit(tile, (pos_x, pos_y),
+                    # On place la tuile
+                    surface.blit(tile, (pos_x, pos_y),
                                      (0, 0, self.__tile_size, self.__tile_size))
 
         self.__surface = surface

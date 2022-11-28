@@ -301,7 +301,6 @@ class __SoundsCollection:
         :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
         """
         self.__sounds = {}
-
         try :
             sound = pygame.mixer.Sound(settings.PHONE_RING_SOUND_FILENAME)
         except :

@@ -103,17 +103,17 @@ class Office:
                             for l in range(__BORDER_WIDTH): 
                                 tile.set_at((k, l), 0)
                     # Haut Droite
-                    elif outline[0][2] == -1:
+                    if outline[0][2] == -1:
                         for k in range(__BORDER_WIDTH):
                             for l in range(__BORDER_WIDTH + 1): 
                                 tile.set_at((k, self.__tile_size - l), 0)
                     # Bas Gauche
-                    elif outline[2][0] == -1:
+                    if outline[2][0] == -1:
                         for k in range(__BORDER_WIDTH + 1):
                             for l in range(__BORDER_WIDTH): 
                                 tile.set_at((self.__tile_size - k, l), 0)
                     # Bas Droite
-                    elif outline[2][2] == -1:
+                    if outline[2][2] == -1:
                         for k in range(__BORDER_WIDTH + 1):
                             for l in range(__BORDER_WIDTH + 1): 
                                 tile.set_at((self.__tile_size - k, self.__tile_size - l), 0)

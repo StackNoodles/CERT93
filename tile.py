@@ -7,6 +7,7 @@ class Tile:
 
     FLOOR = 0
     VOID = -1
+    SPECIAL = 16
 
     def __init__(self, tile_id: int, position: tuple, walkable: bool = False) -> None:
         """
@@ -15,11 +16,8 @@ class Tile:
         :param position: position (x, y) de la tuile dans le bureau
         :param walkable: True si les personnages peuvent marcher sur la tuile, False sinon
         """
-
-        if tile_id == 16:
-            self.__action_on_step = self.__action 
-        else :
-            self.__tile_id = tile_id
+        self.__action = self.__crack
+        self.__tile_id = tile_id
         self.__position = position
         self.__walkable = walkable
 
@@ -31,7 +29,7 @@ class Tile:
         """
         destination.blit(resources.tiles_collection.get(self.__tile_id), self.__position)
 
-    def __action() -> None:
+    def __crack() -> None:
         """
         Action déclenchée lorsque le personnage marche sur une tuile spéciale.
         """

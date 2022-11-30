@@ -73,7 +73,7 @@ class __InputManager:
     __PLAYER_ONE = 0
     __PLAYER_TWO = 1
 
-    __DEAD_ZONE = 0.01
+    __DEAD_ZONE = 0.05
 
     __INVALID_INSTANCE_ID = -99  # identifiant (invalide) de contrôleur de jeu
 

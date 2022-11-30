@@ -215,6 +215,7 @@ class Game:
            timeoutIndicents += asset.update()
 
         return timeoutIndicents
+
     def __update_display(self) -> None:
         """
         Met à jour l'affichage.
@@ -359,6 +360,9 @@ class Game:
                     # repositionnement de la vue puisque le personnage s'est déplacé
                     self.__views[player.number].center_in_office(
                         character.feet_position)
+            
+            temp_tile = self.__level.office.get_tile(player.character.feet_position)
+            temp_tile.__action()
 
     def __solve_incidents_if_needed(self) -> None:
         """

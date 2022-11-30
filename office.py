@@ -52,79 +52,86 @@ class Office:
         for y in range(height):
             for x in range(width):
                 tile_id = floor_and_walls[x][y]
-                if tile_id >= Tile.FLOOR:
-                    pos_x = x * self.__tile_size
-                    pos_y = y * self.__tile_size
 
-                    self.__floor_and_walls[x][y] = Tile(
-                        tile_id, (pos_x, pos_y))
-                        
-                    if tile_id == Tile.FLOOR:
-                        self.__floor_and_walls[x][y].walkable = True
+                if tile_id < Tile.FLOOR:
+                    continue
 
-                    if not (tile := resources.tiles_collection.get(tile_id).copy()):
-                        continue
+                pos_x = x * self.__tile_size
+                pos_y = y * self.__tile_size
 
-                    # Cropping
-                    # Recuperation de la matrice autour de la case (9*9)
-                    outline = [[-1 for _ in range(3)]for _ in range(3)]
-                    for delta in __DELTAS:
-                        # On met -1 si on est a un bord de la liste
-                        try:
-                            outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[
-                                x + delta[0]][y + delta[1]] if x + delta[0] > -1 and y + delta[1] > -1 else -1
-                        except IndexError:
-                            outline[delta[0] + 1][delta[1] + 1] = -1
+                self.__floor_and_walls[x][y] = Tile(
+                    tile_id, (pos_x, pos_y))
 
-                    # Bords adjacents à un vide (et angles exterieurs par extension)
-                    # Gauche
-                    if outline[0][1] == -1:
-                        for k in range(__BORDER_WIDTH):
-                            for l in range(self.__tile_size):
-                                tile.set_at((k, l), 0)
-                    # Haut
-                    if outline[1][0] == -1:
-                        for k in range(self.__tile_size):
-                            for l in range(__BORDER_WIDTH):
-                                tile.set_at((k, l), 0)
-                    # Droite
-                    if outline[2][1] == -1:
-                        # On ajoute 1 pour atteindre le max
-                        for k in range(__BORDER_WIDTH + 1):
-                            for l in range(self.__tile_size):
-                                tile.set_at((self.__tile_size - k, l), 0)
-                    # Bas
-                    if outline[1][2] == -1:
-                        for k in range(self.__tile_size):
-                            for l in range(__BORDER_WIDTH + 1):
-                                tile.set_at((k, self.__tile_size - l), 0)
+                if tile_id == Tile.SPECIAL:
+                    self.__floor_and_walls[x][y].special = True
+                    tile_id = Tile.FLOOR
 
-                    # Angles interieurs
-                    # Haut Gauche
-                    if outline[0][0] == -1:
-                        for k in range(__BORDER_WIDTH):
-                            for l in range(__BORDER_WIDTH):
-                                tile.set_at((k, l), 0)
-                    # Haut Droite
-                    if outline[0][2] == -1:
-                        for k in range(__BORDER_WIDTH):
-                            for l in range(__BORDER_WIDTH + 1):
-                                tile.set_at((k, self.__tile_size - l), 0)
-                    # Bas Gauche
-                    if outline[2][0] == -1:
-                        for k in range(__BORDER_WIDTH + 1):
-                            for l in range(__BORDER_WIDTH):
-                                tile.set_at((self.__tile_size - k, l), 0)
-                    # Bas Droite
-                    if outline[2][2] == -1:
-                        for k in range(__BORDER_WIDTH + 1):
-                            for l in range(__BORDER_WIDTH + 1):
-                                tile.set_at(
-                                    (self.__tile_size - k, self.__tile_size - l), 0)
+                if tile_id == Tile.FLOOR:
+                    self.__floor_and_walls[x][y].walkable = True
 
-                    # On place la tuile
-                    surface.blit(tile, (pos_x, pos_y),
-                                 (0, 0, self.__tile_size, self.__tile_size))
+                if not (tile := resources.tiles_collection.get(tile_id).copy()):
+                    continue
+
+                # Cropping
+                # Recuperation de la matrice autour de la case (9*9)
+                outline = [[-1 for _ in range(3)]for _ in range(3)]
+                for delta in __DELTAS:
+                    # On met -1 si on est a un bord de la liste
+                    try:
+                        outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[
+                            x + delta[0]][y + delta[1]] if x + delta[0] > -1 and y + delta[1] > -1 else -1
+                    except IndexError:
+                        outline[delta[0] + 1][delta[1] + 1] = -1
+
+                # Bords adjacents à un vide (et angles exterieurs par extension)
+                # Gauche
+                if outline[0][1] == -1:
+                    for k in range(__BORDER_WIDTH):
+                        for l in range(self.__tile_size):
+                            tile.set_at((k, l), 0)
+                # Haut
+                if outline[1][0] == -1:
+                    for k in range(self.__tile_size):
+                        for l in range(__BORDER_WIDTH):
+                            tile.set_at((k, l), 0)
+                # Droite
+                if outline[2][1] == -1:
+                    # On ajoute 1 pour atteindre le max
+                    for k in range(__BORDER_WIDTH + 1):
+                        for l in range(self.__tile_size):
+                            tile.set_at((self.__tile_size - k, l), 0)
+                # Bas
+                if outline[1][2] == -1:
+                    for k in range(self.__tile_size):
+                        for l in range(__BORDER_WIDTH + 1):
+                            tile.set_at((k, self.__tile_size - l), 0)
+
+                # Angles interieurs
+                # Haut Gauche
+                if outline[0][0] == -1:
+                    for k in range(__BORDER_WIDTH):
+                        for l in range(__BORDER_WIDTH):
+                            tile.set_at((k, l), 0)
+                # Haut Droite
+                if outline[0][2] == -1:
+                    for k in range(__BORDER_WIDTH):
+                        for l in range(__BORDER_WIDTH + 1):
+                            tile.set_at((k, self.__tile_size - l), 0)
+                # Bas Gauche
+                if outline[2][0] == -1:
+                    for k in range(__BORDER_WIDTH + 1):
+                        for l in range(__BORDER_WIDTH):
+                            tile.set_at((self.__tile_size - k, l), 0)
+                # Bas Droite
+                if outline[2][2] == -1:
+                    for k in range(__BORDER_WIDTH + 1):
+                        for l in range(__BORDER_WIDTH + 1):
+                            tile.set_at(
+                                (self.__tile_size - k, self.__tile_size - l), 0)
+
+                # On place la tuile
+                surface.blit(tile, (pos_x, pos_y),
+                                (0, 0, self.__tile_size, self.__tile_size))
 
         self.__surface = surface
 
@@ -187,3 +194,14 @@ class Office:
         tile_y = int(point[1] // self.__tile_size)
 
         return self.__floor_and_walls[tile_x][tile_y].walkable
+
+    def get_tile(self, point: tuple) -> Tile:
+        """
+        Vérifie si un point donné (point) se trouve sur une tuile sur laquelle il est possible de marcher.
+        :param point: coordonnée (x, y) en pixels à vérifier
+        :return:
+        """
+        tile_x = int(point[0] // self.__tile_size)
+        tile_y = int(point[1] // self.__tile_size)
+
+        return self.__floor_and_walls[tile_x][tile_y]

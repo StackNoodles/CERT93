@@ -41,7 +41,7 @@ class Game:
         else:
             self.__players = [Player(Player.PLAYER_ONE)]
 
-        self.__level = self.__load_level(3)
+        self.__level = self.__load_level(1)
         self.__views = self.__setup_views(self.__level)
 
         self.__fps = FPS()

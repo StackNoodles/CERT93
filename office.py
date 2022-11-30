@@ -55,8 +55,10 @@ class Office:
                 if tile_id >= Tile.FLOOR:
                     pos_x = x * self.__tile_size
                     pos_y = y * self.__tile_size
+
                     self.__floor_and_walls[x][y] = Tile(
                         tile_id, (pos_x, pos_y))
+                        
                     if tile_id == Tile.FLOOR:
                         self.__floor_and_walls[x][y].walkable = True
 

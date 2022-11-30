@@ -15,7 +15,11 @@ class Tile:
         :param position: position (x, y) de la tuile dans le bureau
         :param walkable: True si les personnages peuvent marcher sur la tuile, False sinon
         """
-        self.__tile_id = tile_id
+
+        if tile_id == 16:
+            self.__action_on_step = self.__action 
+        else :
+            self.__tile_id = tile_id
         self.__position = position
         self.__walkable = walkable
 
@@ -26,6 +30,12 @@ class Tile:
         :return: aucun
         """
         destination.blit(resources.tiles_collection.get(self.__tile_id), self.__position)
+
+    def __action() -> None:
+        """
+        Action déclenchée lorsque le personnage marche sur une tuile spéciale.
+        """
+        print("crack?")
 
     @property
     def walkable(self) -> bool:

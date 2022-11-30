@@ -34,7 +34,7 @@ def map2pickles(map_filename: str, fw_filename: str, c_filename: str, a_filename
     floor_and_walls = [[-1 for _ in range(len(lines))] for _ in range(longest_line_length)]  # -1 -> pas de tuiles
 
     floor_and_walls_symbols = {' ': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
-                               'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15}
+                               'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15, '0' : 16}
 
     characters = []
     characters_symbols = {'S': 0, 'T': 1, 'U': 2, 'V': 3, 'W': 4, 'X': 5, 'Y': 6, 'Z': 7}

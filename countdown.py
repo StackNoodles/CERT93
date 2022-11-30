@@ -27,7 +27,10 @@ class Countdown(Thread):
 
         self.__event = Event()  # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
 
-  
+    def timeout(self) -> bool:
+        if self.__time < 0 :
+            return False
+        return True
 
     def get(self) -> pygame.Surface:
         """

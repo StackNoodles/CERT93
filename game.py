@@ -68,6 +68,7 @@ class Game:
 
         self.__running = True
         while self.__running:
+
             now = time.time()
             delta_time = now - previous_time
             previous_time = now
@@ -79,6 +80,7 @@ class Game:
                 self.__handle_incidents()
                 self.__update_game_elements(delta_time)
                 self.__update_display()
+            self.__running = self.__countdown.timeout()
 
         self.__level.stop()
         incidents.spawner.stop()

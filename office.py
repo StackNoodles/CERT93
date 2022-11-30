@@ -62,8 +62,8 @@ class Office:
                 self.__floor_and_walls[x][y] = Tile(
                     tile_id, (pos_x, pos_y))
 
+                # On veut afficher une tuile comme une autre
                 if tile_id == Tile.SPECIAL:
-                    self.__floor_and_walls[x][y].special = True
                     tile_id = Tile.FLOOR
 
                 if tile_id == Tile.FLOOR:

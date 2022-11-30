@@ -53,8 +53,7 @@ class Game:
 
         self.__fps = FPS()
 
-        self.__CENTER_SCREEN_ONE_PLAYER = (
-            self.__screen.get_width() / 2, self.__screen.get_height() / 2)
+        self.__active_tiles = []
 
     def run(self) -> None:
         """ Exécute la partie (boucle de jeu). """
@@ -210,6 +209,7 @@ class Game:
         self.__change_focus_if_needed()
         self.__move_characters_if_needed(delta_time)
         self.__solve_incidents_if_needed()
+        self.__execute_tile_action_if_needed()
 
         for asset in self.__level.assets:
            timeoutIndicents += asset.update()
@@ -361,8 +361,36 @@ class Game:
                     self.__views[player.number].center_in_office(
                         character.feet_position)
             
-            temp_tile = self.__level.office.get_tile(player.character.feet_position)
-            temp_tile.__action()
+    # Probablement améliorable
+    def __execute_tile_action_if_needed(self) -> None :
+        """
+        Execute l'action de la tuile sous le personnage si necessaire.
+        :return: aucun
+        """
+        # On regarde pour chaque joueur si leur personnage est sur une tuile à action, et on execute l'action si oui.
+        for player in self.__players:
+            character_position = player.character.feet_position
+            tile_under_character = self.__level.office.get_tile(character_position)
+
+            if tile_under_character not in self.__active_tiles and tile_under_character.action is not None:
+                tile_under_character.action()
+                # On ajoute la tuile sur laquelle est le personnages dans les tuiles actives.
+                self.__active_tiles.append(tile_under_character)
+
+        # On regarde pour chaque tuile un personnage est dessus, si aucun ne l'est on la retire des tuiles actives.
+        for tile in self.__active_tiles:
+            still_active = False
+
+            for player in self.__players:
+                character_position = player.character.feet_position
+                tile_under_character = self.__level.office.get_tile(character_position)
+
+                if tile_under_character == tile:
+                    still_active = True
+            
+            if not still_active:
+                self.__active_tiles.remove(tile)
+
 
     def __solve_incidents_if_needed(self) -> None:
         """

@@ -37,7 +37,7 @@ class Countdown(Thread):
         Retourne une surface pour l'affichage du minuteur.
         :return: la surface qui contient le texte (Countdown)
         """
-        countdown_str = f"Time remaning = {self.__time}"
+        countdown_str = f"Time remaining = {self.__time}"
         return self.__font.render(countdown_str, True, (255, 255, 255))
 
     def run(self) -> None:

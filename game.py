@@ -17,6 +17,9 @@ from tools import find_distance
 from fps import FPS
 from player import Player
 from view import View
+from countdown import Countdown
+
+from pygame.locals import JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION, KEYUP,KEYDOWN
 
 
 class Game:
@@ -35,6 +38,8 @@ class Game:
 
         self.__score = Score()
 
+        self.__countdown = Countdown()
+
         if input_manager.inputs.get_gamepad_count() == 2:
             self.__players = [Player(Player.PLAYER_ONE),
                               Player(Player.PLAYER_TWO)]
@@ -52,8 +57,9 @@ class Game:
     def run(self) -> None:
         """ Exécute la partie (boucle de jeu). """
         self.__fps.start()
-        previous_time = time.time()
+        self.__countdown.start()
 
+        previous_time = time.time()
         music = resources.sounds_collection.get('BACKGROUND-MUSIC')
         music.play(-1)
 
@@ -62,6 +68,7 @@ class Game:
 
         self.__running = True
         while self.__running:
+
             now = time.time()
             delta_time = now - previous_time
             previous_time = now
@@ -73,12 +80,14 @@ class Game:
                 self.__handle_incidents()
                 self.__update_game_elements(delta_time)
                 self.__update_display()
+            self.__running = self.__countdown.timeout()
 
         self.__level.stop()
         incidents.spawner.stop()
 
         music.stop()
         self.__fps.stop()
+        self.__countdown.stop()
 
     def __load_level(self, number: int) -> Level:
         """
@@ -151,9 +160,10 @@ class Game:
                 self.__running = False
                 return
 
-            if event.type == pygame.KEYDOWN or event.type == pygame.KEYUP:
+            if event.type in [KEYDOWN,KEYUP]:
                 input_manager.inputs.manage_keyboard_event(event)
-            elif event.type == pygame.JOYBUTTONUP or event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYAXISMOTION:
+
+            elif event.type in [JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONDOWN, JOYBUTTONUP, JOYAXISMOTION]:
                 input_manager.inputs.manage_gamepad_event(event)
 
     def __handle_incidents(self) -> None:
@@ -217,6 +227,10 @@ class Game:
         fps_surface = self.__fps.get()
         x = self.__screen.get_width() - fps_surface.get_width() - 10
         self.__screen.blit(fps_surface, (x, 10))
+
+        # Affichage du countdown
+        countdown_surface = self.__countdown.get()
+        self.__screen.blit(countdown_surface, (0, 10))
 
         # Basculement de tampon (donc affichage de l'écran)
         pygame.display.flip()

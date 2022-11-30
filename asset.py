@@ -120,7 +120,7 @@ class Asset:
             self._active_incident.stop()
             self._active_incident = None
 
-    def update(self):
+    def update(self) -> int:
         """
         Met à jour l'actif.
         Si l'actif n'est pas affecté par un incident, vérifie si un incident est en attente. Si un incident est en
@@ -129,13 +129,15 @@ class Asset:
         expiré. Si l'incident est expiré, prend action et supprime l'incident en cours.
         :return: aucun
         """
+        isTimeout = 0
+
         if not self._active_incident:
             if not self._incidents.empty():
                 try:
                     self._active_incident = self._incidents.get(block=False)
                 except queue.Empty:
                     # aucune gestion d'exception nécessaire ici
-                    return
+                    return isTimeout
 
                 self._active_incident.start()
                 self._timer_id = Asset.compute_timer_id(self._active_incident)
@@ -147,9 +149,10 @@ class Asset:
                 self._play_fail_sound()
                 if self._expiring_action:
                     self._expiring_action()
+                    isTimeout = 1
                 self._active_incident.stop()
                 self._active_incident = None
-
+        return isTimeout
     @staticmethod
     def compute_timer_id(incident: Incident) -> int:
         """

@@ -34,6 +34,8 @@ class Game:
         self.__backdrop_surface = pygame.image.load(
             settings.BACKDROP_FILENAME).convert()
 
+        self.__failed_incident_max = settings.MAX_MISTAKES
+
         self.__running = False
 
         self.__score = Score()
@@ -78,9 +80,13 @@ class Game:
             if self.__running:
                 self.__check_for_player_two()
                 self.__handle_incidents()
-                self.__update_game_elements(delta_time)
+                self.__failed_incident_max -= self.__update_game_elements(delta_time)
                 self.__update_display()
-            self.__running = self.__countdown.timeout()
+            if (not self.__countdown.timeout() or self.__failed_incident_max <= 0):
+                print("in stop")
+                print(self.__failed_incident_max)
+
+                self.__running = False
 
         self.__level.stop()
         incidents.spawner.stop()
@@ -193,20 +199,22 @@ class Game:
                 # Pas d'activité récente détectée sur les entrées du joueur 2 -> on le retire
                 self.__remove_player_two()
 
-    def __update_game_elements(self, delta_time: float) -> None:
+    def __update_game_elements(self, delta_time: float) -> int:
         """
         Met à jour les éléments de jeu: changement de focus, déplacements, solution d'incidents, actifs.
         Cette méthode est appelée à chaque trame.
         :param delta_time: temps écoulé depuis la trame précédente
         :return: aucun
         """
+        timeoutIndicents = 0
         self.__change_focus_if_needed()
         self.__move_characters_if_needed(delta_time)
         self.__solve_incidents_if_needed()
 
         for asset in self.__level.assets:
-            asset.update()
+           timeoutIndicents += asset.update()
 
+        return timeoutIndicents
     def __update_display(self) -> None:
         """
         Met à jour l'affichage.

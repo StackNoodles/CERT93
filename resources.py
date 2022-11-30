@@ -4,15 +4,13 @@ import settings
 from expertise import Expertise
 from error_codes import Error_codes
 
-SUCCESS_CODE = Error_codes.SUCCES
-
 class __CharactersCollection:
     """ Collection de personnages utilisée par l'objet global characters_collection (voir plus bas). """
 
     def __init__(self) -> None:
         self.__surfaces = None
 
-    def init(self) -> int:
+    def init(self) -> Error_codes:
         """
         Initialise l'instance unique de resources.characters_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
@@ -41,7 +39,7 @@ class __CharactersCollection:
             character_surface.blit(characters_sheet, (0, 0), source_area)
             self.__surfaces.append(character_surface)
             
-        return SUCCESS_CODE
+        return Error_codes.SUCCES
 
     def get(self, character_id: int) -> pygame.Surface or None:
         """
@@ -62,7 +60,7 @@ class __TilesCollection:
     def __init__(self) -> None:
         self.__surfaces = None
 
-    def init(self) -> int:
+    def init(self) -> Error_codes:
         """
         Initialise l'instance unique de resources.tiles_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
@@ -93,7 +91,7 @@ class __TilesCollection:
             tile_surface.blit(tiles_sheet, (0, 0), source_area)
             self.__surfaces.append(tile_surface)
 
-        return SUCCESS_CODE
+        return Error_codes.SUCCES
 
     def get(self, tile_id: int) -> pygame.Surface or None:
         """
@@ -162,7 +160,7 @@ class __AssetsCollection:
     def __init__(self) -> None:
         self.__surfaces = None
 
-    def init(self) -> int:
+    def init(self) -> Error_codes:
         """
         Initialise l'instance unique de resources.assets_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
@@ -193,7 +191,7 @@ class __AssetsCollection:
             asset_surface.blit(assets_sheet, (0, 0), source_area)
             self.__surfaces.append(asset_surface)
 
-        return SUCCESS_CODE
+        return Error_codes.SUCCES
 
     def get(self, asset_id: int) -> pygame.Surface or None:
         """
@@ -217,7 +215,7 @@ class __IncidentsCollection:
     def __init__(self) -> None:
         self.__incident_surfaces = None
 
-    def init(self) -> int:
+    def init(self) -> Error_codes:
         """
         Initialise l'instance unique de resources.incidents_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
@@ -267,7 +265,7 @@ class __IncidentsCollection:
                 series.append(combined_surface)
             self.__incident_surfaces.append(series)
 
-        return SUCCESS_CODE
+        return Error_codes.SUCCES
 
     def get(self, timer_id: int, expertise: Expertise) -> pygame.Surface or None:
         """
@@ -292,7 +290,7 @@ class __SoundsCollection:
         self.__surfaces = None
         self.__sounds = None
 
-    def init(self) -> int:
+    def init(self) -> Error_codes:
         """
         Initialise l'instance unique de resources.sounds_collection.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
@@ -357,7 +355,7 @@ class __SoundsCollection:
         sound.set_volume(0.25)
         self.__sounds['BACKGROUND-MUSIC'] = sound
 
-        return SUCCESS_CODE
+        return Error_codes.SUCCES
 
     def get(self, name: str) -> pygame.mixer.Sound or None:
         """
@@ -386,42 +384,42 @@ incidents_collection = None
 sounds_collection = None
 
 
-def init() -> int:
+def init() -> Error_codes:
     """ Initialise l'ensemble des ressources. """
 
     global characters_collection
     if not characters_collection:
         characters_collection = __CharactersCollection()
         return_code = characters_collection.init()
-        if return_code != SUCCESS_CODE:
+        if return_code != Error_codes.SUCCES:
             return return_code
 
     global tiles_collection
     if not tiles_collection:
         tiles_collection = __TilesCollection()
         return_code = tiles_collection.init()
-        if return_code != SUCCESS_CODE:
+        if return_code != Error_codes.SUCCES:
             return return_code
 
     global assets_collection
     if not assets_collection:
         assets_collection = __AssetsCollection()
         return_code = assets_collection.init()
-        if return_code != SUCCESS_CODE:
+        if return_code != Error_codes.SUCCES:
             return return_code
 
     global incidents_collection
     if not incidents_collection:
         incidents_collection = __IncidentsCollection()
         return_code = incidents_collection.init()
-        if return_code != SUCCESS_CODE:
+        if return_code != Error_codes.SUCCES:
             return return_code
 
     global sounds_collection
     if not sounds_collection:
         sounds_collection = __SoundsCollection()
         return_code = sounds_collection.init()
-        if return_code != SUCCESS_CODE:
+        if return_code != Error_codes.SUCCES:
             return return_code
 
-    return SUCCESS_CODE
+    return Error_codes.SUCCES

@@ -59,9 +59,9 @@ class Office:
                         tile_id, (pos_x, pos_y))
                     if tile_id == Tile.FLOOR:
                         self.__floor_and_walls[x][y].walkable = True
-                        
+
                     if not (tile := resources.tiles_collection.get(tile_id).copy()):
-                        break
+                        continue
 
                     # Cropping
                     # Recuperation de la matrice autour de la case (9*9)
@@ -69,8 +69,8 @@ class Office:
                     for delta in __DELTAS:
                         # On met -1 si on est a un bord de la liste
                         try:
-                            outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[x + delta[0]
-                                                                                  ][y + delta[1]] if x + delta[0] > -1 and y + delta[1] > -1 else -1
+                            outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[
+                                x + delta[0]][y + delta[1]] if x + delta[0] > -1 and y + delta[1] > -1 else -1
                         except IndexError:
                             outline[delta[0] + 1][delta[1] + 1] = -1
 
@@ -78,49 +78,51 @@ class Office:
                     # Gauche
                     if outline[0][1] == -1:
                         for k in range(__BORDER_WIDTH):
-                                for l in range(self.__tile_size):
-                                        tile.set_at((k, l), 0)
+                            for l in range(self.__tile_size):
+                                tile.set_at((k, l), 0)
                     # Haut
                     if outline[1][0] == -1:
                         for k in range(self.__tile_size):
-                                for l in range(__BORDER_WIDTH):
-                                        tile.set_at((k, l), 0)
+                            for l in range(__BORDER_WIDTH):
+                                tile.set_at((k, l), 0)
                     # Droite
-                    if outline[2][1] == -1: 
-                        for k in range(__BORDER_WIDTH + 1): # On ajoute 1 pour atteindre le max
-                                for l in range(self.__tile_size):
-                                        tile.set_at((self.__tile_size - k, l), 0)
+                    if outline[2][1] == -1:
+                        # On ajoute 1 pour atteindre le max
+                        for k in range(__BORDER_WIDTH + 1):
+                            for l in range(self.__tile_size):
+                                tile.set_at((self.__tile_size - k, l), 0)
                     # Bas
                     if outline[1][2] == -1:
                         for k in range(self.__tile_size):
-                                for l in range(__BORDER_WIDTH + 1):
-                                        tile.set_at((k, self.__tile_size - l), 0)
+                            for l in range(__BORDER_WIDTH + 1):
+                                tile.set_at((k, self.__tile_size - l), 0)
 
                     # Angles interieurs
                     # Haut Gauche
                     if outline[0][0] == -1:
                         for k in range(__BORDER_WIDTH):
-                            for l in range(__BORDER_WIDTH): 
+                            for l in range(__BORDER_WIDTH):
                                 tile.set_at((k, l), 0)
                     # Haut Droite
                     if outline[0][2] == -1:
                         for k in range(__BORDER_WIDTH):
-                            for l in range(__BORDER_WIDTH + 1): 
+                            for l in range(__BORDER_WIDTH + 1):
                                 tile.set_at((k, self.__tile_size - l), 0)
                     # Bas Gauche
                     if outline[2][0] == -1:
                         for k in range(__BORDER_WIDTH + 1):
-                            for l in range(__BORDER_WIDTH): 
+                            for l in range(__BORDER_WIDTH):
                                 tile.set_at((self.__tile_size - k, l), 0)
                     # Bas Droite
                     if outline[2][2] == -1:
                         for k in range(__BORDER_WIDTH + 1):
-                            for l in range(__BORDER_WIDTH + 1): 
-                                tile.set_at((self.__tile_size - k, self.__tile_size - l), 0)
+                            for l in range(__BORDER_WIDTH + 1):
+                                tile.set_at(
+                                    (self.__tile_size - k, self.__tile_size - l), 0)
 
                     # On place la tuile
                     surface.blit(tile, (pos_x, pos_y),
-                                     (0, 0, self.__tile_size, self.__tile_size))
+                                 (0, 0, self.__tile_size, self.__tile_size))
 
         self.__surface = surface
 

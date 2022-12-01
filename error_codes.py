@@ -16,6 +16,7 @@ class Error_codes(IntEnum):
     SOUND_FAIL = 504
     SOUND_AMBIENCE = 505
     SOUND_MUSIC = 506
+    SOUND_SQUEAK = 507
 
 ERROR_CODES_TEXT = {
     Error_codes.SUCCES : "Tout s'est passé comme prévu",
@@ -31,5 +32,6 @@ ERROR_CODES_TEXT = {
     Error_codes.SOUND_SOLVE : "Erreur lors du chargement du son de resolution",
     Error_codes.SOUND_FAIL : "Erreur lors du chargement du son d'echec",
     Error_codes.SOUND_AMBIENCE : "Erreur lors du chargement du son d'ambience de burreau",
-    Error_codes.SOUND_MUSIC : "Erreur lors du chargement de la musique de fond"
+    Error_codes.SOUND_MUSIC : "Erreur lors du chargement de la musique de fond",
+    Error_codes.SOUND_SQUEAK : "Erreur lors du chargement du bruit mystère",
 }

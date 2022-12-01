@@ -355,6 +355,15 @@ class __SoundsCollection:
         sound.set_volume(0.25)
         self.__sounds['BACKGROUND-MUSIC'] = sound
 
+        try :
+            sound = pygame.mixer.Sound(settings.SQUEAKY_TOY_SOUND_FILENAME)
+        except :
+            return Error_codes.SOUND_SQUEAK
+            
+        if not sound:
+            return Error_codes.SOUND_SQUEAK
+        self.__sounds['SQUEAKY_TOY_SOUND'] = sound
+
         return Error_codes.SUCCES
 
     def get(self, name: str) -> pygame.mixer.Sound or None:

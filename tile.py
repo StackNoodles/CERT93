@@ -1,7 +1,6 @@
 import pygame
 import resources
 
-
 class Tile:
     """ Une tuile. """
 
@@ -36,7 +35,8 @@ class Tile:
         """
         Action déclenchée lorsque le personnage marche sur une tuile spéciale.
         """
-        print("Crack...?")
+        music = resources.sounds_collection.get('SQUEAKY_TOY_SOUND')
+        music.play()
 
     @property
     def walkable(self) -> bool:

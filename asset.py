@@ -153,10 +153,10 @@ class Asset:
         else:
             self._timer_id = Asset.compute_timer_id(self._active_incident)
             if self._active_incident.has_expired():
+                isTimeout = 1
                 self._play_fail_sound()
                 if self._expiring_action:
                     self._expiring_action()
-                    isTimeout = 1
                 self._active_incident.stop()
                 self._active_incident = None
         return isTimeout

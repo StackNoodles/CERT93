@@ -21,8 +21,13 @@ def check_checksum(filename: str) -> None:
         with open(filename, "rb") as file_to_check:
             data = file_to_check.read()
             md5_returned = hashlib.md5(data).hexdigest()
-            if md5_returned != config.get("Checksum", filename):
-                raise Exception("Fichier modifié")
+            try:
+                if md5_returned != config.get("Checksum", filename):
+                    raise Exception("Fichier modifié")
+            except configparser.NoOptionError:
+                config['Checksum'][filename] = md5_returned
+                with open('config/config.ini', 'w') as configfile:    # save
+                    config.write(configfile)
     except OSError:
             print(f"Erreur de lecture : {filename}")
             return None

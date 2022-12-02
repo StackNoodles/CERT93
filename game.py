@@ -60,7 +60,7 @@ class Game:
 
         self.__fps = FPS()
 
-        self.__current_incident = ""
+        self.__current_incident_text = ""
         self.__incident_timer = pygame.time.get_ticks()
 
         self.__active_tiles = []
@@ -95,7 +95,7 @@ class Game:
             print(defaite)
 
             if new_level:
-                self.__current_incident = ""
+                self.__current_incident_text = ""
                 self.__level.office.enable_ambience()
                 self.__countdown.reset_timer()
                 incidents.spawner.unpause()
@@ -236,11 +236,12 @@ class Game:
                 self.__level.helpdesk.add_incident(incident)
             else:
                 
-                self.__current_incident = "THERE IS A " + str(incident.expertise.name) + " INCIDENT!"
+                self.__current_incident_text = "THERE IS A " + str(incident.expertise.name) + " INCIDENT!"
                 self.__incident_timer = pygame.time.get_ticks() + 5000
 
                 # Sélection d'un actif au hasard parmi tous les actifs autres que le centre d'appels
                 asset = random.choice(self.__level.assets[1:])
+                # ici
                 asset.add_incident(incident)
 
     def __check_for_player_two(self) -> None:
@@ -309,7 +310,7 @@ class Game:
         #Affichage incident
         if pygame.time.get_ticks() < self.__incident_timer: 
             font = pygame.font.Font(pygame.font.get_default_font(), 20)
-            incident_surface = font.render(self.__current_incident, True, (255, 114, 118))
+            incident_surface = font.render(self.__current_incident_text, True, (255, 114, 118))
 
             display_time_left = self.__incident_timer - pygame.time.get_ticks()
 

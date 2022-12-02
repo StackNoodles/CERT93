@@ -62,6 +62,7 @@ class Game:
         self.__countdown.start()
 
         victoire = False
+        defaite = False
         new_level = False
         previous_time = time.time()
         music = resources.sounds_collection.get('BACKGROUND-MUSIC')
@@ -70,7 +71,10 @@ class Game:
         self.__level.office.enable_ambience()
         incidents.spawner.start()
 
-        while not victoire:
+        while victoire == False and defaite == False:
+            print("Starting loop")
+            print(defaite)
+
             if new_level:
                 self.__level.office.enable_ambience()
                 self.__countdown.reset_timer()
@@ -80,6 +84,7 @@ class Game:
 
             self.__running = True
             while self.__running:
+                print("runnig loop")
                 now = time.time()
                 delta_time = now - previous_time
                 previous_time = now
@@ -98,20 +103,21 @@ class Game:
                     self.__running = False
                     self.__level_num += 1
                     new_level = True
-                elif self.__failed_incident_max <= 0 : #perdu
+                elif self.__failed_incident_max <= 0:  # perdu
                     print("defeat")
                     # Ecran defaite (game over)
                     splash_image = pygame.image.load("img\game_over.png")
-                    origin_x = (settings.SCREEN_WIDTH/2) - \
-                        (splash_image.get_width()/2)
-                    origin_y = (settings.SCREEN_HEIGHT/2) - \
-                        (splash_image.get_height()/2)
+                    origin_x = (settings.SCREEN_WIDTH / 2) - \
+                               (splash_image.get_width() / 2)
+                    origin_y = (settings.SCREEN_HEIGHT / 2) - \
+                               (splash_image.get_height() / 2)
                     self.__screen.blit(splash_image, (origin_x, origin_y))
 
                     pygame.display.update()
                     time.sleep(5)
 
                     self.__running = False
+                    defaite = True
 
             self.__level.stop()
 
@@ -123,12 +129,14 @@ class Game:
                 print("victory")
                 # Ecran victoire
                 splash_image = pygame.image.load("img\mission_complete.png")
-                origin_x = (settings.SCREEN_WIDTH/2) - (splash_image.get_width()/2)
-                origin_y = (settings.SCREEN_HEIGHT/2) - (splash_image.get_height()/2)
+                origin_x = (settings.SCREEN_WIDTH / 2) - (splash_image.get_width() / 2)
+                origin_y = (settings.SCREEN_HEIGHT / 2) - (splash_image.get_height() / 2)
                 self.__screen.blit(splash_image, (origin_x, origin_y))
 
                 pygame.display.update()
                 time.sleep(5)
+
+
 
         music.stop()
         self.__fps.stop()
@@ -159,7 +167,7 @@ class Game:
         # Le joueur 1 contrôle le premier personnage chargé
         self.__players[Player.PLAYER_ONE].character = level.characters[0]
         views[Player.PLAYER_ONE] = self.__set_view(level, Player.PLAYER_ONE)
-        
+
         if len(self.__players) > 1:
             # Le joueur 2 contrôle le deuxième personnage chargé
             self.__players[Player.PLAYER_TWO].character = level.characters[1]
@@ -177,13 +185,13 @@ class Game:
         # Si la liste de joueurs est plus grande que 1, alors on set le view_width à 2 joueurs
         if len(self.__players) > 1:
             view_width = View.WIDTH_TWO_PLAYERS
-           # S'il s'agit du player2 on set le multiplier à 3
+            # S'il s'agit du player2 on set le multiplier à 3
             if index == 1:
                 multiplier = 3
         # On set la view
         view = View(self.__screen, level.office, view_width, View.HEIGHT)
-        view.center_on_screen((multiplier*self.__screen.get_width() /
-                              2*len(self.__players), self.__screen.get_height() / 2))
+        view.center_on_screen((multiplier * self.__screen.get_width() /
+                               2 * len(self.__players), self.__screen.get_height() / 2))
         character = self.__players[index].character
         view.center_in_office(character.feet_position)
 
@@ -284,7 +292,8 @@ class Game:
     def mistakes_diplay(self) -> pygame.Surface:
         default_font_name = pygame.font.get_default_font()
         self.__font = pygame.font.Font(default_font_name, 20)
-        return self.__font.render(f"Remaining mistakes : {self.__failed_incident_max} / {settings.MAX_MISTAKES}", True, (255, 255, 255))
+        return self.__font.render(f"Remaining mistakes : {self.__failed_incident_max} / {settings.MAX_MISTAKES}", True,
+                                  (255, 255, 255))
 
     def __add_player_two(self) -> None:
         """
@@ -341,6 +350,7 @@ class Game:
         Fait passer le focus vers un autre personnage, si demandé et si possible.
         :return:
         """
+
         def change_focus(current_character: Character, index_delta: int) -> None:
             """
             Change le focus. Fonction interne.

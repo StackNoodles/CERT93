@@ -1,5 +1,3 @@
-import pygame
-
 DEFAULT_FONT_SIZE = 20
 
 

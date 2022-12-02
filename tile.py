@@ -16,9 +16,10 @@ class Tile:
         :param position: position (x, y) de la tuile dans le bureau
         :param walkable: True si les personnages peuvent marcher sur la tuile, False sinon
         """
-        self.action = None
         if tile_id == Tile.SPECIAL:
-            self.action = self.__crack
+            self.action = self.__squeak
+        else:
+            self.action = None
 
         self.__tile_id = tile_id
         self.__position = position
@@ -33,9 +34,9 @@ class Tile:
         destination.blit(resources.tiles_collection.get(
             self.__tile_id), self.__position)
 
-    def __crack(self) -> None:
+    def __squeak(self) -> None:
         """
-        Action déclenchée lorsque le personnage marche sur une tuile spéciale.
+        Bruit déclenché lorsque le personnage marche sur une tuile spéciale.
         """
         music = resources.sounds_collection.get('SQUEAKY_TOY_SOUND')
         music.play()

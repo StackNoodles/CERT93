@@ -62,7 +62,7 @@ class Office:
                 self.__floor_and_walls[x][y] = Tile(
                     tile_id, (pos_x, pos_y))
 
-                # On veut afficher une tuile comme une autre
+                # On veut afficher une tuile speciale comme une tuile classique de sol.
                 if tile_id == Tile.SPECIAL:
                     tile_id = Tile.FLOOR
 
@@ -76,10 +76,10 @@ class Office:
                 # Recuperation de la matrice autour de la case (9*9)
                 outline = [[-1 for _ in range(3)]for _ in range(3)]
                 for delta in __DELTAS:
-                    # On met -1 si on est a un bord de la liste
+                    # On met -1 si on sort des bords de la liste
                     try:
-                        outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[
-                            x + delta[0]][y + delta[1]] if x + delta[0] > -1 and y + delta[1] > -1 else -1
+                        outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[x + delta[0]][y + delta[1]
+                            ] if x + delta[0] > -1 and y + delta[1] > -1 else -1
                     except IndexError:
                         outline[delta[0] + 1][delta[1] + 1] = -1
 

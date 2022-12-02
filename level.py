@@ -1,11 +1,30 @@
-import pickle
-
-import incidents
-from asset import Asset
-from character import Character
-from helpdesk import Helpdesk
 from office import Office
+from helpdesk import Helpdesk
+from character import Character
+from asset import Asset
+import incidents
+import pickle
+import hashlib
+import configparser
 
+config = configparser.ConfigParser(inline_comment_prefixes="#")
+config.read("config/config.ini")
+
+ 
+def check_checksum(filename: str) -> None:
+    """
+    Permet de valider le checksum du fichier config.ini pour savoir si c'est le même
+    :param str: le nom du fichier
+    """
+    try:
+        with open(filename, "rb") as file_to_check:
+            data = file_to_check.read()
+            md5_returned = hashlib.md5(data).hexdigest()
+            if md5_returned != config.get("Checksum", filename):
+                raise Exception("Fichier modifié")
+    except OSError:
+            print(f"Erreur de lecture : {filename}")
+            return None
 
 class Level:
     """ Un niveau. """
@@ -47,7 +66,8 @@ class Level:
 
         # Récupération des incidents en attente dans la queue du générateur d'incidents (donc nettoyage de la queue)
         incidents.spawner.get()
-
+    
+    
     @staticmethod
     def __load_assets(number: int) -> list or None:
         """
@@ -56,7 +76,7 @@ class Level:
         :return: liste d'actifs si l'opération est réussie, None sinon
         """
         assets_filename = f'bin/assets{number}.pickle'
-
+        check_checksum(assets_filename)
         try:
             with open(assets_filename, "rb") as assets_file:
                 assets_data = pickle.load(assets_file)
@@ -70,7 +90,8 @@ class Level:
         assets = []
         x = assets_data[0][0]
         y = assets_data[0][1]
-        helpdesk = Helpdesk((x, y))  # les premières données sont pour le centre d'appels
+        # les premières données sont pour le centre d'appels
+        helpdesk = Helpdesk((x, y))
         assets.append(helpdesk)
 
         for i, asset_data in enumerate(assets_data[1:]):
@@ -92,7 +113,7 @@ class Level:
         :return: liste de personnages si l'opération est réussie, None sinon
         """
         characters_filename = f'bin/characters{number}.pickle'
-
+        check_checksum(characters_filename)
         try:
             with open(characters_filename, "rb") as characters_file:
                 characters_data = pickle.load(characters_file)
@@ -103,32 +124,34 @@ class Level:
             print(f"Erreur de lecture : {characters_filename}")
             return None
 
-        
         characters = []
         characters_names = []
 
-        #Verification de si le nom existe deja
+        # Verification de si le nom existe deja
         for character_data in characters_data:
             if character_data[0] in characters_names:
-                #Si oui, on le rajoute quand meme et on ajouter un #x au nom
+                # Si oui, on le rajoute quand meme et on ajouter un #x au nom
                 characters_names.append(character_data[0])
-                name = character_data[0]+"#"+characters_names.count(character_data[0])
+                name = character_data[0]+"#" + \
+                    characters_names.count(character_data[0])
             else:
-                #Si non, on le rajouter et le donne tel quel
+                # Si non, on le rajouter et le donne tel quel
                 name = character_data[0]
                 characters_names.append(character_data[0])
-            
+
             character_id = character_data[1]
             expertise = character_data[2]
             speed = character_data[3]
             x = character_data[4]
             y = character_data[5]
             tile_position = (x, y)
-            character = Character(name, character_id, expertise, speed, tile_position)
+            character = Character(name, character_id,
+                                  expertise, speed, tile_position)
             characters.append(character)
 
         return characters
 
+    
     @staticmethod
     def __load_floor_and_walls(number: int) -> list or None:
         """
@@ -137,10 +160,13 @@ class Level:
         :return: grille représentant le plancher et les murs (liste de listes) si l'opération est réussie, None sinon
         """
         floor_and_walls_filename = f'bin/floor_and_walls{number}.pickle'
-
+        check_checksum(floor_and_walls_filename)  
+        
         try:
+           
             with open(floor_and_walls_filename, "rb") as floor_and_walls_file:
                 floor_and_walls = pickle.load(floor_and_walls_file)
+                
         except FileNotFoundError:
             print(f"Fichier introuvable : {floor_and_walls_filename}")
             return None
@@ -149,7 +175,7 @@ class Level:
             return None
 
         return floor_and_walls
-
+    
     @property
     def number(self) -> int:
         return self.__number

@@ -1,8 +1,11 @@
 # Outils pour assister avec la construction des fichiers binaires utilisés par le jeu
 # Ce code ne fait pas partie du produit final
-import pickle
-
 from expertise import Expertise
+import pickle
+import hashlib
+import configparser
+config = configparser.ConfigParser(inline_comment_prefixes="#")
+config.read("config/config.ini")
 
 
 def create_level_pickles(number: int) -> None:
@@ -31,16 +34,20 @@ def map2pickles(map_filename: str, fw_filename: str, c_filename: str, a_filename
         if len(line) > longest_line_length:
             longest_line_length = len(line)
 
-    floor_and_walls = [[-1 for _ in range(len(lines))] for _ in range(longest_line_length)]  # -1 -> pas de tuiles
+    # -1 -> pas de tuiles
+    floor_and_walls = [[-1 for _ in range(len(lines))]
+                       for _ in range(longest_line_length)]
 
     floor_and_walls_symbols = {' ': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
                                'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15, '0' : 16}
 
     characters = []
-    characters_symbols = {'S': 0, 'T': 1, 'U': 2, 'V': 3, 'W': 4, 'X': 5, 'Y': 6, 'Z': 7}
+    characters_symbols = {'S': 0, 'T': 1, 'U': 2,
+                          'V': 3, 'W': 4, 'X': 5, 'Y': 6, 'Z': 7}
 
     assets = []
-    assets_symbols = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7, 'i': 8, 'j': 9, 'z': 10}
+    assets_symbols = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4,
+                      'f': 5, 'g': 6, 'h': 7, 'i': 8, 'j': 9, 'z': 10}
 
     flood_origin = (0, 0)
     for y, line in enumerate(lines):
@@ -84,7 +91,8 @@ def map2pickles(map_filename: str, fw_filename: str, c_filename: str, a_filename
                         expertise = Expertise.PROGRAMMING
 
                     character_id = characters_symbols[symbol]
-                    characters.append([name, character_id, expertise, speed, x, y])
+                    characters.append(
+                        [name, character_id, expertise, speed, x, y])
 
                 # ACTIFS
                 elif symbol in assets_symbols:
@@ -97,22 +105,27 @@ def map2pickles(map_filename: str, fw_filename: str, c_filename: str, a_filename
     __flood_fill(flood_origin, 0, floor_and_walls)
 
     try:
+
         pickle.dump(floor_and_walls, open(fw_filename, "wb"))
+        __create_checksum(fw_filename)
     except OSError:
         print(f"Erreur lors de la création du cornichon : {fw_filename}")
 
     try:
         pickle.dump(characters, open(c_filename, "wb"))
+        __create_checksum(c_filename)
     except OSError:
         print(f"Erreur lors de la création du cornichon : {c_filename}")
 
     try:
         pickle.dump(assets, open(a_filename, "wb"))
+        __create_checksum(a_filename)
     except OSError:
         print(f"Erreur lors de la création du cornichon : {a_filename}")
 
 
-__DELTAS = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1)]
+__DELTAS = [(1, 0), (1, 1), (0, 1), (-1, 1),
+            (-1, 0), (-1, -1), (0, -1), (1, -1)]
 
 
 def __flood_fill(starting_point: tuple, symbol: int, office: list) -> None:
@@ -121,3 +134,20 @@ def __flood_fill(starting_point: tuple, symbol: int, office: list) -> None:
         office[x][y] = symbol
         for delta in __DELTAS:
             __flood_fill((x + delta[0], y + delta[1]), symbol, office)
+            
+
+def __create_checksum(filename: str) -> None:
+    """
+    Permet de créer un checksum pour le fichier cornichon utilisé pour les niveaux
+
+    Parameters:
+    arg1 (str): le nom du fichier
+    """
+    #Permet de retourner un Sha unique pour le fichier
+    with open(filename, "rb") as file_to_check:
+            data = file_to_check.read()
+            md5_returned = hashlib.md5(data).hexdigest()
+    # Écrit le Sha dans le fichier config.ini
+    config['Checksum'][filename] = md5_returned
+    with open('config/config.ini', 'w') as configfile:    # save
+        config.write(configfile)

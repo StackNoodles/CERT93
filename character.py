@@ -34,12 +34,17 @@ class Character:
         :param destination: surface sur laquelle dessiner le personnage
         :return: aucun
         """
+        font = pygame.font.SysFont(None, 24)
+
+
         image = resources.characters_collection.get(self.__character_id)
         x = self.__feet_position[0] - (image.get_width() / 2)
         y = self.__feet_position[1] - image.get_height()
 
         destination.blit(image, (x, y))
 
+        text_char = font.render(self.__name,True,(255, 255, 255))
+        destination.blit(text_char, (x- text_char.get_width() /2, y + image.get_height()))
     def compute_next_feet_position(self, movement: tuple, delta_time: float) -> tuple:
         """
         Calcule une position des pieds projetée à partir du positionnement courant et d'un déplacement.

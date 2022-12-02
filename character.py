@@ -25,7 +25,8 @@ class Character:
         # Conversion de la position d'une coordonnée en tuile vers une coordonnée en pixels
         x, y = resources.tiles_collection.tile_pos_to_pixel_pos(tile_position)
         tile_width, tile_height = resources.tiles_collection.tile_size()
-        self.__feet_position = x + (tile_width / 2), y + tile_height
+        # On positionne le personnage au centre de la tuile
+        self.__feet_position = x + (tile_width / 2), y + (tile_height/2)
 
     def draw(self, destination: pygame.Surface) -> None:
         """

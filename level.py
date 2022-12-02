@@ -8,8 +8,6 @@ import hashlib
 import configparser
 
 
-
- 
 def check_checksum(filename: str) -> None:
     """
     Permet de valider le checksum du fichier config.ini pour savoir si c'est le même
@@ -24,8 +22,9 @@ def check_checksum(filename: str) -> None:
             if md5_returned != config.get("Checksum", filename):
                 raise Exception("Fichier modifié")
     except OSError:
-            print(f"Erreur de lecture : {filename}")
-            return None
+        print(f"Erreur de lecture : {filename}")
+        return None
+
 
 class Level:
     """ Un niveau. """
@@ -67,8 +66,7 @@ class Level:
 
         # Récupération des incidents en attente dans la queue du générateur d'incidents (donc nettoyage de la queue)
         incidents.spawner.get()
-    
-    
+
     @staticmethod
     def __load_assets(number: int) -> list or None:
         """
@@ -152,7 +150,6 @@ class Level:
 
         return characters
 
-    
     @staticmethod
     def __load_floor_and_walls(number: int) -> list or None:
         """
@@ -161,13 +158,13 @@ class Level:
         :return: grille représentant le plancher et les murs (liste de listes) si l'opération est réussie, None sinon
         """
         floor_and_walls_filename = f'bin/floor_and_walls{number}.pickle'
-        check_checksum(floor_and_walls_filename)  
-        
+        check_checksum(floor_and_walls_filename)
+
         try:
-           
+
             with open(floor_and_walls_filename, "rb") as floor_and_walls_file:
                 floor_and_walls = pickle.load(floor_and_walls_file)
-                
+
         except FileNotFoundError:
             print(f"Fichier introuvable : {floor_and_walls_filename}")
             return None
@@ -176,7 +173,7 @@ class Level:
             return None
 
         return floor_and_walls
-    
+
     @property
     def number(self) -> int:
         return self.__number

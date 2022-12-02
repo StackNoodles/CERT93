@@ -32,7 +32,8 @@ class View:
 
         padded_width = (2 * screen.get_width()) + self.__office_width
         padded_height = (2 * screen.get_height()) + self.__office_height
-        self.__padded_office_surface = pygame.Surface((padded_width, padded_height), depth=32)
+        self.__padded_office_surface = pygame.Surface(
+            (padded_width, padded_height), depth=32)
 
         # Positionnement par défaut au centre du bureau
         center_x, center_y = self.__office_width / 2, self.__office_height / 2
@@ -41,7 +42,8 @@ class View:
         self.__office_rect = self.__center_to_rect(center_x, center_y)
 
         # Positionnement par défaut au centre de l'écran
-        self.__screen_rect = self.__center_to_rect(screen.get_width() / 2, screen.get_height() / 2)
+        self.__screen_rect = self.__center_to_rect(
+            screen.get_width() / 2, screen.get_height() / 2)
 
     def __center_to_rect(self, x: float, y: float) -> pygame.Rect:
         """
@@ -91,7 +93,8 @@ class View:
         area = pygame.Rect(left, top, width, height)
 
         # extraction de la vue
-        self.__screen.blit(self.__padded_office_surface, self.__screen_rect, area)
+        self.__screen.blit(self.__padded_office_surface,
+                           self.__screen_rect, area)
 
         # rectangle autour de la vue
         pygame.draw.rect(self.__screen, (255, 255, 255), self.__screen_rect, 2)

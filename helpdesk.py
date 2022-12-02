@@ -26,8 +26,10 @@ class Helpdesk(Asset):
         # on ne crée pas non plus d'incidents pour le centre d'appels - il faut quand même s'aider...
         self.__incident_types.remove(Expertise.HELPDESK)
 
-        self.__phone_sound = resources.sounds_collection.get('HELPDESK-PHONE-RING')
-        self._solve_sound = resources.sounds_collection.get('HELPDESK-PHONE-HANGUP')
+        self.__phone_sound = resources.sounds_collection.get(
+            'HELPDESK-PHONE-RING')
+        self._solve_sound = resources.sounds_collection.get(
+            'HELPDESK-PHONE-HANGUP')
 
         # on veut que le téléphone sonne lorsqu'un incident arrive au centre d'appels
         self.set_incoming_action(self._ring_the_phone)
@@ -54,17 +56,18 @@ class Helpdesk(Asset):
             # en le renvoyant à travers le spawner
             incident_type = random.choice(self.__incident_types)
 
-            #Initialisation des temps par défaut a 30/60
+            # Initialisation des temps par défaut a 30/60
             __time_to_solve_min = 30
             __time_to_solve_max = 60
 
-            #Si les temps des settings sont valides, utiliser ceux cis plutot
-            if settings.DEFAULT_TIME_TO_SOLVE_MIN >0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > 0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > settings.DEFAULT_TIME_TO_SOLVE_MIN:
+            # Si les temps des settings sont valides, utiliser ceux cis plutot
+            if settings.DEFAULT_TIME_TO_SOLVE_MIN > 0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > 0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > settings.DEFAULT_TIME_TO_SOLVE_MIN:
                 __time_to_solve_min = settings.DEFAULT_TIME_TO_SOLVE_MIN
                 __time_to_solve_max = settings.DEFAULT_TIME_TO_SOLVE_MAX
 
-            #Randomizer le time to solve par defaut et creer l'incident
-            time_to_solve = random.randint(__time_to_solve_min, __time_to_solve_max)
+            # Randomizer le time to solve par defaut et creer l'incident
+            time_to_solve = random.randint(
+                __time_to_solve_min, __time_to_solve_max)
             incident = Incident(incident_type, time_to_solve)
             incidents.spawner.put(incident)
 

@@ -4,6 +4,7 @@ import settings
 from expertise import Expertise
 from error_codes import Error_codes
 
+
 class __CharactersCollection:
     """ Collection de personnages utilisée par l'objet global characters_collection (voir plus bas). """
 
@@ -20,25 +21,27 @@ class __CharactersCollection:
         """
 
         # charge l'image contenant tous les personnages
-        try :
-            characters_sheet = pygame.image.load(settings.CHARACTERS_FILENAME).convert_alpha()
-        except :
+        try:
+            characters_sheet = pygame.image.load(
+                settings.CHARACTERS_FILENAME).convert_alpha()
+        except:
             return Error_codes.IMG_CHAR
-        
+
         if not characters_sheet:
             return Error_codes.IMG_CHAR
-        
+
         # découpe la surface de personnages en surfaces individuelles (une pour chaque personnage)
         height = characters_sheet.get_height()
         width = characters_sheet.get_width() / settings.NB_CHARACTERS
 
         self.__surfaces = []
         for i in range(settings.NB_CHARACTERS):
-            character_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+            character_surface = pygame.Surface(
+                (width, height), pygame.SRCALPHA)
             source_area = pygame.Rect(i * width, 0, width, height)
             character_surface.blit(characters_sheet, (0, 0), source_area)
             self.__surfaces.append(character_surface)
-            
+
         return Error_codes.SUCCES
 
     def get(self, character_id: int) -> pygame.Surface or None:
@@ -70,11 +73,11 @@ class __TilesCollection:
         """
 
         # charge l'image contenant toutes les tuiles
-        try : 
+        try:
             tiles_sheet = pygame.image.load(settings.TILES_FILENAME).convert()
-        except :
+        except:
             return Error_codes.IMG_TILES
-        
+
         if not tiles_sheet:
             return Error_codes.IMG_TILES
 
@@ -170,11 +173,12 @@ class __AssetsCollection:
         """
 
         # charge l'image contenant tous les actifs
-        try :
-            assets_sheet = pygame.image.load(settings.ASSETS_FILENAME).convert_alpha()
-        except :
+        try:
+            assets_sheet = pygame.image.load(
+                settings.ASSETS_FILENAME).convert_alpha()
+        except:
             return Error_codes.IMG_ASSETS
-            
+
         if not assets_sheet:
             return Error_codes.IMG_ASSETS
 
@@ -226,11 +230,12 @@ class __IncidentsCollection:
 
         # Chargement de l'image contenant toutes images reliées aux incidents:
         #   17 images de minuterie (pleine à terminée) et 7 images pour les icônes
-        try :
-            incidents_sheet = pygame.image.load(settings.INCIDENTS_FILENAME).convert_alpha()
-        except :
+        try:
+            incidents_sheet = pygame.image.load(
+                settings.INCIDENTS_FILENAME).convert_alpha()
+        except:
             return Error_codes.IMG_INCIDENTS
-            
+
         if not incidents_sheet:
             return Error_codes.IMG_INCIDENTS
 
@@ -299,67 +304,67 @@ class __SoundsCollection:
         :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
         """
         self.__sounds = {}
-        try :
+        try:
             sound = pygame.mixer.Sound(settings.PHONE_RING_SOUND_FILENAME)
-        except :
+        except:
             return Error_codes.SOUND_PHONE
-            
+
         if not sound:
             return Error_codes.SOUND_PHONE
         self.__sounds['HELPDESK-PHONE-RING'] = sound
 
-        try : 
+        try:
             sound = pygame.mixer.Sound(settings.PHONE_HANGUP_SOUND_FILENAME)
-        except :
+        except:
             return Error_codes.SOUND_HANGUP
-            
+
         if not sound:
             return Error_codes.SOUND_HANGUP
         self.__sounds['HELPDESK-PHONE-HANGUP'] = sound
 
-        try :
+        try:
             sound = pygame.mixer.Sound(settings.SOLVE_SOUND_FILENAME)
-        except :
+        except:
             return Error_codes.SOUND_SOLVE
-        
+
         if not sound:
             return Error_codes.SOUND_SOLVE
         self.__sounds['INCIDENT-SOLVE'] = sound
 
-        try :
+        try:
             sound = pygame.mixer.Sound(settings.FAILURE_SOUND_FILENAME)
-        except :
+        except:
             return Error_codes.SOUND_FAIL
-        
+
         if not sound:
             return Error_codes.SOUND_FAIL
         self.__sounds['INCIDENT-FAIL'] = sound
 
-        try :
+        try:
             sound = pygame.mixer.Sound(settings.OFFICE_AMBIENCE_SOUND)
-        except :
+        except:
             return Error_codes.SOUND_AMBIENCE
-            
+
         if not sound:
             return Error_codes.SOUND_AMBIENCE
         sound.set_volume(0.25)
         self.__sounds['OFFICE-AMBIENCE'] = sound
 
-        try :
+        try:
             sound = pygame.mixer.Sound(settings.BACKGROUND_MUSIC)
-        except :
+        except:
             return Error_codes.SOUND_MUSIC
-            
+
         if not sound:
             return Error_codes.SOUND_MUSIC
         sound.set_volume(0.25)
         self.__sounds['BACKGROUND-MUSIC'] = sound
 
-        try :
+        try:
             sound = pygame.mixer.Sound(settings.SQUEAKY_TOY_SOUND_FILENAME)
-        except :
+        except:
             return Error_codes.SOUND_SQUEAK
-            
+
         if not sound:
             return Error_codes.SOUND_SQUEAK
         self.__sounds['SQUEAKY_TOY_SOUND'] = sound

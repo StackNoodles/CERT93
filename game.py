@@ -19,7 +19,7 @@ from player import Player
 from view import View
 from countdown import Countdown
 
-from pygame.locals import JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION, KEYUP,KEYDOWN
+from pygame.locals import JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION, KEYUP, KEYDOWN
 
 
 class Game:
@@ -47,6 +47,7 @@ class Game:
                               Player(Player.PLAYER_TWO)]
         else:
             self.__players = [Player(Player.PLAYER_ONE)]
+        # On commence au lvl 1
         self.__level_num = 1
         self.__level = self.__load_level(self.__level_num)
         self.__views = self.__setup_views(self.__level)
@@ -88,20 +89,23 @@ class Game:
                 if self.__running:
                     self.__check_for_player_two()
                     self.__handle_incidents()
-                    self.__failed_incident_max -= self.__update_game_elements(delta_time)
+                    self.__failed_incident_max -= self.__update_game_elements(
+                        delta_time)
                     self.__update_display()
 
-                if (self.__countdown.timeout() and self.__failed_incident_max >= 0) : # passe de niveau
+                if (self.__countdown.timeout() and self.__failed_incident_max >= 0):  # passe de niveau
                     print(self.__level_num)
                     self.__running = False
-                    self.__level_num +=1
+                    self.__level_num += 1
                     new_level = True
                 elif self.__failed_incident_max <= 0 : #perdu
                     print("defeat")
                     # Ecran defaite (game over)
                     splash_image = pygame.image.load("img\game_over.png")
-                    origin_x = (settings.SCREEN_WIDTH/2) - (splash_image.get_width()/2)
-                    origin_y = (settings.SCREEN_HEIGHT/2) - (splash_image.get_height()/2)
+                    origin_x = (settings.SCREEN_WIDTH/2) - \
+                        (splash_image.get_width()/2)
+                    origin_y = (settings.SCREEN_HEIGHT/2) - \
+                        (splash_image.get_height()/2)
                     self.__screen.blit(splash_image, (origin_x, origin_y))
 
                     pygame.display.update()
@@ -109,10 +113,9 @@ class Game:
 
                     self.__running = False
 
-
             self.__level.stop()
 
-            if self.__level_num <= 3 :
+            if self.__level_num <= 3:
                 self.__level = self.__load_level(self.__level_num)
                 self.__views = self.__setup_views(self.__level)
             else:
@@ -202,7 +205,7 @@ class Game:
                 self.__running = False
                 return
 
-            if event.type in [KEYDOWN,KEYUP]:
+            if event.type in [KEYDOWN, KEYUP]:
                 input_manager.inputs.manage_keyboard_event(event)
 
             elif event.type in [JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONDOWN, JOYBUTTONUP, JOYAXISMOTION]:
@@ -249,7 +252,7 @@ class Game:
         self.__execute_tile_action_if_needed()
 
         for asset in self.__level.assets:
-           timeoutIndicents += asset.update()
+            timeoutIndicents += asset.update()
 
         return timeoutIndicents
 
@@ -269,8 +272,9 @@ class Game:
         countdown_surface = self.__countdown.get()
         self.__screen.blit(countdown_surface, (0, 10))
 
-        #Affichage Des erreur
-        self.__screen.blit(self.mistakes_diplay() , (self.__screen.get_width() / 2, 30))
+        # Affichage Des erreur
+        self.__screen.blit(self.mistakes_diplay(),
+                           (self.__screen.get_width() / 2, 30))
 
         # Affichage du score
         self.__score.draw(self.__screen, (self.__screen.get_width() / 2, 20))
@@ -404,9 +408,9 @@ class Game:
                     # repositionnement de la vue puisque le personnage s'est déplacé
                     self.__views[player.number].center_in_office(
                         character.feet_position)
-            
+
     # Probablement améliorable
-    def __execute_tile_action_if_needed(self) -> None :
+    def __execute_tile_action_if_needed(self) -> None:
         """
         Execute l'action de la tuile sous le personnage si necessaire.
         :return: aucun
@@ -414,7 +418,8 @@ class Game:
         # On regarde pour chaque joueur si leur personnage est sur une tuile à action, et on execute l'action si oui.
         for player in self.__players:
             character_position = player.character.feet_position
-            tile_under_character = self.__level.office.get_tile(character_position)
+            tile_under_character = self.__level.office.get_tile(
+                character_position)
 
             if tile_under_character not in self.__active_tiles and tile_under_character.action is not None:
                 tile_under_character.action()
@@ -427,14 +432,14 @@ class Game:
 
             for player in self.__players:
                 character_position = player.character.feet_position
-                tile_under_character = self.__level.office.get_tile(character_position)
+                tile_under_character = self.__level.office.get_tile(
+                    character_position)
 
                 if tile_under_character == tile:
                     still_active = True
-            
+
             if not still_active:
                 self.__active_tiles.remove(tile)
-
 
     def __solve_incidents_if_needed(self) -> None:
         """

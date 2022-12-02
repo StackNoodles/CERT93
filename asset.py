@@ -25,17 +25,22 @@ class Asset:
         self._tile_position = tile_position
 
         # Conversion de la position : d'une coordonnée en tuile vers une coordonnée en pixels
-        self._position = resources.tiles_collection.tile_pos_to_pixel_pos(tile_position)
+        self._position = resources.tiles_collection.tile_pos_to_pixel_pos(
+            tile_position)
 
         # Coordonnée du centre de l'actif (en pixels) - pour le calcul des distances
-        self._center_position = resources.tiles_collection.tile_pos_to_center_pixel_pos(tile_position)
+        self._center_position = resources.tiles_collection.tile_pos_to_center_pixel_pos(
+            tile_position)
 
         self._incidents = Queue()
         self._active_incident = None
 
-        self._incoming_action = None  # action à faire lorsqu'un incident arrive pour cet actif en particulier
-        self._expiring_action = None  # action à faire lorsqu'un incident expire pour cet actif en particulier
-        self._solving_action = None  # action à faire lorsqu'un incident est résolu pour cet actif en particulier
+        # action à faire lorsqu'un incident arrive pour cet actif en particulier
+        self._incoming_action = None
+        # action à faire lorsqu'un incident expire pour cet actif en particulier
+        self._expiring_action = None
+        # action à faire lorsqu'un incident est résolu pour cet actif en particulier
+        self._solving_action = None
 
         self._fail_sound = resources.sounds_collection.get('INCIDENT-FAIL')
         self._solve_sound = resources.sounds_collection.get('INCIDENT-SOLVE')
@@ -77,8 +82,10 @@ class Asset:
         # Dessin de l'incident, s'il y a lieu
         if self._active_incident:
             incident_type = self._active_incident.expertise
-            incident_surface = resources.incidents_collection.get(self._timer_id, incident_type)
-            offset = (asset_surface.get_width() - incident_surface.get_width()) / 2
+            incident_surface = resources.incidents_collection.get(
+                self._timer_id, incident_type)
+            offset = (asset_surface.get_width() -
+                      incident_surface.get_width()) / 2
             x, y = self._position
             position = x + offset, y + offset
             destination.blit(incident_surface, position)
@@ -153,6 +160,7 @@ class Asset:
                 self._active_incident.stop()
                 self._active_incident = None
         return isTimeout
+
     @staticmethod
     def compute_timer_id(incident: Incident) -> int:
         """
@@ -161,7 +169,8 @@ class Asset:
         :return: l'index de minuterie (timer_id)
         """
         percentage = incident.get_remaining_time_percentage()
-        time_slice = math.ceil(percentage / settings.TIMER_PERCENTAGE_SLICE_SIZE)
+        time_slice = math.ceil(
+            percentage / settings.TIMER_PERCENTAGE_SLICE_SIZE)
         timer_id = (settings.NB_INCIDENT_TIMER_IMAGES - 1) - time_slice
         return timer_id
 

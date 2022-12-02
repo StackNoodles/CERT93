@@ -25,10 +25,11 @@ class Countdown(Thread):
 
         self.__surface = None
 
-        self.__event = Event()  # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
+        # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
+        self.__event = Event()
 
     def timeout(self) -> bool:
-        if self.__time <= 0 :
+        if self.__time <= 0:
             return True
         return False
 

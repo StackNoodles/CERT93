@@ -10,12 +10,14 @@ class PlayerInput:
     """ Entrées pour un joueur. """
 
     def __init__(self) -> None:
-        self.__movement = (0.0, 0.0)  # mouvement sur l'axe horizontal (x) et sur l'axe vertical (y)
+        # mouvement sur l'axe horizontal (x) et sur l'axe vertical (y)
+        self.__movement = (0.0, 0.0)
         self.__focus_next_button = False
         self.__focus_prev_button = False
         self.__solve_button = False
 
-        self.__last_activity_time = time.time() - settings.INACTIVITY_THRESHOLD  # sert à détecter de l'activité
+        # sert à détecter de l'activité
+        self.__last_activity_time = time.time() - settings.INACTIVITY_THRESHOLD
 
     def touch(self) -> None:
         """ Touche les entrées du joueur pour indiquer qu'il y a de l'activité. """
@@ -65,10 +67,10 @@ class PlayerInput:
 class __InputManager:
     """ Gestionnaire d'entrée (clavier ou gamepads). """
     __INPUT_KEYBOARD_PLAYER_ONE = {'up': pygame.K_w, 'down': pygame.K_s, 'right': pygame.K_d, 'left': pygame.K_a,
-                                    'switch_plus': pygame.K_2,'switch_minus': pygame.K_1,'action': pygame.K_f}
+                                   'switch_plus': pygame.K_2, 'switch_minus': pygame.K_1, 'action': pygame.K_f}
 
     __INPUT_KEYBOARD_PLAYER_TWO = {'up': pygame.K_UP, 'down': pygame.K_DOWN, 'right': pygame.K_RIGHT, 'left': pygame.K_LEFT,
-                                    'switch_plus': pygame.K_0, 'switch_minus': pygame.K_9, 'action': pygame.K_p}
+                                   'switch_plus': pygame.K_0, 'switch_minus': pygame.K_9, 'action': pygame.K_p}
 
     __PLAYER_ONE = 0
     __PLAYER_TWO = 1
@@ -90,11 +92,13 @@ class __InputManager:
         if self.get_gamepad_count() == 1:
             # Un seul gamepad -> on l'assigne au joueur 1
             self.__joysticks = [pygame.joystick.Joystick(0), ]
-            self.__player_one_instance_id = self.__joysticks[0].get_instance_id()
+            self.__player_one_instance_id = self.__joysticks[0].get_instance_id(
+            )
             self.__player_two_instance_id = self.__INVALID_INSTANCE_ID
         elif self.get_gamepad_count() == 2:
             # Deux gamepads -> on tente de préserver les identifiants connus
-            self.__joysticks = [pygame.joystick.Joystick(i) for i in range(self.get_gamepad_count())]
+            self.__joysticks = [pygame.joystick.Joystick(
+                i) for i in range(self.get_gamepad_count())]
             found_player_one_instance_id = False
             found_player_two_instance_id = False
             for joystick in self.__joysticks:
@@ -104,18 +108,22 @@ class __InputManager:
                     found_player_two_instance_id = True
             if not found_player_one_instance_id and found_player_two_instance_id:
                 # identifiant du joueur 1 introuvé, mais celui du joueur 2 oui -> on préserve l'identifiant du joueur 2
-                self.player_in_game(self.__player_two_instance_id,self.__player_one_instance_id)
+                self.player_in_game(
+                    self.__player_two_instance_id, self.__player_one_instance_id)
 
             elif found_player_one_instance_id and not found_player_two_instance_id:
                 # identifiant du joueur 1 trouvé, mais pas celui du joueur 2 -> on préserve l'identifiant du joueur 1
-                self.player_in_game(self.__player_one_instance_id,self.__player_two_instance_id)
+                self.player_in_game(
+                    self.__player_one_instance_id, self.__player_two_instance_id)
 
             elif not found_player_one_instance_id and not found_player_two_instance_id:
                 # aucun identifiant trouvé -> on assigne de nouveaux identifiants
-                self.__player_one_instance_id = self.__joysticks[0].get_instance_id()
-                self.__player_two_instance_id = self.__joysticks[1].get_instance_id()
+                self.__player_one_instance_id = self.__joysticks[0].get_instance_id(
+                )
+                self.__player_two_instance_id = self.__joysticks[1].get_instance_id(
+                )
 
-    def player_in_game(self,player_found,player_not_found):
+    def player_in_game(self, player_found, player_not_found):
         for joystick in self.__joysticks:
             if joystick.get_instance_id() != player_found:
                 player_not_found = joystick.get_instance_id()
@@ -139,18 +147,23 @@ class __InputManager:
 
         if event.type == pygame.KEYDOWN:
             # Événements liés au joueur 1
-            self.trigger_event_keyboard_down(event, player_one_input, self.__INPUT_KEYBOARD_PLAYER_ONE)
+            self.trigger_event_keyboard_down(
+                event, player_one_input, self.__INPUT_KEYBOARD_PLAYER_ONE)
 
             # Événements liés au joueur 2
-            self.trigger_event_keyboard_down(event, player_two_input, self.__INPUT_KEYBOARD_PLAYER_TWO)
+            self.trigger_event_keyboard_down(
+                event, player_two_input, self.__INPUT_KEYBOARD_PLAYER_TWO)
 
         elif event.type == pygame.KEYUP:
             # Événements liés au joueur 1
-            self.trigger_event_keyboard_up(event, player_one_input, self.__INPUT_KEYBOARD_PLAYER_ONE)
+            self.trigger_event_keyboard_up(
+                event, player_one_input, self.__INPUT_KEYBOARD_PLAYER_ONE)
 
             # Événements liés au joueur 2
-            self.trigger_event_keyboard_up(event, player_two_input, self.__INPUT_KEYBOARD_PLAYER_TWO)
+            self.trigger_event_keyboard_up(
+                event, player_two_input, self.__INPUT_KEYBOARD_PLAYER_TWO)
         return True
+
     def trigger_event_keyboard_down(self, event, player_input, INPUT_KEYBOARD):
         """
         Gère les evenements liée aux touches du clavié appuyée d'un joueur
@@ -244,7 +257,6 @@ class __InputManager:
                 player_two_input = self.__player_inputs[self.__PLAYER_TWO]
 
                 self.trigger_event_gamepad(event, player_two_input)
-
 
     def trigger_event_gamepad(self, event: pygame.event, player_input):
         """

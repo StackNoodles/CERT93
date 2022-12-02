@@ -131,7 +131,7 @@ class Office:
 
                 # On place la tuile
                 surface.blit(tile, (pos_x, pos_y),
-                                (0, 0, self.__tile_size, self.__tile_size))
+                             (0, 0, self.__tile_size, self.__tile_size))
 
         self.__surface = surface
 

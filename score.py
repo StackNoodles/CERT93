@@ -14,7 +14,8 @@ class Score:
         default_font_name = pygame.font.get_default_font()
         self.__font = pygame.font.Font(default_font_name, DEFAULT_FONT_SIZE)
 
-        self.__surface = self.__build_score_surface()  # surface qui contient le score en format graphique
+        # surface qui contient le score en format graphique
+        self.__surface = self.__build_score_surface()
 
     def add_points(self, points: int) -> None:
         """

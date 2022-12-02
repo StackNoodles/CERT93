@@ -22,7 +22,8 @@ class FPS(Thread):
 
         self.__surface = None
 
-        self.__event = Event()  # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
+        # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
+        self.__event = Event()
 
     def tick(self) -> None:
         """

@@ -1,6 +1,7 @@
 import pygame
 import resources
 
+
 class Tile:
     """ Une tuile. """
 
@@ -29,7 +30,8 @@ class Tile:
         :param destination: surface sur laquelle dessiner la tuile
         :return: aucun
         """
-        destination.blit(resources.tiles_collection.get(self.__tile_id), self.__position)
+        destination.blit(resources.tiles_collection.get(
+            self.__tile_id), self.__position)
 
     def __crack(self) -> None:
         """

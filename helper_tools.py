@@ -39,7 +39,7 @@ def map2pickles(map_filename: str, fw_filename: str, c_filename: str, a_filename
                        for _ in range(longest_line_length)]
 
     floor_and_walls_symbols = {' ': 0, '1': 1, '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
-                               'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15, '0' : 16}
+                               'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15, '0': 16}
 
     characters = []
     characters_symbols = {'S': 0, 'T': 1, 'U': 2,
@@ -134,7 +134,7 @@ def __flood_fill(starting_point: tuple, symbol: int, office: list) -> None:
         office[x][y] = symbol
         for delta in __DELTAS:
             __flood_fill((x + delta[0], y + delta[1]), symbol, office)
-            
+
 
 def __create_checksum(filename: str) -> None:
     """
@@ -143,10 +143,10 @@ def __create_checksum(filename: str) -> None:
     Parameters:
     arg1 (str): le nom du fichier
     """
-    #Permet de retourner un Sha unique pour le fichier
+    # Permet de retourner un Sha unique pour le fichier
     with open(filename, "rb") as file_to_check:
-            data = file_to_check.read()
-            md5_returned = hashlib.md5(data).hexdigest()
+        data = file_to_check.read()
+        md5_returned = hashlib.md5(data).hexdigest()
     # Écrit le Sha dans le fichier config.ini
     config['Checksum'][filename] = md5_returned
     with open('config/config.ini', 'w') as configfile:    # save

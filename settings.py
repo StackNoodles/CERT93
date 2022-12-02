@@ -41,15 +41,17 @@ NB_SKILLS = int(config.get("Settings", "NB_SKILLS"))
 TIME_PER_LEVEL = int(config.get("Settings", "TIME_PER_LEVEL"))  # en secondes
 MAX_MISTAKES = int(config.get("Settings", "MAX_MISTAKES"))
 
-DEFAULT_TIME_TO_SOLVE_MIN = int(config.get("Settings", "DEFAULT_TIME_TO_SOLVE_MIN"))
-DEFAULT_TIME_TO_SOLVE_MAX = int(config.get("Settings", "DEFAULT_TIME_TO_SOLVE_MAX"))
+DEFAULT_TIME_TO_SOLVE_MIN = int(config.get(
+    "Settings", "DEFAULT_TIME_TO_SOLVE_MIN"))
+DEFAULT_TIME_TO_SOLVE_MAX = int(config.get(
+    "Settings", "DEFAULT_TIME_TO_SOLVE_MAX"))
 
 NB_INCIDENT_TIMER_IMAGES = int(config.get(
     "Settings", "NB_INCIDENT_TIMER_IMAGES"))
 TIMER_PERCENTAGE_SLICE_SIZE = int(config.get(
     "Settings", "TIMER_PERCENTAGE_SLICE_SIZE")) / (NB_INCIDENT_TIMER_IMAGES - 1)
 
-INACTIVITY_THRESHOLD = int(config.get("Settings","INACTIVITY_THRESHOLD"))
+INACTIVITY_THRESHOLD = int(config.get("Settings", "INACTIVITY_THRESHOLD"))
 
 DEFAULT_MIN_TIME_BETWEEN_INDICENTS = int(config.get(
     "Settings", "DEFAULT_MIN_TIME_BETWEEN_INDICENTS"))

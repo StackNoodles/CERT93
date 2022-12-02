@@ -16,6 +16,7 @@ from level import Level
 from score import Score
 from tools import find_distance
 from fps import FPS
+from message_incident import MessageIncident
 from player import Player
 from view import View
 from countdown import Countdown
@@ -44,6 +45,8 @@ class Game:
 
         self.__countdown = Countdown()
 
+        self.__current_message = ""
+
         if input_manager.inputs.get_gamepad_count() == 2:
             self.__players = [Player(Player.PLAYER_ONE),
                               Player(Player.PLAYER_TWO)]
@@ -56,15 +59,17 @@ class Game:
 
         self.__fps = FPS()
 
+        self.__message_incident = None
+
         self.__active_tiles = []
 
     def end_screen(self, image_path: str, sleep_time: int):
-        splash_image = pygame.image.load(image_path)
+        image = pygame.image.load(image_path)
         origin_x = (settings.SCREEN_WIDTH / 2) - \
-                   (splash_image.get_width() / 2)
+                    (image.get_width() / 2)
         origin_y = (settings.SCREEN_HEIGHT / 2) - \
-                   (splash_image.get_height() / 2)
-        self.__screen.blit(splash_image, (origin_x, origin_y))
+                    (image.get_height() / 2)
+        self.__screen.blit(image, (origin_x, origin_y))
 
         pygame.display.update()
         time.sleep(sleep_time)
@@ -196,6 +201,11 @@ class Game:
         self.__music.stop()
         self.__fps.stop()
         self.__countdown.stop()
+
+        #Stopping incident message thread
+        if self.__message_incident != None:
+            print("STOPPING THE MESSAGE THREAD")
+            self.__message_incident.stop()
         pygame.quit()
         sys.exit()
 
@@ -224,6 +234,20 @@ class Game:
             if incident.expertise == Expertise.HELPDESK:
                 self.__level.helpdesk.add_incident(incident)
             else:
+
+                print("ACCEPTED INCIDENT:")
+                print(incident.expertise)
+                
+                
+                if self.__message_incident != None:
+                    self.__message_incident.stop()
+                
+                self.__message_incident = MessageIncident()
+
+                self.__current_message = self.__message_incident.get(incident.expertise)
+
+                self.__message_incident.start() 
+
                 # Sélection d'un actif au hasard parmi tous les actifs autres que le centre d'appels
                 asset = random.choice(self.__level.assets[1:])
                 asset.add_incident(incident)
@@ -269,6 +293,7 @@ class Game:
         # Affichage de l'image de fond
         self.__screen.blit(self.__backdrop_surface, (0, 0))
 
+
         # Affichade de la ou les vues sur le bureau (donc du bureau, des actifs et des personnages)
         for view in self.__views.values():
             view.draw()
@@ -277,7 +302,7 @@ class Game:
         countdown_surface = self.__countdown.get()
         self.__screen.blit(countdown_surface, (0, 10))
 
-        # Affichage Des erreur
+        # Affichage des user errors
         self.__screen.blit(
             self.value_diplay(f"Remaining mistakes : {self.__failed_incident_max} / {settings.MAX_MISTAKES}"),
             (self.__screen.get_width() / 2, 30))
@@ -289,6 +314,13 @@ class Game:
         fps_surface = self.__fps.get()
         x = self.__screen.get_width() - fps_surface.get_width() - 10
         self.__screen.blit(fps_surface, (x, 10))
+
+        
+        #Affichage de la zone de texte de lincident
+        self.__font = pygame.font.Font(pygame.font.get_default_font(), 20)
+        incident_surface = self.__font.render(self.__current_message, True, (255, 255, 255))
+        self.__screen.blit(incident_surface, (100, 100),)    
+
 
         # Basculement de tampon (donc affichage de l'écran)
         pygame.display.flip()

@@ -15,6 +15,7 @@ class PlayerInput:
         self.__focus_next_button = False
         self.__focus_prev_button = False
         self.__solve_button = False
+        self.__show_name =False
 
         # sert à détecter de l'activité
         self.__last_activity_time = time.time() - settings.INACTIVITY_THRESHOLD
@@ -63,14 +64,22 @@ class PlayerInput:
         self.__solve_button = value
         self.touch()
 
+    @property
+    def show_name(self) -> bool:
+        return self.__show_name
+
+    @show_name.setter
+    def show_name(self, value: bool) -> None:
+        self.__show_name = value
+        self.touch()
 
 class __InputManager:
     """ Gestionnaire d'entrée (clavier ou gamepads). """
     __INPUT_KEYBOARD_PLAYER_ONE = {'up': pygame.K_w, 'down': pygame.K_s, 'right': pygame.K_d, 'left': pygame.K_a,
-                                   'switch_plus': pygame.K_2, 'switch_minus': pygame.K_1, 'action': pygame.K_f}
+                                   'switch_plus': pygame.K_2, 'switch_minus': pygame.K_1, 'action': pygame.K_f, 'show_name':pygame.K_n}
 
     __INPUT_KEYBOARD_PLAYER_TWO = {'up': pygame.K_UP, 'down': pygame.K_DOWN, 'right': pygame.K_RIGHT, 'left': pygame.K_LEFT,
-                                   'switch_plus': pygame.K_0, 'switch_minus': pygame.K_9, 'action': pygame.K_p}
+                                   'switch_plus': pygame.K_0, 'switch_minus': pygame.K_9, 'action': pygame.K_p, 'show_name':pygame.K_n}
 
     __PLAYER_ONE = 0
     __PLAYER_TWO = 1
@@ -199,6 +208,8 @@ class __InputManager:
             player_input.focus_next_button = False
         elif event.key == INPUT_KEYBOARD['action']:
             player_input.solve_button = True
+        elif event.key == INPUT_KEYBOARD['show_name']:
+            player_input.show_name = True
 
     def trigger_event_keyboard_up(self, event, player_input, INPUT_KEYBROAD):
         """
@@ -228,7 +239,8 @@ class __InputManager:
             player_input.focus_prev_button = False
         elif event.key == INPUT_KEYBROAD['action']:
             player_input.solve_button = False
-
+        elif event.key == INPUT_KEYBROAD['show_name']:
+            player_input.show_name = False
     def manage_gamepad_event(self, event: pygame.event) -> None:
         """
         Gère un événement de contrôleur de jeu (gamepad).
@@ -276,6 +288,9 @@ class __InputManager:
             if event.button == settings.SOLVE_BUTTON:
                 player_input.solve_button = True
 
+            if event.button == settings.SHOW_NAME_BUTTON:
+                player_input.show_name = True
+
         if event.type == JOYBUTTONUP:
             print(event.button)
             if event.button == settings.NEXT_BUTTON:
@@ -285,6 +300,9 @@ class __InputManager:
 
             if event.button == settings.SOLVE_BUTTON:
                 player_input.solve_button = False
+
+            if event.button == settings.SHOW_NAME_BUTTON:
+                player_input.show_name = False
 
         if event.type == JOYAXISMOTION:
             print(event.axis)

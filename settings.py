@@ -63,5 +63,6 @@ TIME_BEFORE_FIRST_INCIDENT = int(config.get(
 NEXT_BUTTON = int(config.get("Controls", "NEXT_BUTTON"))
 PREV_BUTTON = int(config.get("Controls", "PREV_BUTTON"))
 SOLVE_BUTTON = int(config.get("Controls", "SOLVE_BUTTON"))
+SHOW_NAME_BUTTON = int(config.get("Controls", "SHOW_NAME_BUTTON"))
 HORIZONTAL_AXIS = int(config.get("Controls", "HORIZONTAL_AXIS"))
 VERTICAL_AXIS = int(config.get("Controls", "VERTICAL_AXIS"))

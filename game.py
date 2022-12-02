@@ -235,12 +235,11 @@ class Game:
             if incident.expertise == Expertise.HELPDESK:
                 self.__level.helpdesk.add_incident(incident)
             else:
-                
-                self.__current_incident = "THERE IS A " + str(incident.expertise.name) + " INCIDENT!"
-                self.__incident_timer = pygame.time.get_ticks() + 5000
-
                 # Sélection d'un actif au hasard parmi tous les actifs autres que le centre d'appels
                 asset = random.choice(self.__level.assets[1:])
+                
+                self.__current_incident = "THERE IS A " + str(incident.expertise.name) + " INCIDENT AT DESK N°" + asset.name.replace('Asset ','')
+                self.__incident_timer = pygame.time.get_ticks() + 5000
                 asset.add_incident(incident)
 
     def __check_for_player_two(self) -> None:

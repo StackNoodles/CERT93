@@ -41,7 +41,7 @@ class Game:
 
         self.__running = False
 
-        
+
 
         self.__score = Score()
         self.__music = resources.sounds_collection.get('BACKGROUND-MUSIC')
@@ -60,7 +60,7 @@ class Game:
 
         self.__fps = FPS()
 
-        self.__current_incident = ""
+        self.__current_incident_text = ""
         self.__incident_timer = pygame.time.get_ticks()
 
         self.__active_tiles = []
@@ -95,7 +95,7 @@ class Game:
             print(defaite)
 
             if new_level:
-                self.__current_incident = ""
+                self.__current_incident_text = ""
                 self.__level.office.enable_ambience()
                 self.__countdown.reset_timer()
                 incidents.spawner.unpause()
@@ -224,8 +224,8 @@ class Game:
             elif event.type in [JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONDOWN, JOYBUTTONUP, JOYAXISMOTION]:
                 input_manager.inputs.manage_gamepad_event(event)
 
-    
-            
+
+
     def __handle_incidents(self) -> None:
         """
         Gère les incidents envoyés par le générateur d'incidents.
@@ -237,7 +237,7 @@ class Game:
             else:
                 # Sélection d'un actif au hasard parmi tous les actifs autres que le centre d'appels
                 asset = random.choice(self.__level.assets[1:])
-                
+
                 self.__current_incident = "THERE IS A " + str(incident.expertise.name) + " INCIDENT AT DESK N°" + asset.name.replace('Asset ','')
                 self.__incident_timer = pygame.time.get_ticks() + 5000
                 asset.add_incident(incident)
@@ -306,16 +306,16 @@ class Game:
         self.__screen.blit(fps_surface, (x, 10))
 
         #Affichage incident
-        if pygame.time.get_ticks() < self.__incident_timer: 
+        if pygame.time.get_ticks() < self.__incident_timer:
             font = pygame.font.Font(pygame.font.get_default_font(), 20)
-            incident_surface = font.render(self.__current_incident, True, (255, 114, 118))
+            incident_surface = font.render(self.__current_incident_text, True, (255, 114, 118))
 
             display_time_left = self.__incident_timer - pygame.time.get_ticks()
 
             if(display_time_left<3000):
                 alpha = (display_time_left)/12
                 incident_surface.set_alpha(alpha)
-            
+
             self.__screen.blit(incident_surface, (100, 100),)
 
 

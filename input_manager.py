@@ -265,31 +265,34 @@ class __InputManager:
         return : aucun
         """
         if event.type == JOYBUTTONDOWN:
-            if event.button == 5:
+            print(event.button)
+            if event.button == settings.NEXT_BUTTON:
                 player_input.focus_next_button = True
                 player_input.focus_prev_button = False
-            elif event.button == 4:
+            elif event.button == settings.PREV_BUTTON:
                 player_input.focus_next_button = False
                 player_input.focus_prev_button = True
 
-            if event.button == 3:
+            if event.button == settings.SOLVE_BUTTON:
                 player_input.solve_button = True
 
         if event.type == JOYBUTTONUP:
-            if event.button == 5:
+            print(event.button)
+            if event.button == settings.NEXT_BUTTON:
                 player_input.focus_next_button = False
-            elif event.button == 4:
+            elif event.button == settings.PREV_BUTTON:
                 player_input.focus_prev_button = False
 
-            if event.button == 3:
+            if event.button == settings.SOLVE_BUTTON:
                 player_input.solve_button = False
 
         if event.type == JOYAXISMOTION:
+            print(event.axis)
             input_x, input_y = player_input.movement
             previous_input_x, previous_input_y = player_input.movement
-            if event.axis == 0:  # axe horizontal
+            if event.axis == settings.HORIZONTAL_AXIS:  # axe horizontal
                 input_x = event.value
-            if event.axis == 4:  # axe vertical
+            if event.axis == settings.VERTICAL_AXIS:  # axe vertical
                 input_y = event.value
 
             # Application de la zone morte (dead zone)

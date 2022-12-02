@@ -59,3 +59,9 @@ DEFAULT_MAX_TIME_BETWEEN_INDICENTS = int(config.get(
     "Settings", "DEFAULT_MAX_TIME_BETWEEN_INDICENTS"))
 TIME_BEFORE_FIRST_INCIDENT = int(config.get(
     "Settings", "TIME_BEFORE_FIRST_INCIDENT"))
+
+NEXT_BUTTON = int(config.get("Controls", "NEXT_BUTTON"))
+PREV_BUTTON = int(config.get("Controls", "PREV_BUTTON"))
+SOLVE_BUTTON = int(config.get("Controls", "SOLVE_BUTTON"))
+HORIZONTAL_AXIS = int(config.get("Controls", "HORIZONTAL_AXIS"))
+VERTICAL_AXIS = int(config.get("Controls", "VERTICAL_AXIS"))

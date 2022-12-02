@@ -61,7 +61,7 @@ class Helpdesk(Asset):
             __time_to_solve_max = 60
 
             # Si les temps des settings sont valides, utiliser ceux cis plutot
-            if settings.DEFAULT_TIME_TO_SOLVE_MIN > 0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > 0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > settings.DEFAULT_TIME_TO_SOLVE_MIN:
+            if settings.DEFAULT_TIME_TO_SOLVE_MIN > 0 and settings.DEFAULT_TIME_TO_SOLVE_MAX > settings.DEFAULT_TIME_TO_SOLVE_MIN:
                 __time_to_solve_min = settings.DEFAULT_TIME_TO_SOLVE_MIN
                 __time_to_solve_max = settings.DEFAULT_TIME_TO_SOLVE_MAX
 

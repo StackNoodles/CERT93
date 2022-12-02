@@ -158,21 +158,15 @@ class Game:
         views = {}
         # Le joueur 1 contrôle le premier personnage chargé
         self.__players[Player.PLAYER_ONE].character = level.characters[0]
-
+        views[Player.PLAYER_ONE] = self.__set_view(level, Player.PLAYER_ONE)
+        
         if len(self.__players) > 1:
             # Le joueur 2 contrôle le deuxième personnage chargé
             self.__players[Player.PLAYER_TWO].character = level.characters[1]
 
-            # Deux joueurs, donc deux vues
-            views[Player.PLAYER_ONE] = self.__set_view(
-                level, Player.PLAYER_ONE)
+            # Deux joueurs, donc deuxieme vue
             views[Player.PLAYER_TWO] = self.__set_view(
                 level, Player.PLAYER_TWO)
-
-        else:
-            # Un seul joueur, donc une seule vue
-            views[Player.PLAYER_ONE] = self.__set_view(
-                level, Player.PLAYER_ONE)
 
         return views
 

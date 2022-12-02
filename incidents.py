@@ -85,7 +85,7 @@ class __IncidentSpawner(Thread):
         """Si le temps max par défaut est plus grand que 0 dans les settings et que le temps min par 
         défaut est plus grand que 0 dans les settings et que le temps max est plus grand que le
          temps min alors on attribue aux variables le temps qui se trouve dans les settings"""
-        if settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS > 0 and settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS > 0 and settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS > settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS:
+        if settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS > 0 and settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS > settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS:
             __max_time_between_indicents = settings.DEFAULT_MAX_TIME_BETWEEN_INDICENTS
             __min_time_between_incidents = settings.DEFAULT_MIN_TIME_BETWEEN_INDICENTS
 

@@ -38,8 +38,8 @@ class Tile:
         """
         Bruit déclenché lorsque le personnage marche sur une tuile spéciale.
         """
-        music = resources.sounds_collection.get('SQUEAKY_TOY_SOUND')
-        music.play()
+        squeak_sound = resources.sounds_collection.get('SQUEAKY_TOY_SOUND')
+        squeak_sound.play()
 
     @property
     def walkable(self) -> bool:

@@ -23,9 +23,6 @@ from countdown import Countdown
 from pygame.locals import JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION, KEYUP, KEYDOWN
 
 
-
-
-
 class Game:
     """ Une partie. """
 
@@ -64,14 +61,14 @@ class Game:
     def end_screen(self, image_path: str, sleep_time: int):
         splash_image = pygame.image.load(image_path)
         origin_x = (settings.SCREEN_WIDTH / 2) - \
-                    (splash_image.get_width() / 2)
+                   (splash_image.get_width() / 2)
         origin_y = (settings.SCREEN_HEIGHT / 2) - \
-                    (splash_image.get_height() / 2)
+                   (splash_image.get_height() / 2)
         self.__screen.blit(splash_image, (origin_x, origin_y))
 
         pygame.display.update()
         time.sleep(sleep_time)
-        
+
     def run(self) -> None:
         """ Exécute la partie (boucle de jeu). """
         self.__fps.start()
@@ -212,8 +209,6 @@ class Game:
                 self.quit_game()
                 self.__running = False
 
-
-
             if event.type in [KEYDOWN, KEYUP]:
                 input_manager.inputs.manage_keyboard_event(event)
 
@@ -277,16 +272,18 @@ class Game:
         # Affichade de la ou les vues sur le bureau (donc du bureau, des actifs et des personnages)
         for view in self.__views.values():
             view.draw()
+
         # Affichage du countdown
         countdown_surface = self.__countdown.get()
         self.__screen.blit(countdown_surface, (0, 10))
 
         # Affichage Des erreur
-        self.__screen.blit(self.mistakes_diplay(),
-                           (self.__screen.get_width() / 2, 30))
+        self.__screen.blit(
+            self.value_diplay(f"Remaining mistakes : {self.__failed_incident_max} / {settings.MAX_MISTAKES}"),
+            (self.__screen.get_width() / 2, 30))
 
         # Affichage du score
-        self.__score.draw(self.__screen, (self.__screen.get_width() / 2, 20))
+        self.__screen.blit(self.value_diplay(self.__score.get_score_display()), (self.__screen.get_width() / 2,0 ))
 
         # Affichage du FPS
         fps_surface = self.__fps.get()
@@ -296,10 +293,12 @@ class Game:
         # Basculement de tampon (donc affichage de l'écran)
         pygame.display.flip()
 
-    def mistakes_diplay(self) -> pygame.Surface:
+    def value_diplay(self, string_display) -> pygame.Surface:
         default_font_name = pygame.font.get_default_font()
+
         self.__font = pygame.font.Font(default_font_name, 20)
-        return self.__font.render(f"Remaining mistakes : {self.__failed_incident_max} / {settings.MAX_MISTAKES}", True,
+
+        return self.__font.render(string_display, True,
                                   (255, 255, 255))
 
     def __add_player_two(self) -> None:

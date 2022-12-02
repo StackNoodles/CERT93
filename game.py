@@ -23,16 +23,7 @@ from countdown import Countdown
 from pygame.locals import JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION, KEYUP, KEYDOWN
 
 
-def end_screen(screen: pygame.display.set_mode, image_path: str, sleep_time: int):
-    splash_image = pygame.image.load(image_path)
-    origin_x = (settings.SCREEN_WIDTH / 2) - \
-                (splash_image.get_width() / 2)
-    origin_y = (settings.SCREEN_HEIGHT / 2) - \
-                (splash_image.get_height() / 2)
-    screen.blit(splash_image, (origin_x, origin_y))
 
-    pygame.display.update()
-    time.sleep(sleep_time)
 
 
 class Game:
@@ -70,6 +61,17 @@ class Game:
 
         self.__active_tiles = []
 
+    def end_screen(self, image_path: str, sleep_time: int):
+        splash_image = pygame.image.load(image_path)
+        origin_x = (settings.SCREEN_WIDTH / 2) - \
+                    (splash_image.get_width() / 2)
+        origin_y = (settings.SCREEN_HEIGHT / 2) - \
+                    (splash_image.get_height() / 2)
+        self.__screen.blit(splash_image, (origin_x, origin_y))
+
+        pygame.display.update()
+        time.sleep(sleep_time)
+        
     def run(self) -> None:
         """ Exécute la partie (boucle de jeu). """
         self.__fps.start()
@@ -118,7 +120,7 @@ class Game:
                 elif self.__failed_incident_max <= 0:  # perdu
                     print("defeat")
                     # Ecran defaite (game over)
-                    end_screen(self.__screen,"img\game_over.png", 5)
+                    self.end_screen("img\game_over.png", 5)
 
                     self.__running = False
                     defaite = True
@@ -132,7 +134,7 @@ class Game:
                 victoire = True
                 print("victory")
                 # Ecran victoire
-                end_screen(self.__screen, "img\mission_complete.png", 5)
+                self.end_screen("img\mission_complete.png", 5)
 
         self.quit_game()
 

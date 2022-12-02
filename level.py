@@ -7,8 +7,7 @@ import pickle
 import hashlib
 import configparser
 
-config = configparser.ConfigParser(inline_comment_prefixes="#")
-config.read("config/config.ini")
+
 
  
 def check_checksum(filename: str) -> None:
@@ -16,6 +15,8 @@ def check_checksum(filename: str) -> None:
     Permet de valider le checksum du fichier config.ini pour savoir si c'est le même
     :param str: le nom du fichier
     """
+    config = configparser.ConfigParser(inline_comment_prefixes="#")
+    config.read("config/config.ini")
     try:
         with open(filename, "rb") as file_to_check:
             data = file_to_check.read()

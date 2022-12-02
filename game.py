@@ -69,7 +69,6 @@ class Game:
 
         self.__running = True
         while self.__running:
-
             now = time.time()
             delta_time = now - previous_time
             previous_time = now
@@ -81,11 +80,16 @@ class Game:
                 self.__handle_incidents()
                 self.__failed_incident_max -= self.__update_game_elements(delta_time)
                 self.__update_display()
-            if (not self.__countdown.timeout() or self.__failed_incident_max <= 0):
-                print("in stop")
-                print(self.__failed_incident_max)
+            if (self.__countdown.timeout() and self.__failed_incident_max >= 0) : # victoire
+                #mettre ecran de victoire
+                print("victory")
+                self.__running = False
+            elif self.__failed_incident_max <= 0 : #perdu
+                #mettre ecran de defaite
+                print("defeat")
 
                 self.__running = False
+
 
         self.__level.stop()
         incidents.spawner.stop()
@@ -228,6 +232,12 @@ class Game:
         # Affichade de la ou les vues sur le bureau (donc du bureau, des actifs et des personnages)
         for view in self.__views.values():
             view.draw()
+        # Affichage du countdown
+        countdown_surface = self.__countdown.get()
+        self.__screen.blit(countdown_surface, (0, 10))
+
+        #Affichage Des erreur
+        self.__screen.blit(self.mistakes_diplay() , (self.__screen.get_width() / 2, 30))
 
         # Affichage du score
         self.__score.draw(self.__screen, (self.__screen.get_width() / 2, 20))
@@ -237,12 +247,13 @@ class Game:
         x = self.__screen.get_width() - fps_surface.get_width() - 10
         self.__screen.blit(fps_surface, (x, 10))
 
-        # Affichage du countdown
-        countdown_surface = self.__countdown.get()
-        self.__screen.blit(countdown_surface, (0, 10))
-
         # Basculement de tampon (donc affichage de l'écran)
         pygame.display.flip()
+
+    def mistakes_diplay(self) -> pygame.Surface:
+        default_font_name = pygame.font.get_default_font()
+        self.__font = pygame.font.Font(default_font_name, 20)
+        return self.__font.render(f"Remaining mistakes : {self.__failed_incident_max} / {settings.MAX_MISTAKES}", True, (255, 255, 255))
 
     def __add_player_two(self) -> None:
         """

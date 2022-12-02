@@ -79,6 +79,8 @@ def splash_screen(image_path: str, time_up: int, screen:pygame.display.set_mode)
 
 if __name__ == '__main__':
     create_level_pickles(1)
+    create_level_pickles(2)
+    create_level_pickles(3)
     try :
         __run_game()
     except KeyboardInterrupt:

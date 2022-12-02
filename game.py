@@ -47,8 +47,8 @@ class Game:
                               Player(Player.PLAYER_TWO)]
         else:
             self.__players = [Player(Player.PLAYER_ONE)]
-
-        self.__level = self.__load_level(1)
+        self.__level_num = 1
+        self.__level = self.__load_level(self.__level_num)
         self.__views = self.__setup_views(self.__level)
 
         self.__fps = FPS()
@@ -60,6 +60,8 @@ class Game:
         self.__fps.start()
         self.__countdown.start()
 
+        victoire = False
+        new_level = False
         previous_time = time.time()
         music = resources.sounds_collection.get('BACKGROUND-MUSIC')
         music.play(-1)
@@ -67,46 +69,58 @@ class Game:
         self.__level.office.enable_ambience()
         incidents.spawner.start()
 
-        self.__running = True
-        while self.__running:
-            now = time.time()
-            delta_time = now - previous_time
-            previous_time = now
-            self.__fps.tick()
+        while not victoire:
+            if new_level:
+                self.__level.office.enable_ambience()
+                self.__countdown.reset_timer()
+                incidents.spawner.unpause()
+                self.__failed_incident_max = settings.MAX_MISTAKES
+                new_level = False
 
-            self.__handle_events()
-            if self.__running:
-                self.__check_for_player_two()
-                self.__handle_incidents()
-                self.__failed_incident_max -= self.__update_game_elements(delta_time)
-                self.__update_display()
-            if (self.__countdown.timeout() and self.__failed_incident_max >= 0) : # victoire
-                print("victory")
+            self.__running = True
+            while self.__running:
+                now = time.time()
+                delta_time = now - previous_time
+                previous_time = now
+                self.__fps.tick()
 
-                # ecran victoire
+                self.__handle_events()
+                if self.__running:
+                    self.__check_for_player_two()
+                    self.__handle_incidents()
+                    self.__failed_incident_max -= self.__update_game_elements(delta_time)
+                    self.__update_display()
 
-                self.__running = False
-            elif self.__failed_incident_max <= 0 : #perdu
-                print("defeat")
+                if (self.__countdown.timeout() and self.__failed_incident_max >= 0) : # passe de niveau
+                    print(self.__level_num)
+                    self.__running = False
+                    self.__level_num +=1
+                    new_level = True
+                elif self.__failed_incident_max <= 0 : #perdu
+                    #mettre ecran de defaite
+                    print("defeat")
+                    # Ecran defaite (game over)
+                    splash_image = pygame.image.load("img\game_over.png")
+                    origin_x = (settings.SCREEN_WIDTH/2) - (splash_image.get_width()/2)
+                    origin_y = (settings.SCREEN_HEIGHT/2) - (splash_image.get_height()/2)
+                    self.__screen.blit(splash_image, (origin_x, origin_y))
 
-                # Ecran defaite (game over)
-                splash_image = pygame.image.load("img\game_over.png")
-                origin_x = (settings.SCREEN_WIDTH/2) - (splash_image.get_width()/2)
-                origin_y = (settings.SCREEN_HEIGHT/2) - (splash_image.get_height()/2)
-                self.__screen.blit(splash_image, (origin_x, origin_y))
+                    pygame.display.update()
+                    time.sleep(5)
 
-                pygame.display.update()
-                time.sleep(5)
+                    self.__screen.fill((0,0,0))
+                    time.sleep(5)
 
-                self.__screen.fill((0,0,0))
-                time.sleep(5)
-                
-
-                self.__running = False
+                    self.__running = False
 
 
-        self.__level.stop()
-        incidents.spawner.stop()
+            self.__level.stop()
+
+            if self.__level_num <= 3 :
+                self.__level = self.__load_level(self.__level_num)
+                self.__views = self.__setup_views(self.__level)
+            else:
+                victoire = True
 
         music.stop()
         self.__fps.stop()

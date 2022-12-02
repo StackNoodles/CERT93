@@ -23,6 +23,18 @@ from countdown import Countdown
 from pygame.locals import JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONUP, JOYBUTTONDOWN, JOYAXISMOTION, KEYUP, KEYDOWN
 
 
+def end_screen(screen: pygame.display.set_mode, image_path: str, sleep_time: int):
+    splash_image = pygame.image.load(image_path)
+    origin_x = (settings.SCREEN_WIDTH / 2) - \
+                (splash_image.get_width() / 2)
+    origin_y = (settings.SCREEN_HEIGHT / 2) - \
+                (splash_image.get_height() / 2)
+    screen.blit(splash_image, (origin_x, origin_y))
+
+    pygame.display.update()
+    time.sleep(sleep_time)
+
+
 class Game:
     """ Une partie. """
 
@@ -85,7 +97,6 @@ class Game:
 
             self.__running = True
             while self.__running:
-                print("runnig loop")
                 now = time.time()
                 delta_time = now - previous_time
                 previous_time = now
@@ -107,15 +118,7 @@ class Game:
                 elif self.__failed_incident_max <= 0:  # perdu
                     print("defeat")
                     # Ecran defaite (game over)
-                    splash_image = pygame.image.load("img\game_over.png")
-                    origin_x = (settings.SCREEN_WIDTH / 2) - \
-                               (splash_image.get_width() / 2)
-                    origin_y = (settings.SCREEN_HEIGHT / 2) - \
-                               (splash_image.get_height() / 2)
-                    self.__screen.blit(splash_image, (origin_x, origin_y))
-
-                    pygame.display.update()
-                    time.sleep(5)
+                    end_screen(self.__screen,"img\game_over.png", 5)
 
                     self.__running = False
                     defaite = True
@@ -129,13 +132,7 @@ class Game:
                 victoire = True
                 print("victory")
                 # Ecran victoire
-                splash_image = pygame.image.load("img\mission_complete.png")
-                origin_x = (settings.SCREEN_WIDTH / 2) - (splash_image.get_width() / 2)
-                origin_y = (settings.SCREEN_HEIGHT / 2) - (splash_image.get_height() / 2)
-                self.__screen.blit(splash_image, (origin_x, origin_y))
-
-                pygame.display.update()
-                time.sleep(5)
+                end_screen(self.__screen, "img\mission_complete.png", 5)
 
         self.quit_game()
 

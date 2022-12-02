@@ -21,6 +21,7 @@ class Incident(Thread):
         :param expertise: type de l'incident (expertise sollicitée)
         :param time_to_solve: temps de résolution permis (en secondes)
         """
+        print(expertise)
         super().__init__()
 
         self.__expertise = expertise

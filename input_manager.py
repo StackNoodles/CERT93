@@ -92,8 +92,7 @@ class __InputManager:
         if self.get_gamepad_count() == 1:
             # Un seul gamepad -> on l'assigne au joueur 1
             self.__joysticks = [pygame.joystick.Joystick(0), ]
-            self.__player_one_instance_id = self.__joysticks[0].get_instance_id(
-            )
+            self.__player_one_instance_id = self.__joysticks[0].get_instance_id()
             self.__player_two_instance_id = self.__INVALID_INSTANCE_ID
         elif self.get_gamepad_count() == 2:
             # Deux gamepads -> on tente de préserver les identifiants connus

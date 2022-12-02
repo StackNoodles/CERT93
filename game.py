@@ -97,7 +97,6 @@ class Game:
                     self.__level_num +=1
                     new_level = True
                 elif self.__failed_incident_max <= 0 : #perdu
-                    #mettre ecran de defaite
                     print("defeat")
                     # Ecran defaite (game over)
                     splash_image = pygame.image.load("img\game_over.png")
@@ -106,9 +105,6 @@ class Game:
                     self.__screen.blit(splash_image, (origin_x, origin_y))
 
                     pygame.display.update()
-                    time.sleep(5)
-
-                    self.__screen.fill((0,0,0))
                     time.sleep(5)
 
                     self.__running = False
@@ -121,6 +117,15 @@ class Game:
                 self.__views = self.__setup_views(self.__level)
             else:
                 victoire = True
+                print("victory")
+                # Ecran victoire
+                splash_image = pygame.image.load("img\mission_complete.png")
+                origin_x = (settings.SCREEN_WIDTH/2) - (splash_image.get_width()/2)
+                origin_y = (settings.SCREEN_HEIGHT/2) - (splash_image.get_height()/2)
+                self.__screen.blit(splash_image, (origin_x, origin_y))
+
+                pygame.display.update()
+                time.sleep(5)
 
         music.stop()
         self.__fps.stop()

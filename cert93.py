@@ -40,10 +40,10 @@ def __run_game() -> None:
     win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), 0, win32con.LWA_COLORKEY)
 
     # Splash logo dev
-    splash_screen("img\logo_stacknoodles.png", 2, screen)
+    splash_screen("img\logo_stacknoodles.png", 1, screen)
 
     # Splash screen logo jeu
-    splash_screen("img\logo_cert93.png", 3, screen)
+    splash_screen("img\logo_cert93.png", 2, screen)
 
     # Enlever les settings d'opacité à la fenêtre layered
     win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), 255, win32con.LWA_ALPHA)

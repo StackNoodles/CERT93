@@ -1,4 +1,5 @@
 import random
+import sys
 
 import pygame
 import time
@@ -39,6 +40,7 @@ class Game:
         self.__running = False
 
         self.__score = Score()
+        self.__music = resources.sounds_collection.get('BACKGROUND-MUSIC')
 
         self.__countdown = Countdown()
 
@@ -65,8 +67,7 @@ class Game:
         defaite = False
         new_level = False
         previous_time = time.time()
-        music = resources.sounds_collection.get('BACKGROUND-MUSIC')
-        music.play(-1)
+        self.__music.play(-1)
 
         self.__level.office.enable_ambience()
         incidents.spawner.start()
@@ -136,11 +137,7 @@ class Game:
                 pygame.display.update()
                 time.sleep(5)
 
-
-
-        music.stop()
-        self.__fps.stop()
-        self.__countdown.stop()
+        self.quit_game()
 
     def __load_level(self, number: int) -> Level:
         """
@@ -197,6 +194,15 @@ class Game:
 
         return view
 
+    def quit_game(self):
+        print("QUIT")
+        incidents.spawner.stop()
+        self.__music.stop()
+        self.__fps.stop()
+        self.__countdown.stop()
+        pygame.quit()
+        sys.exit()
+
     def __handle_events(self) -> None:
         """
         Gère les événements envoyés par l'engin pygame.
@@ -204,8 +210,10 @@ class Game:
         """
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.quit_game()
                 self.__running = False
-                return
+
+
 
             if event.type in [KEYDOWN, KEYUP]:
                 input_manager.inputs.manage_keyboard_event(event)

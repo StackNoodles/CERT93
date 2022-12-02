@@ -32,7 +32,8 @@ class Countdown(Thread):
         if self.__time <= 0:
             return True
         return False
-
+    def reset_timer(self):
+        self.__time = settings.TIME_PER_LEVEL
     def get(self) -> pygame.Surface:
         """
         Retourne une surface pour l'affichage du minuteur.

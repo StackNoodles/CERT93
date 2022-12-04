@@ -69,7 +69,7 @@ class Asset:
             self._active_incident.stop()
             self._active_incident = None
 
-    def draw(self, destination: pygame.Surface) -> None:
+    def draw(self, destination: pygame.Surface, display_name) -> None:
         """
         Dessine l'actif (et l'incident qui l'affecte s'il y en a un).
         :param destination: surface sur laquelle dessiner l'actif
@@ -78,6 +78,8 @@ class Asset:
         # Dessin de l'actif
         asset_surface = resources.assets_collection.get(self._asset_id)
         destination.blit(asset_surface, self._position)
+        font = pygame.font.SysFont(None, 24)
+
 
         # Dessin de l'incident, s'il y a lieu
         if self._active_incident:
@@ -89,6 +91,9 @@ class Asset:
             x, y = self._position
             position = x + offset, y + offset
             destination.blit(incident_surface, position)
+        if display_name:
+            text_char = font.render(self._name, True, (255, 255, 255))
+            destination.blit(text_char, (self._position))
 
     def set_incoming_action(self, action: Callable) -> None:
         """

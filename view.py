@@ -26,7 +26,7 @@ class View:
 
         self.__office = office
 
-        office_surface = office.get_image()
+        office_surface = office.get_image(False)
         self.__office_width = office_surface.get_width()
         self.__office_height = office_surface.get_height()
 
@@ -76,13 +76,13 @@ class View:
         x, y = pixel_center
         self.__screen_rect = self.__center_to_rect(x, y)
 
-    def draw(self) -> None:
+    def draw(self , display_name) -> None:
         """ Dessine la vue à l'écran. """
         # nettoyage de la surface d'extraction
         self.__padded_office_surface.fill((0, 0, 0))
 
         # "ajout" des marges noires autour du bureau
-        self.__padded_office_surface.blit(self.__office.get_image(),
+        self.__padded_office_surface.blit(self.__office.get_image(display_name),
                                           (self.__screen.get_width(), self.__screen.get_height()))
 
         # calcul de la zone à extraire

@@ -28,7 +28,7 @@ class Character:
         # On positionne le personnage au centre de la tuile
         self.__feet_position = x + (tile_width / 2), y + (tile_height/2)
 
-    def draw(self, destination: pygame.Surface) -> None:
+    def draw(self, destination: pygame.Surface , display_name) -> None:
         """
         Dessine le personnage.
         :param destination: surface sur laquelle dessiner le personnage
@@ -42,9 +42,9 @@ class Character:
         y = self.__feet_position[1] - image.get_height()
 
         destination.blit(image, (x, y))
-
-        text_char = font.render(self.__name,True,(255, 255, 255))
-        destination.blit(text_char, (x- text_char.get_width() /2, y + image.get_height()))
+        if display_name:
+            text_char = font.render(self.__name,True,(255, 255, 255))
+            destination.blit(text_char, (x- text_char.get_width() /2, y + image.get_height()))
     def compute_next_feet_position(self, movement: tuple, delta_time: float) -> tuple:
         """
         Calcule une position des pieds projetée à partir du positionnement courant et d'un déplacement.

@@ -79,7 +79,7 @@ class __InputManager:
                                    'switch_plus': pygame.K_2, 'switch_minus': pygame.K_1, 'action': pygame.K_f, 'show_name':pygame.K_n}
 
     __INPUT_KEYBOARD_PLAYER_TWO = {'up': pygame.K_UP, 'down': pygame.K_DOWN, 'right': pygame.K_RIGHT, 'left': pygame.K_LEFT,
-                                   'switch_plus': pygame.K_0, 'switch_minus': pygame.K_9, 'action': pygame.K_p, 'show_name':pygame.K_n}
+                                   'switch_plus': pygame.K_0, 'switch_minus': pygame.K_9, 'action': pygame.K_p, 'show_name': pygame.K_NUMLOCK}
 
     __PLAYER_ONE = 0
     __PLAYER_TWO = 1
@@ -209,7 +209,11 @@ class __InputManager:
         elif event.key == INPUT_KEYBOARD['action']:
             player_input.solve_button = True
         elif event.key == INPUT_KEYBOARD['show_name']:
-            player_input.show_name = True
+            if player_input.show_name :
+                player_input.show_name = False
+            else:
+                player_input.show_name = True
+
 
     def trigger_event_keyboard_up(self, event, player_input, INPUT_KEYBROAD):
         """
@@ -239,8 +243,8 @@ class __InputManager:
             player_input.focus_prev_button = False
         elif event.key == INPUT_KEYBROAD['action']:
             player_input.solve_button = False
-        elif event.key == INPUT_KEYBROAD['show_name']:
-            player_input.show_name = False
+        # elif event.key == INPUT_KEYBROAD['show_name']:
+        #     player_input.show_name = False
     def manage_gamepad_event(self, event: pygame.event) -> None:
         """
         Gère un événement de contrôleur de jeu (gamepad).

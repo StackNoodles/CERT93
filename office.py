@@ -168,7 +168,7 @@ class Office:
             self.__ambience_sound.play(-1)
             self.__ambience_enabled = True
 
-    def get_image(self) -> pygame.Surface:
+    def get_image(self, display_name) -> pygame.Surface:
         """
         Retourne l'image du bureau incluant les actifs et les personnages.
         :return: surface représentant une image du bureau
@@ -177,10 +177,10 @@ class Office:
         combined = self.__surface.copy()
 
         for asset in self.__assets.values():
-            asset.draw(combined)
+            asset.draw(combined, display_name)
 
         for character in self.__characters.values():
-            character.draw(combined)
+            character.draw(combined, display_name)
 
         return combined
 

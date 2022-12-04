@@ -41,7 +41,7 @@ class Game:
 
         self.__running = False
 
-
+        self.__display_name = False
 
         self.__score = Score()
         self.__music = resources.sounds_collection.get('BACKGROUND-MUSIC')
@@ -268,7 +268,7 @@ class Game:
         self.__move_characters_if_needed(delta_time)
         self.__solve_incidents_if_needed()
         self.__execute_tile_action_if_needed()
-
+        self.__display_name_action()
         for asset in self.__level.assets:
             timeoutIndicents += asset.update()
 
@@ -286,7 +286,19 @@ class Game:
 
         # Affichade de la ou les vues sur le bureau (donc du bureau, des actifs et des personnages)
         for view in self.__views.values():
-            view.draw()
+            view.draw(self.__display_name)
+
+        # if input_manager.inputs.player_input.show_name:
+        # for char in self.__level.characters:
+        #     text_char = self.value_diplay(char.name)
+        #     position = char.feet_position
+        #
+        #     self.__screen.blit(text_char, position)
+        #
+        # for asset in self.__level.assets:
+        #     text_asset = self.value_diplay(asset.name)
+        #     position = asset.center_position
+        #     self.__screen.blit(text_asset, position)
 
         # Affichage du countdown
         countdown_surface = self.__countdown.get()
@@ -518,3 +530,12 @@ class Game:
                     distance_found = distance
 
         return asset_found
+
+    def __display_name_action(self):
+
+        for player in self.__players:
+            inputs = input_manager.inputs.player_input(player.number)
+            if inputs.show_name:
+                self.__display_name = True
+            else:
+                self.__display_name = False

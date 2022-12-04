@@ -60,7 +60,6 @@ class Game:
 
         self.__fps = FPS()
 
-        self.__current_incident_text = ""
         self.__incident_timer = pygame.time.get_ticks()
 
         self.__active_tiles = []
@@ -95,10 +94,10 @@ class Game:
             print(defaite)
 
             if new_level:
-                self.__current_incident_text = ""
                 self.__level.office.enable_ambience()
                 self.__countdown.reset_timer()
                 incidents.spawner.unpause()
+                self.__current_incident = ""
                 self.__failed_incident_max = settings.MAX_MISTAKES
                 new_level = False
 

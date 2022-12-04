@@ -308,7 +308,7 @@ class Game:
         #Affichage incident
         if pygame.time.get_ticks() < self.__incident_timer:
             font = pygame.font.Font(pygame.font.get_default_font(), 20)
-            incident_surface = font.render(self.__current_incident_text, True, (255, 114, 118))
+            incident_surface = font.render(self.__current_incident, True, (255, 114, 118))
 
             display_time_left = self.__incident_timer - pygame.time.get_ticks()
 

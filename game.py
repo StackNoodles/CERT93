@@ -313,7 +313,7 @@ class Game:
 
             self.__screen.blit(incident_surface, (100, 100),)
 
-        # Affichage directions
+        # Affichage fleches directionnelles
         self.__update_arrow()
 
         # Basculement de tampon (donc affichage de l'écran)
@@ -329,52 +329,73 @@ class Game:
 
         for view, player in zip(self.__views.values(), self.__players):
             for character in self.__level.characters:
-                # Si un personnage est hors de l'ecran
-                if (character.feet_position[0] > player.character.feet_position[0] + view.view_width / 2 or 
-                    character.feet_position[1] > player.character.feet_position[1] + view.view_heigth / 2 or 
-                    character.feet_position[0] < player.character.feet_position[0] - view.view_width / 2 or 
-                    character.feet_position[1] < player.character.feet_position[1] - view.view_heigth / 2 ):
+                pass
+                # self.__draw_arrow(character.feet_position, player, view, None)
 
-                    # Calcul de la position des personnages en fonction du centre de chaque ecran
-                    # On veut limiter la fleches aux limites de l'ecran
+            for asset in self.__level.assets:
+                if asset.active_incident:
+                    self.__draw_arrow(asset.center_position, player, view, asset.image_incident)
 
-                    # Largeur
-                    if character.feet_position[0] - player.character.feet_position[0] < view.view_width / 2 :
-                        if character.feet_position[0] - player.character.feet_position[0] > -view.view_width / 2 :
-                            transformation_x = character.feet_position[0] - player.character.feet_position[0]
-                        else :
-                            transformation_x = - view.view_width / 2 
-                    else : 
-                        # - 15 pour raprocher la fleche de l'ecran
-                        transformation_x = view.view_width / 2 - 15
+    
+    def __draw_arrow(self, position : tuple, player : Player, view : View, icon : pygame.Surface) -> None:
+        """
+        Dessine une fleche sur un ecran donné en fonction d'une position cible
+        :param position: La position cible vers laquelle orienter la fleche
+        :param player: Le joueur de qui part la fleche
+        :param view: La vue sur laquelle afficher la fleche
+        :param icon: L'icone à afficher avec la fleche
+        :return: aucun
+        """
+        # Si la position cible est hors de l'ecran
+        if (position[0] > player.character.feet_position[0] + view.view_width / 2 or 
+            position[1] > player.character.feet_position[1] + view.view_heigth / 2 or 
+            position[0] < player.character.feet_position[0] - view.view_width / 2 or 
+            position[1] < player.character.feet_position[1] - view.view_heigth / 2 ):
 
-                    # Hauteur
-                    if character.feet_position[1] - player.character.feet_position[1] < view.view_heigth / 2 :
-                        if character.feet_position[1] - player.character.feet_position[1] > -view.view_heigth / 2 :
-                            transformation_y = character.feet_position[1] - player.character.feet_position[1]
-                        else :
-                            transformation_y = - view.view_heigth / 2
-                    else : 
-                        # - 15 pour raprocher la fleche de l'ecran
-                        transformation_y = view.view_heigth / 2 - 15
+            # Calcul de la position de la position cible en fonction du centre de chaque ecran
+            # On veut limiter la fleches aux limites de l'ecran
 
-                    # Calcul de l'angle de rotation
-                    vector_y = character.feet_position[1] - player.character.feet_position[1]
-                    vector_x = character.feet_position[0] - player.character.feet_position[0]
-                    # - car sens anti horaire, +90 car atan2 par de la droite alors qu'on veut partir du top
-                    angle = - (math.degrees(math.atan2(vector_y, vector_x)) + 90)
+            # Calculs des vecteurs
+            vector_x = position[0] - player.character.feet_position[0]
+            vector_y = position[1] - player.character.feet_position[1]
 
-                    # Rotation de la fleche en fonction de l'angle
-                    rotated_arrow = pygame.transform.rotate(self.__arrow, angle)
+            # Largeur
+            if vector_x < -view.view_width / 2 :
+                vector_x = - view.view_width / 2 
+            elif vector_x > view.view_width / 2 :
+                # - 15 pour raprocher la fleche de l'ecran
+                vector_x = view.view_width / 2 - 15
 
-                    # Affichage en fonction de l'ecran
-                    if view == self.__views[0]:
-                        self.__screen.blit(rotated_arrow, ((self.__screen.get_width() / (2 * len(self.__players)) + transformation_x), 
-                                                          self.__screen.get_height() / 2 + transformation_y),)
-                    else:
-                        self.__screen.blit(rotated_arrow, ((3 * self.__screen.get_width() / (2 * len(self.__players)) + transformation_x), 
-                                                          self.__screen.get_height() / 2 + transformation_y),)
+            # Hauteur
+            if vector_y < -view.view_heigth / 2 :
+                vector_y = - view.view_heigth / 2
+            elif vector_y > view.view_heigth / 2 :
+                # - 15 pour raprocher la fleche de l'ecran
+                vector_y = view.view_heigth / 2 - 15
 
+            # Calcul de l'angle de rotation
+            # - car sens anti horaire, +90 car atan2 par de la droite alors qu'on veut partir du top
+            angle = - (math.degrees(math.atan2(vector_y, vector_x)) + 90)
+
+            # Rotation de la fleche en fonction de l'angle
+            rotated_arrow = pygame.transform.rotate(self.__arrow, angle)
+
+            # Coordonées de la fleche en fonction de l'ecran
+            if view == self.__views[0]:
+                multiplier = 1
+            else:
+                multiplier = 3
+            arrow_x = (multiplier * self.__screen.get_width() / (2 * len(self.__players))) + vector_x
+            arrow_y = (self.__screen.get_height() / 2) + vector_y
+
+            # Coordonées pour l'icone (trouver une solution plus jolie si possible)
+            icon_x = arrow_x - vector_x * 0.05
+            icon_y = arrow_y - vector_y * 0.07
+
+            # Affichage en fonction de l'ecran
+            self.__screen.blit(icon, (icon_x, icon_y))
+            self.__screen.blit(rotated_arrow, (arrow_x, arrow_y))
+    
     def __value_diplay(self, string_display) -> pygame.Surface:
         default_font_name = pygame.font.get_default_font()
 

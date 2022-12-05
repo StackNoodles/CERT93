@@ -21,13 +21,15 @@ class Incident(Thread):
         :param time_to_solve: temps de résolution permis (en secondes)
         """
         super().__init__()
-        self.__percent_25_notif = False;
-        self.__percent_10_notif = False;
+        self.__percent_25_notif = False
+        self.__percent_10_notif = False
         self.__expertise = expertise
         self.__time_to_solve = time_to_solve
         self.__remaining_time = time_to_solve
-        self.__25_percent_sound = resources.sounds_collection.get('PERCENT_25_ALERT')
-        self.__10_percent_sound = resources.sounds_collection.get('PERCENT_10_ALERT')
+        self.__25_percent_sound = resources.sounds_collection.get(
+            'PERCENT_25_ALERT')
+        self.__10_percent_sound = resources.sounds_collection.get(
+            'PERCENT_10_ALERT')
 
         # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
         self.__event = Event()

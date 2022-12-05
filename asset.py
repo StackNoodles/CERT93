@@ -198,3 +198,13 @@ class Asset:
     @property
     def tile_position(self) -> tuple:
         return self._tile_position
+
+    @property
+    def active_incident(self) -> Incident:
+        return self._active_incident
+
+    @property
+    def image_incident(self) -> pygame.Surface:
+        incident_type = self._active_incident.expertise
+        incident_surface = resources.incidents_collection.get(self._timer_id, incident_type)
+        return incident_surface

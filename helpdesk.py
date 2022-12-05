@@ -25,7 +25,7 @@ class Helpdesk(Asset):
         self.__incident_types.remove(Expertise.SUPERHERO)
         # on ne crée pas non plus d'incidents pour le centre d'appels - il faut quand même s'aider...
         self.__incident_types.remove(Expertise.HELPDESK)
-
+        
         self.__phone_sound = resources.sounds_collection.get(
             'HELPDESK-PHONE-RING')
         self._solve_sound = resources.sounds_collection.get(

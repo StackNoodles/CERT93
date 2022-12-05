@@ -18,6 +18,8 @@ class Error_codes(IntEnum):
     SOUND_AMBIENCE = 505
     SOUND_MUSIC = 506
     SOUND_SQUEAK = 507
+    SOUND_25_LEFT = 508
+    SOUND_10_LEFT = 509
 
 
 ERROR_CODES_TEXT = {
@@ -36,4 +38,6 @@ ERROR_CODES_TEXT = {
     Error_codes.SOUND_AMBIENCE: "Erreur lors du chargement du son d'ambience de burreau",
     Error_codes.SOUND_MUSIC: "Erreur lors du chargement de la musique de fond",
     Error_codes.SOUND_SQUEAK: "Erreur lors du chargement du bruit mystère",
+    Error_codes.SOUND_25_LEFT: "Erreur lors du chargement de l'alerte 25 restant",
+    Error_codes.SOUND_10_LEFT: "Erreur lors du chargement du l'alerte 10 restant",
 }

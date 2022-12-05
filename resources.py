@@ -369,6 +369,27 @@ class __SoundsCollection:
             return Error_codes.SOUND_SQUEAK
         self.__sounds['SQUEAKY_TOY_SOUND'] = sound
 
+        #Chargement son alarme 25%
+        try:
+            sound = pygame.mixer.Sound(settings.PERCENT_25_ALERT_FILENAME)
+        except:
+            return Error_codes.SOUND_25_LEFT
+
+        if not sound:
+            return Error_codes.SOUND_25_LEFT
+        self.__sounds['PERCENT_25_ALERT'] = sound
+
+        #Chargement son alarme 10%
+        try:
+            sound = pygame.mixer.Sound(settings.PERCENT_10_ALERT_FILENAME)
+        except:
+            return Error_codes.SOUND_10_LEFT
+
+        if not sound:
+            return Error_codes.SOUND_10_LEFT
+        self.__sounds['PERCENT_10_ALERT'] = sound
+
+        #Renvoi des codes d'erreur
         return Error_codes.SUCCES
 
     def get(self, name: str) -> pygame.mixer.Sound or None:

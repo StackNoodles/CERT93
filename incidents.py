@@ -21,13 +21,13 @@ class Incident(Thread):
         :param time_to_solve: temps de résolution permis (en secondes)
         """
         super().__init__()
-        self.__25_percent_notif = False;
-        self.__10_percent_notif = False;
+        self.__percent_25_notif = False;
+        self.__percent_10_notif = False;
         self.__expertise = expertise
         self.__time_to_solve = time_to_solve
         self.__remaining_time = time_to_solve
-        self.__25_percent_sound = resources.sounds_collection.get('SQUEAKY_TOY_SOUND')
-        self.__10_percent_sound = resources.sounds_collection.get('SQUEAKY_TOY_SOUND')
+        self.__25_percent_sound = resources.sounds_collection.get('PERCENT_25_ALERT')
+        self.__10_percent_sound = resources.sounds_collection.get('PERCENT_10_ALERT')
 
         # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
         self.__event = Event()
@@ -42,14 +42,14 @@ class Incident(Thread):
                 self.__remaining_time -= now - previous_time
                 if self.__remaining_time < 0:
                     self.__remaining_time = 0
-                elif self.__remaining_time <= (self.__time_to_solve/4) and self.expertise != Expertise.HELPDESK and self.__25_percent_notif is False:
+                elif self.__remaining_time <= (self.__time_to_solve/4) and self.expertise != Expertise.HELPDESK and self.__percent_25_notif is False:
                     print("25% time left")
                     self.__25_percent_sound.play()
-                    self.__25_percent_notif = True
-                elif self.__remaining_time <= (self.__time_to_solve/10) and self.expertise != Expertise.HELPDESK and self.__10_percent_notif is False:
+                    self.__percent_25_notif = True
+                elif self.__remaining_time <= (self.__time_to_solve/10) and self.expertise != Expertise.HELPDESK and self.__percent_10_notif is False:
                     print("10% time left")
                     self.__10_percent_sound.play()
-                    self.__10_percent_notif = True
+                    self.__percent_10_notif = True
             previous_time = now
 
             self.__event.wait(INCIDENT_TICK)

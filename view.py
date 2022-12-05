@@ -122,3 +122,13 @@ class View:
     @property
     def screen_rect(self) -> pygame.Rect:
         return self.__screen_rect
+
+    @property
+    def view_width(self) -> int:
+        return self.__screen_rect.width
+
+    @property
+    def view_heigth(self) -> int:
+        return self.__screen_rect.height
+
+    

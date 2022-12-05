@@ -17,6 +17,7 @@ CHARACTERS_FILENAME = config.get("Images", "CHARACTERS_FILENAME")
 TILES_FILENAME = config.get("Images", "TILES_FILENAME")
 ASSETS_FILENAME = config.get("Images", "ASSETS_FILENAME")
 INCIDENTS_FILENAME = config.get("Images", "INCIDENTS_FILENAME")
+ARROW_FILENAME = config.get("Images", "ARROW_FILENAME")
 
 OFFICE_FILENAME = config.get("Assets", "OFFICE_FILENAME")
 

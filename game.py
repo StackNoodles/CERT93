@@ -90,8 +90,6 @@ class Game:
         incidents.spawner.start()
 
         while victoire == False and defaite == False:
-            print("Starting loop")
-            print(defaite)
 
             if new_level:
                 self.__level.office.enable_ambience()
@@ -117,12 +115,10 @@ class Game:
                     self.__update_display()
 
                 if (self.__countdown.timeout() and self.__failed_incident_max >= 0):  # passe de niveau
-                    print(self.__level_num)
                     self.__running = False
                     self.__level_num += 1
                     new_level = True
                 elif self.__failed_incident_max <= 0:  # perdu
-                    print("defeat")
                     # Ecran defaite (game over)
                     self.end_screen("img\game_over.png", 5)
 
@@ -136,7 +132,6 @@ class Game:
                 self.__views = self.__setup_views(self.__level)
             else:
                 victoire = True
-                print("victory")
                 # Ecran victoire
                 self.end_screen("img\mission_complete.png", 5)
 
@@ -198,7 +193,6 @@ class Game:
         return view
 
     def quit_game(self):
-        print("QUIT")
         incidents.spawner.stop()
         self.__music.stop()
         self.__fps.stop()

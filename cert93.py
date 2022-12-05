@@ -8,6 +8,7 @@ import resources
 import settings
 import time
 
+# pip install pypiwin32s
 import win32api
 import win32con
 import win32gui

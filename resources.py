@@ -210,6 +210,47 @@ class __AssetsCollection:
         return None
 
 
+class __Arrow:
+    """ Collection d'actifs (assets) utilisée par l'objet global assets_collection (voir plus bas). """
+
+    def __init__(self) -> None:
+        self.__surfaces = None
+
+    def init(self) -> Error_codes:
+        """
+        Initialise l'instance unique de resources.assets_collection.
+        La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
+        aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
+        importations terminées.
+        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
+        """
+
+        # charge l'image contenant tous les actifs
+        try:
+            arrow_sheet = pygame.image.load(
+                settings.ARROW_FILENAME).convert_alpha()
+        except:
+            return Error_codes.IMG_ARROW
+
+        if not arrow_sheet:
+            return Error_codes.IMG_ARROW
+
+        height = width = arrow_sheet.get_height()
+        asset_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        asset_surface.blit(arrow_sheet, (0, 0),)
+        self.__surface = asset_surface
+
+        return Error_codes.SUCCES
+
+    def get(self) -> pygame.Surface or None:
+        """
+        Retourne la surface correspondant à l'identifiant de l'actif (asset_id).
+        :param asset_id: identifiant d'actif
+        :return: la surface si disponible, None sinon
+        """
+        assert self.__surface
+        return self.__surface
+
 class __IncidentsCollection:
     """
     Collection de minuteries et d'icônes pour les incidents utilisée par l'objet global incidents_collection
@@ -397,6 +438,9 @@ incidents_collection = None
 # collection de sons (singleton du GoF implémenté avec un Global Object Pattern de python)
 sounds_collection = None
 
+# Image de fleche
+arrow = None
+
 
 def init() -> Error_codes:
     """ Initialise l'ensemble des ressources. """
@@ -433,6 +477,13 @@ def init() -> Error_codes:
     if not sounds_collection:
         sounds_collection = __SoundsCollection()
         return_code = sounds_collection.init()
+        if return_code != Error_codes.SUCCES:
+            return return_code
+
+    global arrow
+    if not arrow:
+        arrow = __Arrow()
+        return_code = arrow.init()
         if return_code != Error_codes.SUCCES:
             return return_code
 

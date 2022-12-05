@@ -18,6 +18,7 @@ class Error_codes(IntEnum):
     SOUND_AMBIENCE = 505
     SOUND_MUSIC = 506
     SOUND_SQUEAK = 507
+    IMG_ARROW = 601
 
 
 ERROR_CODES_TEXT = {
@@ -36,4 +37,5 @@ ERROR_CODES_TEXT = {
     Error_codes.SOUND_AMBIENCE: "Erreur lors du chargement du son d'ambience de burreau",
     Error_codes.SOUND_MUSIC: "Erreur lors du chargement de la musique de fond",
     Error_codes.SOUND_SQUEAK: "Erreur lors du chargement du bruit mystère",
+    Error_codes.IMG_ARROW: "Erreur lors du chargement de l'image de flèche",
 }

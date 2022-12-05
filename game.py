@@ -45,6 +45,7 @@ class Game:
 
         self.__score = Score()
         self.__music = resources.sounds_collection.get('BACKGROUND-MUSIC')
+        self.__arrow = resources.arrow.get()
 
         self.__countdown = Countdown()
 
@@ -281,29 +282,17 @@ class Game:
         for view in self.__views.values():
             view.draw(self.__display_name)
 
-        # if input_manager.inputs.player_input.show_name:
-        # for char in self.__level.characters:
-        #     text_char = self.value_diplay(char.name)
-        #     position = char.feet_position
-        #
-        #     self.__screen.blit(text_char, position)
-        #
-        # for asset in self.__level.assets:
-        #     text_asset = self.value_diplay(asset.name)
-        #     position = asset.center_position
-        #     self.__screen.blit(text_asset, position)
-
         # Affichage du countdown
         countdown_surface = self.__countdown.get()
         self.__screen.blit(countdown_surface, (0, 10))
 
         # Affichage des user errors
         self.__screen.blit(
-            self.value_diplay(f"Remaining mistakes : {self.__failed_incident_max} / {settings.MAX_MISTAKES}"),
+            self.__value_diplay(f"Remaining mistakes : {self.__failed_incident_max} / {settings.MAX_MISTAKES}"),
             (self.__screen.get_width() / 2, 30))
 
         # Affichage du score
-        self.__screen.blit(self.value_diplay(self.__score.get_score_display()), (self.__screen.get_width() / 2,0 ))
+        self.__screen.blit(self.__value_diplay(self.__score.get_score_display()), (self.__screen.get_width() / 2,0 ))
 
         # Affichage du FPS
         fps_surface = self.__fps.get()
@@ -323,11 +312,60 @@ class Game:
 
             self.__screen.blit(incident_surface, (100, 100),)
 
+        # Affichage directions
+        self.__update_arrow()
 
         # Basculement de tampon (donc affichage de l'écran)
         pygame.display.flip()
 
-    def value_diplay(self, string_display) -> pygame.Surface:
+    def __update_arrow(self) -> None:
+        """
+        Actualise la fleche directionnelle vers les incidents et personnages hors de l'ecran.
+        :return: aucun
+        """
+        if not self.__views:
+            return
+
+        for view, player in zip(self.__views.values(), self.__players):
+            for character in self.__level.characters:
+                # Si un personnage est hors de l'ecran
+                if (character.feet_position[0] > player.character.feet_position[0] + view.view_width / 2 or 
+                    character.feet_position[1] > player.character.feet_position[1] + view.view_heigth / 2 or 
+                    character.feet_position[0] < player.character.feet_position[0] - view.view_width / 2 or 
+                    character.feet_position[1] < player.character.feet_position[1] - view.view_heigth / 2 ):
+
+                    # Calcul de la position des personnages en fonction du centre de chaque ecran
+                    # On veut limiter la fleches aux limites de l'ecran
+
+                    # Largeur
+                    if character.feet_position[0] - player.character.feet_position[0] < view.view_width / 2 :
+                        if character.feet_position[0] - player.character.feet_position[0] > -view.view_width / 2 :
+                            transformation_x = character.feet_position[0] - player.character.feet_position[0]
+                        else :
+                            transformation_x = - view.view_width / 2 
+                    else : 
+                        # - 15 pour raprocher la fleche de l'ecran
+                        transformation_x = view.view_width / 2 - 15
+
+                    # Hauteur
+                    if character.feet_position[1] - player.character.feet_position[1] < view.view_heigth / 2 :
+                        if character.feet_position[1] - player.character.feet_position[1] > -view.view_heigth / 2 :
+                            transformation_y = character.feet_position[1] - player.character.feet_position[1]
+                        else :
+                            transformation_y = - view.view_heigth / 2
+                    else : 
+                        # - 15 pour raprocher la fleche de l'ecran
+                        transformation_y = view.view_heigth / 2 - 15
+
+                    # Affichage en fonction de l'ecran
+                    if view == self.__views[0]:
+                        self.__screen.blit(self.__arrow, ((self.__screen.get_width() / (2 * len(self.__players)) + transformation_x), 
+                                                          self.__screen.get_height() / 2 + transformation_y),)
+                    else:
+                        self.__screen.blit(self.__arrow, ((3 * self.__screen.get_width() / (2 * len(self.__players)) + transformation_x), 
+                                                          self.__screen.get_height() / 2 + transformation_y),)
+
+    def __value_diplay(self, string_display) -> pygame.Surface:
         default_font_name = pygame.font.get_default_font()
 
         self.__font = pygame.font.Font(default_font_name, 20)

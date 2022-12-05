@@ -43,11 +43,9 @@ class Incident(Thread):
                 if self.__remaining_time < 0:
                     self.__remaining_time = 0
                 elif self.__remaining_time <= (self.__time_to_solve/4) and self.expertise != Expertise.HELPDESK and self.__percent_25_notif is False:
-                    print("25% time left")
                     self.__25_percent_sound.play()
                     self.__percent_25_notif = True
                 elif self.__remaining_time <= (self.__time_to_solve/10) and self.expertise != Expertise.HELPDESK and self.__percent_10_notif is False:
-                    print("10% time left")
                     self.__10_percent_sound.play()
                     self.__percent_10_notif = True
             previous_time = now

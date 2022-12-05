@@ -1,3 +1,4 @@
+import math
 from multiprocessing import Event
 import random
 import sys
@@ -357,12 +358,21 @@ class Game:
                         # - 15 pour raprocher la fleche de l'ecran
                         transformation_y = view.view_heigth / 2 - 15
 
+                    # Calcul de l'angle de rotation
+                    vector_y = character.feet_position[1] - player.character.feet_position[1]
+                    vector_x = character.feet_position[0] - player.character.feet_position[0]
+                    # - car sens anti horaire, +90 car atan2 par de la droite alors qu'on veut partir du top
+                    angle = - (math.degrees(math.atan2(vector_y, vector_x)) + 90)
+
+                    # Rotation de la fleche en fonction de l'angle
+                    rotated_arrow = pygame.transform.rotate(self.__arrow, angle)
+
                     # Affichage en fonction de l'ecran
                     if view == self.__views[0]:
-                        self.__screen.blit(self.__arrow, ((self.__screen.get_width() / (2 * len(self.__players)) + transformation_x), 
+                        self.__screen.blit(rotated_arrow, ((self.__screen.get_width() / (2 * len(self.__players)) + transformation_x), 
                                                           self.__screen.get_height() / 2 + transformation_y),)
                     else:
-                        self.__screen.blit(self.__arrow, ((3 * self.__screen.get_width() / (2 * len(self.__players)) + transformation_x), 
+                        self.__screen.blit(rotated_arrow, ((3 * self.__screen.get_width() / (2 * len(self.__players)) + transformation_x), 
                                                           self.__screen.get_height() / 2 + transformation_y),)
 
     def __value_diplay(self, string_display) -> pygame.Surface:

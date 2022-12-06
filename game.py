@@ -387,7 +387,7 @@ class Game:
             arrow_x = (multiplier * self.__screen.get_width() / (2 * len(self.__players))) + vector_x
             arrow_y = (self.__screen.get_height() / 2) + vector_y
 
-            # Coordonées pour l'icone (trouver une solution plus jolie si possible)
+            # Coordonées pour l'icone (décalée de quelques %tages des bords de l'ecran, trouver une solution plus jolie si possible) 
             icon_x = arrow_x - vector_x * 0.05
             icon_y = arrow_y - vector_y * 0.07
 

@@ -18,7 +18,7 @@ class FPS(Thread):
         self.__fps = 0
 
         default_font_name = pygame.font.get_default_font()
-        self.__font = pygame.font.Font(default_font_name, DEFAULT_FONT_SIZE)
+        self.__font = pygame.font.Font(default_font_name, 15)
 
         self.__surface = None
 
@@ -38,7 +38,7 @@ class FPS(Thread):
         Retourne une surface pour l'affichage des FPS.
         :return: la surface qui contient le texte (FPS)
         """
-        fps_str = f"FPS = {self.__fps}"
+        fps_str = f"FPS:{self.__fps}"
         return self.__font.render(fps_str, True, (255, 255, 255))
 
     def run(self) -> None:

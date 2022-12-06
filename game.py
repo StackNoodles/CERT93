@@ -285,25 +285,25 @@ class Game:
 
         # Affichage du countdown
         countdown_surface = self.__countdown.get()
-        self.__screen.blit(countdown_surface, (0, 10))
-
-        # Affichage des user errors
-        self.__screen.blit(
-            self.__value_diplay(f"Remaining mistakes : {self.__failed_incident_max} / {settings.MAX_MISTAKES}"),
-            (self.__screen.get_width() / 2, 30))
+        self.__screen.blit(countdown_surface, (10, 10))
 
         # Affichage du score
-        self.__screen.blit(self.__value_diplay(self.__score.get_score_display()), (self.__screen.get_width() / 2,0 ))
+        score_surface = self.__value_diplay(self.__score.get_score_display())
+        self.__screen.blit(score_surface, ((self.__screen.get_width() / 2)-(score_surface.get_width()/2),10 ))
 
+        # Affichage des user errors
+        user_errors_surface = self.__value_diplay(f"Mistakes left : {self.__failed_incident_max} / {settings.MAX_MISTAKES}")
+        self.__screen.blit(user_errors_surface,(self.__screen.get_width()-user_errors_surface.get_width()-10, 10))
+
+    
         # Affichage du FPS
         fps_surface = self.__fps.get()
-        x = self.__screen.get_width() - fps_surface.get_width() - 10
-        self.__screen.blit(fps_surface, (x, 10))
+        self.__screen.blit(fps_surface, (10, self.__screen.get_height()-fps_surface.get_height()-10))
 
         #Affichage incident
         if pygame.time.get_ticks() < self.__incident_timer:
             font = pygame.font.Font(pygame.font.get_default_font(), 20)
-            incident_surface = font.render(self.__current_incident, True, (255, 114, 118))
+            incident_surface = font.render(self.__current_incident, True, (255, 45, 40))
 
             display_time_left = self.__incident_timer - pygame.time.get_ticks()
 
@@ -311,7 +311,7 @@ class Game:
                 alpha = (display_time_left)/12
                 incident_surface.set_alpha(alpha)
 
-            self.__screen.blit(incident_surface, (100, 100),)
+            self.__screen.blit(incident_surface, ((self.__screen.get_width() / 2)-(incident_surface.get_width()/2),(self.__screen.get_height() / 10 ) ),)
 
         # Affichage fleches directionnelles
         self.__update_arrow()

@@ -627,27 +627,26 @@ class Game:
         Pause tout les incidents, les mouvements, le timer et les taches
         :return: aucun
         """
-        self.__check_pause_pressed()
+        if self.__check_pause_pressed():
+            # On syncronise les pauses des joueurs
+            for player in self.__players:
+                inputs = input_manager.inputs.player_input(player.number)
+                inputs.pause = self.__is_paused
 
-        # On syncronise les pauses des joueurs
-        for player in self.__players:
-            inputs = input_manager.inputs.player_input(player.number)
-            inputs.pause = self.__is_paused
+            if self.__is_paused:
+                self.__countdown.pause()
+                incidents.spawner.pause()
+                for asset in self.__level.assets:
+                    if asset.active_incident:
+                        asset.pause_incident()
+            else:
+                self.__countdown.unpause()
+                incidents.spawner.unpause()
+                for asset in self.__level.assets:
+                    if asset.active_incident:
+                        asset.unpause_incident()
 
-        if self.__is_paused:
-            self.__countdown.pause()
-            incidents.spawner.pause()
-            for asset in self.__level.assets:
-                if asset.active_incident:
-                    asset.pause_incident()
-        else:
-            self.__countdown.unpause()
-            incidents.spawner.unpause()
-            for asset in self.__level.assets:
-                if asset.active_incident:
-                    asset.unpause_incident()
-
-    def __check_pause_pressed(self) -> None:
+    def __check_pause_pressed(self) -> bool:
         """Verifie si un des deux joueurs a changé l'état de pause"""
         inputs = []
         for player in self.__players:
@@ -655,10 +654,11 @@ class Game:
             for input in inputs:
                 if self.__is_paused and input.pause == False:
                     self.__is_paused = False
-                    return
+                    return True
                 elif not self.__is_paused and input.pause == True:
                     self.__is_paused = True
-                    return
+                    return True
+        return False
 
 
     def __display_name_action(self) -> None:

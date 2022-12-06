@@ -74,7 +74,7 @@ class __CharactersIconCollection:
         """
         # charge l'image contenant tout les icones
         try:
-            icons_sheet = pygame.image.load(settings.CHARACTERS_ICON_FILENAME).convert()
+            icons_sheet = pygame.image.load(settings.CHARACTERS_ICON_FILENAME).convert_alpha()
         except:
             return Error_codes.IMG_ICONES_CHAR
 

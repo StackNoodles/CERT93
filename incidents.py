@@ -34,13 +34,16 @@ class Incident(Thread):
         # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
         self.__event = Event()
 
+        self.__is_paused = False
+
     def run(self) -> None:
         """ Méthode principale exécutée par la tâche d'incident. """
+
         previous_time = time.time()
 
         while not self.__event.is_set():
             now = time.time()
-            if self.__remaining_time > 0:
+            if self.__remaining_time > 0 and not self.__is_paused:
                 self.__remaining_time -= now - previous_time
                 if self.__remaining_time < 0:
                     self.__remaining_time = 0
@@ -57,6 +60,14 @@ class Incident(Thread):
     def stop(self) -> None:
         """ Arrête la tâche d'incident. """
         self.__event.set()
+
+    def pause(self) -> None:
+        """ Pause la tâche. """
+        self.__is_paused = True
+
+    def unpause(self) -> None:
+        """ Relance la tâche. """
+        self.__is_paused = False
 
     def get_remaining_time_percentage(self) -> float:
         """

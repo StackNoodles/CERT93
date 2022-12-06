@@ -68,6 +68,8 @@ class Game:
 
         self.__active_tiles = []
 
+        self.__is_paused = False
+
     def end_screen(self, image_path: str, sleep_time: int):
         image = pygame.image.load(image_path)
         origin_x = (settings.SCREEN_WIDTH / 2) - \
@@ -113,8 +115,9 @@ class Game:
 
                 self.__handle_events()
                 if self.__running:
-                    self.__check_for_player_two()
-                    self.__handle_incidents()
+                    if not self.__is_paused:
+                        self.__check_for_player_two()
+                        self.__handle_incidents()
                     self.__failed_incident_max += self.__update_game_elements(
                         delta_time)
                     self.__update_display()
@@ -262,13 +265,18 @@ class Game:
         :return: aucun
         """
         timeoutIndicents = 0
-        self.__change_focus_if_needed()
-        self.__move_characters_if_needed(delta_time)
-        self.__solve_incidents_if_needed()
+
+        self.__pause_game_if_needed()
+
         self.__execute_tile_action_if_needed()
         self.__display_name_action()
-        for asset in self.__level.assets:
-            timeoutIndicents += asset.update()
+
+        if not self.__is_paused:
+            self.__change_focus_if_needed()
+            self.__move_characters_if_needed(delta_time)
+            self.__solve_incidents_if_needed()
+            for asset in self.__level.assets:
+                timeoutIndicents += asset.update()
 
         return timeoutIndicents
 
@@ -614,8 +622,44 @@ class Game:
 
         return asset_found
 
-    def __display_name_action(self):
+    def __pause_game_if_needed(self) -> None :
+        """
+        Pause tout les incidents, les mouvements, le timer et les taches
+        :return: aucun
+        """
+        inputs = []
+        for player in self.__players:
+            inputs.append(input_manager.inputs.player_input(player.number))
+            for input in inputs:
+                if self.__is_paused and input.pause == False:
+                    self.__is_paused = False
+                    break
+                elif not self.__is_paused and input.pause == True:
+                    self.__is_paused = True
+                    break
 
+        for input in inputs:
+            input.pause = self.__is_paused
+
+        if self.__is_paused:
+            self.__countdown.pause()
+            incidents.spawner.pause()
+            for asset in self.__level.assets:
+                if asset.active_incident:
+                    asset.pause_incident()
+        else:
+            self.__countdown.unpause()
+            incidents.spawner.unpause()
+            for asset in self.__level.assets:
+                if asset.active_incident:
+                    asset.unpause_incident()
+
+
+    def __display_name_action(self):
+        """
+        Affiche le nom des perssonages et des actifs
+        :return: aucun
+        """
         for player in self.__players:
             inputs = input_manager.inputs.player_input(player.number)
             if inputs.show_name:

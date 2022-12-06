@@ -125,6 +125,7 @@ class Asset:
         Pause l'incident en cours sur l'actif.
         :return: aucun
         """
+        self._active_incident.pause()
         self.__is_paused = True
 
     def unpause_incident(self) -> None:
@@ -132,6 +133,7 @@ class Asset:
         relance l'incident en cours sur l'actif.
         :return: aucun
         """
+        self._active_incident.unpause()
         self.__is_paused = False
 
     def stop_and_remove_all_incidents(self) -> None:

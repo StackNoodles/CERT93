@@ -38,7 +38,7 @@ class Game:
         self.__backdrop_surface = pygame.image.load(
             settings.BACKDROP_FILENAME).convert()
 
-        self.__failed_incident_max = settings.MAX_MISTAKES
+        self.__failed_incident_max = 0
 
         self.__running = False
 
@@ -63,6 +63,8 @@ class Game:
         self.__fps = FPS()
 
         self.__incident_timer = pygame.time.get_ticks()
+
+        self.__new_level_notification = pygame.time.get_ticks()+2000
 
         self.__active_tiles = []
 
@@ -97,8 +99,9 @@ class Game:
                 self.__level.office.enable_ambience()
                 self.__countdown.reset_timer()
                 incidents.spawner.unpause()
+                self.__new_level_notification = pygame.time.get_ticks()+2000
                 self.__current_incident = ""
-                self.__failed_incident_max = settings.MAX_MISTAKES
+                self.__failed_incident_max = 0
                 new_level = False
 
             self.__running = True
@@ -112,15 +115,15 @@ class Game:
                 if self.__running:
                     self.__check_for_player_two()
                     self.__handle_incidents()
-                    self.__failed_incident_max -= self.__update_game_elements(
+                    self.__failed_incident_max += self.__update_game_elements(
                         delta_time)
                     self.__update_display()
 
-                if (self.__countdown.timeout() and self.__failed_incident_max >= 0):  # passe de niveau
+                if (self.__countdown.timeout() and self.__failed_incident_max < 3):  # passe de niveau
                     self.__running = False
                     self.__level_num += 1
                     new_level = True
-                elif self.__failed_incident_max <= 0:  # perdu
+                elif self.__failed_incident_max >=3:  # perdu
                     # Ecran defaite (game over)
                     self.end_screen("img\game_over.png", 5)
 
@@ -288,11 +291,14 @@ class Game:
         self.__screen.blit(countdown_surface, (10, 10))
 
         # Affichage du score
-        score_surface = self.__value_diplay(self.__score.get_score_display())
+        score_surface = self.__value_display(self.__score.get_score_display())
         self.__screen.blit(score_surface, ((self.__screen.get_width() / 2)-(score_surface.get_width()/2),10 ))
 
         # Affichage des user errors
-        user_errors_surface = self.__value_diplay(f"Mistakes left : {self.__failed_incident_max} / {settings.MAX_MISTAKES}")
+        color = (255, 255, 255)
+        if(self.__failed_incident_max) > (settings.MAX_MISTAKES-2):
+            color = (255, 0, 0)
+        user_errors_surface = self.__font.render(f"MISTAKES MADE : {self.__failed_incident_max} / {settings.MAX_MISTAKES}", True, color)
         self.__screen.blit(user_errors_surface,(self.__screen.get_width()-user_errors_surface.get_width()-10, 10))
 
     
@@ -302,8 +308,7 @@ class Game:
 
         #Affichage incident
         if pygame.time.get_ticks() < self.__incident_timer:
-            font = pygame.font.Font(pygame.font.get_default_font(), 20)
-            incident_surface = font.render(self.__current_incident, True, (255, 45, 40))
+            incident_surface = self.__font.render(self.__current_incident, True, (255, 45, 40))
 
             display_time_left = self.__incident_timer - pygame.time.get_ticks()
 
@@ -313,6 +318,12 @@ class Game:
 
             self.__screen.blit(incident_surface, ((self.__screen.get_width() / 2)-(incident_surface.get_width()/2),(self.__screen.get_height() / 10 ) ),)
 
+        # Affichage notif nouveau niveau
+        if self.__new_level_notification > pygame.time.get_ticks():
+            font = pygame.font.Font(pygame.font.get_default_font(), 110)
+            new_level_surface = font.render("LEVEL "+ str(self.__level_num), True, (210, 210, 190))
+            self.__screen.blit(new_level_surface, ((self.__screen.get_width() / 2)-(new_level_surface.get_width()/2),(self.__screen.get_height() / 5 )),)
+            
         # Affichage fleches directionnelles
         self.__update_arrow()
 
@@ -395,7 +406,7 @@ class Game:
             self.__screen.blit(icon, (icon_x, icon_y))
             self.__screen.blit(rotated_arrow, (arrow_x, arrow_y))
     
-    def __value_diplay(self, string_display) -> pygame.Surface:
+    def __value_display(self, string_display) -> pygame.Surface:
         default_font_name = pygame.font.get_default_font()
 
         self.__font = pygame.font.Font(default_font_name, 20)

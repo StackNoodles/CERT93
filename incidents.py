@@ -81,11 +81,6 @@ class Incident(Thread):
 class __IncidentSpawner(Thread):
     """ Générateur d'incidents. """
 
-    # __DEFAULT_MIN_TIME_BETWEEN_INDICENTS = 1  # en secondes
-    # __DEFAULT_MAX_TIME_BETWEEN_INDICENTS = 30  # en secondes
-
-    # __TIME_BEFORE_FIRST_INCIDENT = 2  # en secondes
-
     def __init__(self) -> None:
         """ Initialise le générateur d'incidents. """
         super().__init__()

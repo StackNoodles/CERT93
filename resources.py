@@ -438,7 +438,7 @@ class __SoundsCollection:
 
         if not sound:
             return Error_codes.SOUND_AMBIENCE
-        sound.set_volume(0.25)
+        sound.set_volume(0.10)
         self.__sounds['OFFICE-AMBIENCE'] = sound
 
         try:
@@ -452,7 +452,7 @@ class __SoundsCollection:
         self.__sounds['BACKGROUND-MUSIC'] = sound
 
         try:
-            sound = pygame.mixer.Sound(settings.SQUEAKY_TOY_SOUND_FILENAME)
+            sound = pygame.mixer.Sound(settings.SQUEAKY_TILE_SOUND_FILENAME)
         except:
             return Error_codes.SOUND_SQUEAK
 

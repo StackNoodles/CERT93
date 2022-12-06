@@ -21,7 +21,7 @@ class Score:
         Construit la surface graphique du score à partir de la valeur numérique stockée.
         :return: surface contenant le score à afficher
         """
-        return f'SCORE: {self.__points}'
+        return f'SCORE : {self.__points}'
 
     def get_score(self) -> int:
         return self.__points

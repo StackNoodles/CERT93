@@ -345,10 +345,13 @@ class Game:
             return
 
         for view, player in zip(self.__views.values(), self.__players):
+            
+            # Vers les personnages
             for character in self.__level.characters:
                 self.__draw_arrow(character.feet_position,
                                   player, view, character.icon)
 
+            # Vers les incidents des assets
             for asset in self.__level.assets:
                 if asset.active_incident:
                     self.__draw_arrow(asset.center_position,

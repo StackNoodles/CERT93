@@ -8,7 +8,12 @@ import resources
 import settings
 import time
 
-# pip install pypiwin32s
+# 1. Installer module Win32:
+# pip install pypiwin32
+# 2. Si jamais le jeu ne lance pas, se rendre dans le répertoire ou se trouve python.exe. Pour moi, c'était :
+# cd C:\Users\Dusty\AppData\Local\Programs\Python\Python310
+# 3. Rouler:
+# python.exe Scripts\pywin32_postinstall.py -install
 import win32api
 import win32con
 import win32gui

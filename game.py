@@ -627,19 +627,12 @@ class Game:
         Pause tout les incidents, les mouvements, le timer et les taches
         :return: aucun
         """
-        inputs = []
-        for player in self.__players:
-            inputs.append(input_manager.inputs.player_input(player.number))
-            for input in inputs:
-                if self.__is_paused and input.pause == False:
-                    self.__is_paused = False
-                    break
-                elif not self.__is_paused and input.pause == True:
-                    self.__is_paused = True
-                    break
+        self.__check_pause_pressed()
 
-        for input in inputs:
-            input.pause = self.__is_paused
+        # On syncronise les pauses des joueurs
+        for player in self.__players:
+            inputs = input_manager.inputs.player_input(player.number)
+            inputs.pause = self.__is_paused
 
         if self.__is_paused:
             self.__countdown.pause()
@@ -654,8 +647,21 @@ class Game:
                 if asset.active_incident:
                     asset.unpause_incident()
 
+    def __check_pause_pressed(self) -> None:
+        """Verifie si un des deux joueurs a changé l'état de pause"""
+        inputs = []
+        for player in self.__players:
+            inputs.append(input_manager.inputs.player_input(player.number))
+            for input in inputs:
+                if self.__is_paused and input.pause == False:
+                    self.__is_paused = False
+                    return
+                elif not self.__is_paused and input.pause == True:
+                    self.__is_paused = True
+                    return
 
-    def __display_name_action(self):
+
+    def __display_name_action(self) -> None:
         """
         Affiche le nom des perssonages et des actifs
         :return: aucun

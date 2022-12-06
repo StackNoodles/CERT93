@@ -47,6 +47,7 @@ class Asset:
 
         self._incident_image = None
         self._timer_id = 0
+        self.__is_paused = False
 
     def add_incident(self, incident: Incident) -> None:
         """
@@ -119,6 +120,20 @@ class Asset:
         """
         self._solving_action = action
 
+    def pause_incident(self) -> None:
+        """
+        Pause l'incident en cours sur l'actif.
+        :return: aucun
+        """
+        self.__is_paused = True
+
+    def unpause_incident(self) -> None:
+        """
+        relance l'incident en cours sur l'actif.
+        :return: aucun
+        """
+        self.__is_paused = False
+
     def stop_and_remove_all_incidents(self) -> None:
         """
         Arrête et supprime tous les incidents associés à l'actif.
@@ -142,6 +157,9 @@ class Asset:
         :return: aucun
         """
         isTimeout = 0
+
+        if self.__is_paused:
+            return isTimeout
 
         if not self._active_incident:
             if not self._incidents.empty():

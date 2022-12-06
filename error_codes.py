@@ -21,6 +21,8 @@ class Error_codes(IntEnum):
     SOUND_25_LEFT = 508
     SOUND_10_LEFT = 509
     IMG_ARROW = 601
+    IMG_ICONES_CHAR = 701
+    SQUARES_ICONES_CHAR = 702
 
 
 ERROR_CODES_TEXT = {
@@ -42,4 +44,6 @@ ERROR_CODES_TEXT = {
     Error_codes.IMG_ARROW: "Erreur lors du chargement de l'image de flèche",
     Error_codes.SOUND_25_LEFT: "Erreur lors du chargement de l'alerte 25 restant",
     Error_codes.SOUND_10_LEFT: "Erreur lors du chargement du l'alerte 10 restant",
+    Error_codes.IMG_ICONES_CHAR: "Erreur lors de du chargement des images d'icones de personnages",
+    Error_codes.SQUARES_ICONES_CHAR: "Erreur lors de la creation des icones de personnages, ils ne sont pas carrées",
 }

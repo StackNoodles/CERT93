@@ -71,3 +71,7 @@ class Character:
     @property
     def speed(self) -> float:
         return self.__speed
+
+    @property
+    def icon(self) -> pygame.Surface:
+        return resources.characters_icons_collection.get(self.__character_id)

@@ -329,8 +329,7 @@ class Game:
 
         for view, player in zip(self.__views.values(), self.__players):
             for character in self.__level.characters:
-                pass
-                # self.__draw_arrow(character.feet_position, player, view, None)
+                self.__draw_arrow(character.feet_position, player, view, character.icon)
 
             for asset in self.__level.assets:
                 if asset.active_incident:

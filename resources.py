@@ -17,7 +17,7 @@ class __CharactersCollection:
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
+        :return: le code de succes si l'initialisation s'est bien passée, le code d'erreur sinon
         """
 
         # charge l'image contenant tous les personnages
@@ -36,8 +36,7 @@ class __CharactersCollection:
 
         self.__surfaces = []
         for i in range(settings.NB_CHARACTERS):
-            character_surface = pygame.Surface(
-                (width, height), pygame.SRCALPHA)
+            character_surface = pygame.Surface((width, height), pygame.SRCALPHA)
             source_area = pygame.Rect(i * width, 0, width, height)
             character_surface.blit(characters_sheet, (0, 0), source_area)
             self.__surfaces.append(character_surface)
@@ -56,6 +55,59 @@ class __CharactersCollection:
 
         return None
 
+class __CharactersIconCollection:
+    """
+    Collection d'icônes pour les personnages utilisée par les fleches de directions
+    (voir plus bas).
+    """
+
+    def __init__(self) -> None:
+        self.__incident_surfaces = None
+
+    def init(self) -> Error_codes:
+        """
+        Initialise l'instance unique de resources.characters_icons_collection.
+        La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
+        aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
+        importations terminées.
+        :return: le code de succes si l'initialisation s'est bien passée, le code d'erreur sinon
+        """
+        # charge l'image contenant tout les icones
+        try:
+            icons_sheet = pygame.image.load(settings.CHARACTERS_ICON_FILENAME).convert()
+        except:
+            return Error_codes.IMG_ICONES_CHAR
+
+        if not icons_sheet:
+            return Error_codes.IMG_ICONES_CHAR
+
+        # s'assure que les icones soient carrés
+        if icons_sheet.get_width() % icons_sheet.get_height() != 0:
+            return Error_codes.SQUARES_ICONES_CHAR
+
+        # découpe la surface d'icones en surfaces individuelles (une pour chaque icone)
+        height = width = icons_sheet.get_height()
+        self.__surfaces = []
+        for i in range(icons_sheet.get_width() // width):
+            icon_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+            source_area = pygame.Rect(i * width, 0, width, height)
+            icon_surface.blit(icons_sheet, (0, 0), source_area)
+            self.__surfaces.append(icon_surface)
+
+        return Error_codes.SUCCES
+
+    def get(self, icon_id: int) -> pygame.Surface or None:
+        """
+        Retourne la surface correspondant à l'icone (icon_id) pour un incident d'une
+        expertise donnée (expertise).
+        :param icon_id: identifiant de l'icone
+        :return: la surface si disponible, None sinon
+        """
+        assert self.__surfaces
+        if 0 <= icon_id < len(self.__surfaces):
+            return self.__surfaces[icon_id]
+
+        return None
 
 class __TilesCollection:
     """ Collection de tuiles utilisée par l'objet global tiles_collection (voir plus bas). """
@@ -69,9 +121,8 @@ class __TilesCollection:
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
+        :return: le code de succes si l'initialisation s'est bien passée, le code d'erreur sinon
         """
-
         # charge l'image contenant toutes les tuiles
         try:
             tiles_sheet = pygame.image.load(settings.TILES_FILENAME).convert()
@@ -169,7 +220,7 @@ class __AssetsCollection:
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
+        :return: le code de succes si l'initialisation s'est bien passée, le code d'erreur sinon
         """
 
         # charge l'image contenant tous les actifs
@@ -211,21 +262,21 @@ class __AssetsCollection:
 
 
 class __Arrow:
-    """ Collection d'actifs (assets) utilisée par l'objet global assets_collection (voir plus bas). """
+    """ image utilisée par l'objet global arrow (voir plus bas). """
 
     def __init__(self) -> None:
         self.__surfaces = None
 
     def init(self) -> Error_codes:
         """
-        Initialise l'instance unique de resources.assets_collection.
+        Initialise l'instance unique de resources.arrow.
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
+        :return: le code de succes si l'initialisation s'est bien passée, le code d'erreur sinon
         """
 
-        # charge l'image contenant tous les actifs
+        # charge l'image contenant la fleche
         try:
             arrow_sheet = pygame.image.load(
                 settings.ARROW_FILENAME).convert_alpha()
@@ -242,11 +293,10 @@ class __Arrow:
 
         return Error_codes.SUCCES
 
-    def get(self) -> pygame.Surface or None:
+    def get(self) -> pygame.Surface:
         """
-        Retourne la surface correspondant à l'identifiant de l'actif (asset_id).
-        :param asset_id: identifiant d'actif
-        :return: la surface si disponible, None sinon
+        Retourne la surface de la fleche
+        :return: la surface
         """
         assert self.__surface
         return self.__surface
@@ -266,7 +316,7 @@ class __IncidentsCollection:
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
+        :return: le code de succes si l'initialisation s'est bien passée, le code d'erreur sinon
         """
 
         # Chargement de l'image contenant toutes images reliées aux incidents:
@@ -342,7 +392,7 @@ class __SoundsCollection:
         La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
         aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
         importations terminées.
-        :return: 999 si l'initialisation s'est bien passée, le code d'erreur sinon
+        :return: le code de succes si l'initialisation s'est bien passée, le code d'erreur sinon
         """
         self.__sounds = {}
         try:
@@ -446,6 +496,9 @@ class __SoundsCollection:
 # collection de personnages (singleton du GoF implémenté avec un Global Object Pattern de python)
 characters_collection = None
 
+# collection d'icones de personnages (singleton du GoF implémenté avec un Global Object Pattern de python)
+characters_icons_collection = None
+
 # collection de tuiles (singleton du GoF implémenté avec un Global Object Pattern de python)
 tiles_collection = None
 
@@ -470,6 +523,13 @@ def init() -> Error_codes:
     if not characters_collection:
         characters_collection = __CharactersCollection()
         return_code = characters_collection.init()
+        if return_code != Error_codes.SUCCES:
+            return return_code
+
+    global characters_icons_collection
+    if not characters_icons_collection:
+        characters_icons_collection = __CharactersIconCollection()
+        return_code = characters_icons_collection.init()
         if return_code != Error_codes.SUCCES:
             return return_code
 

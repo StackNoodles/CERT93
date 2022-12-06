@@ -333,25 +333,25 @@ class Game:
         # Affichage notif nouveau niveau
         if self.__new_level_notification > pygame.time.get_ticks():
             self.__display_title("LEVEL " + str(self.__level_num))
-            
+
         # Affichage du texte de pause
         if self.__is_paused:
             self.__display_title("PAUSE")
-            
+
         # Affichage fleches directionnelles
         self.__update_arrow()
 
         # Basculement de tampon (donc affichage de l'écran)
         pygame.display.flip()
-        
+
     def __display_title(self, title: str):
         """Affiche un gros titre blanc"""
         text_font = pygame.font.Font(pygame.font.get_default_font(), 110)
         outline_font = pygame.font.Font(pygame.font.get_default_font(), 120)
-        
+
         outline_surface = outline_font.render(title, True, (0, 0, 0))
         title_surface = text_font.render(title, True, (210, 210, 190))
-        
+
         self.__screen.blit(outline_surface, ((self.__screen.get_width(
         ) / 2)-(outline_surface.get_width()/2), (self.__screen.get_height() / 5)),)
         self.__screen.blit(title_surface, ((self.__screen.get_width(
@@ -635,7 +635,7 @@ class Game:
 
         return asset_found
 
-    def __pause_game_if_needed(self) -> None :
+    def __pause_game_if_needed(self) -> None:
         """
         Pause tout les incidents, les mouvements, le timer et les taches
         :return: aucun
@@ -672,7 +672,6 @@ class Game:
                     self.__is_paused = True
                     return True
         return False
-
 
     def __display_name_action(self) -> None:
         """

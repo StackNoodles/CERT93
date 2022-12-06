@@ -212,7 +212,7 @@ class Game:
         :return: aucun
         """
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:                
+            if event.type == pygame.QUIT:
                 self.__running = False
                 self.quit_game()
 
@@ -345,7 +345,7 @@ class Game:
             return
 
         for view, player in zip(self.__views.values(), self.__players):
-            
+
             # Vers les personnages
             for character in self.__level.characters:
                 self.__draw_arrow(character.feet_position,

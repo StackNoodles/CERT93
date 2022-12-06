@@ -28,13 +28,22 @@ class Countdown(Thread):
         # événement servant à arrêter la tâche (va aussi la réveiller si nécessaire)
         self.__event = Event()
 
+        self.__is_pause = False
+
     def timeout(self) -> bool:
         if self.__time <= 0:
             return True
         return False
+
     def reset_timer(self):
         self.__time = settings.TIME_PER_LEVEL
-        
+    
+    def pause(self):
+        self.__is_pause = True
+
+    def unpause(self):
+        self.__is_pause = False
+
     def get(self) -> pygame.Surface:
         """
         Retourne une surface pour l'affichage du minuteur.
@@ -46,7 +55,7 @@ class Countdown(Thread):
     def run(self) -> None:
         """ Tâche de compilation du Countdown. """
 
-        while not self.__event.is_set():
+        while not self.__event.is_set() and not self.__is_pause:
             self.__event.wait(1)
             self.__time -= 1  # sauvegarde le FPS obtenu pour la dernière seconde écoulée
 

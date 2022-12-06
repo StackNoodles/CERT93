@@ -212,9 +212,9 @@ class Game:
         :return: aucun
         """
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.quit_game()
+            if event.type == pygame.QUIT:                
                 self.__running = False
+                self.quit_game()
 
             if event.type in [KEYDOWN, KEYUP]:
                 input_manager.inputs.manage_keyboard_event(event)

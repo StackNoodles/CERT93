@@ -71,9 +71,9 @@ class Game:
     def end_screen(self, image_path: str, sleep_time: int):
         image = pygame.image.load(image_path)
         origin_x = (settings.SCREEN_WIDTH / 2) - \
-                    (image.get_width() / 2)
+            (image.get_width() / 2)
         origin_y = (settings.SCREEN_HEIGHT / 2) - \
-                    (image.get_height() / 2)
+            (image.get_height() / 2)
         self.__screen.blit(image, (origin_x, origin_y))
 
         pygame.display.update()
@@ -123,7 +123,7 @@ class Game:
                     self.__running = False
                     self.__level_num += 1
                     new_level = True
-                elif self.__failed_incident_max >=3:  # perdu
+                elif self.__failed_incident_max >= 3:  # perdu
                     # Ecran defaite (game over)
                     self.end_screen("img\game_over.png", 5)
 
@@ -222,8 +222,6 @@ class Game:
             elif event.type in [JOYDEVICEADDED, JOYDEVICEREMOVED, JOYBUTTONDOWN, JOYBUTTONUP, JOYAXISMOTION]:
                 input_manager.inputs.manage_gamepad_event(event)
 
-
-
     def __handle_incidents(self) -> None:
         """
         Gère les incidents envoyés par le générateur d'incidents.
@@ -236,7 +234,9 @@ class Game:
                 # Sélection d'un actif au hasard parmi tous les actifs autres que le centre d'appels
                 asset = random.choice(self.__level.assets[1:])
 
-                self.__current_incident = "THERE IS A " + str(incident.expertise.name) + " INCIDENT AT DESK N°" + asset.name.replace('Asset ','')
+                self.__current_incident = "THERE IS A " + \
+                    str(incident.expertise.name) + " INCIDENT AT DESK N°" + \
+                    asset.name.replace('Asset ', '')
                 self.__incident_timer = pygame.time.get_ticks() + 5000
                 asset.add_incident(incident)
 
@@ -281,7 +281,6 @@ class Game:
         # Affichage de l'image de fond
         self.__screen.blit(self.__backdrop_surface, (0, 0))
 
-
         # Affichade de la ou les vues sur le bureau (donc du bureau, des actifs et des personnages)
         for view in self.__views.values():
             view.draw(self.__display_name)
@@ -292,38 +291,45 @@ class Game:
 
         # Affichage du score
         score_surface = self.__value_display(self.__score.get_score_display())
-        self.__screen.blit(score_surface, ((self.__screen.get_width() / 2)-(score_surface.get_width()/2),10 ))
+        self.__screen.blit(score_surface, ((
+            self.__screen.get_width() / 2)-(score_surface.get_width()/2), 10))
 
         # Affichage des user errors
         color = (255, 255, 255)
-        if(self.__failed_incident_max) > (settings.MAX_MISTAKES-2):
+        if (self.__failed_incident_max) > (settings.MAX_MISTAKES-2):
             color = (255, 0, 0)
-        user_errors_surface = self.__font.render(f"MISTAKES MADE : {self.__failed_incident_max} / {settings.MAX_MISTAKES}", True, color)
-        self.__screen.blit(user_errors_surface,(self.__screen.get_width()-user_errors_surface.get_width()-10, 10))
+        user_errors_surface = self.__font.render(
+            f"MISTAKES MADE : {self.__failed_incident_max} / {settings.MAX_MISTAKES}", True, color)
+        self.__screen.blit(user_errors_surface, (self.__screen.get_width(
+        )-user_errors_surface.get_width()-10, 10))
 
-    
         # Affichage du FPS
         fps_surface = self.__fps.get()
-        self.__screen.blit(fps_surface, (10, self.__screen.get_height()-fps_surface.get_height()-10))
+        self.__screen.blit(
+            fps_surface, (10, self.__screen.get_height()-fps_surface.get_height()-10))
 
-        #Affichage incident
+        # Affichage incident
         if pygame.time.get_ticks() < self.__incident_timer:
-            incident_surface = self.__font.render(self.__current_incident, True, (255, 45, 40))
+            incident_surface = self.__font.render(
+                self.__current_incident, True, (255, 45, 40))
 
             display_time_left = self.__incident_timer - pygame.time.get_ticks()
 
-            if(display_time_left<3000):
+            if (display_time_left < 3000):
                 alpha = (display_time_left)/12
                 incident_surface.set_alpha(alpha)
 
-            self.__screen.blit(incident_surface, ((self.__screen.get_width() / 2)-(incident_surface.get_width()/2),(self.__screen.get_height() / 10 ) ),)
+            self.__screen.blit(incident_surface, ((self.__screen.get_width(
+            ) / 2)-(incident_surface.get_width()/2), (self.__screen.get_height() / 10)),)
 
         # Affichage notif nouveau niveau
         if self.__new_level_notification > pygame.time.get_ticks():
             font = pygame.font.Font(pygame.font.get_default_font(), 110)
-            new_level_surface = font.render("LEVEL "+ str(self.__level_num), True, (210, 210, 190))
-            self.__screen.blit(new_level_surface, ((self.__screen.get_width() / 2)-(new_level_surface.get_width()/2),(self.__screen.get_height() / 5 )),)
-            
+            new_level_surface = font.render(
+                "LEVEL " + str(self.__level_num), True, (210, 210, 190))
+            self.__screen.blit(new_level_surface, ((self.__screen.get_width(
+            ) / 2)-(new_level_surface.get_width()/2), (self.__screen.get_height() / 5)),)
+
         # Affichage fleches directionnelles
         self.__update_arrow()
 
@@ -340,14 +346,15 @@ class Game:
 
         for view, player in zip(self.__views.values(), self.__players):
             for character in self.__level.characters:
-                self.__draw_arrow(character.feet_position, player, view, character.icon)
+                self.__draw_arrow(character.feet_position,
+                                  player, view, character.icon)
 
             for asset in self.__level.assets:
                 if asset.active_incident:
-                    self.__draw_arrow(asset.center_position, player, view, asset.image_incident)
+                    self.__draw_arrow(asset.center_position,
+                                      player, view, asset.image_incident)
 
-    
-    def __draw_arrow(self, position : tuple, player : Player, view : View, icon : pygame.Surface) -> None:
+    def __draw_arrow(self, position: tuple, player: Player, view: View, icon: pygame.Surface) -> None:
         """
         Dessine une fleche sur un ecran donné en fonction d'une position cible
         :param position: La position cible vers laquelle orienter la fleche
@@ -357,10 +364,10 @@ class Game:
         :return: aucun
         """
         # Si la position cible est hors de l'ecran
-        if (position[0] > player.character.feet_position[0] + view.view_width / 2 or 
-            position[1] > player.character.feet_position[1] + view.view_heigth / 2 or 
-            position[0] < player.character.feet_position[0] - view.view_width / 2 or 
-            position[1] < player.character.feet_position[1] - view.view_heigth / 2 ):
+        if (position[0] > player.character.feet_position[0] + view.view_width / 2 or
+            position[1] > player.character.feet_position[1] + view.view_heigth / 2 or
+            position[0] < player.character.feet_position[0] - view.view_width / 2 or
+                position[1] < player.character.feet_position[1] - view.view_heigth / 2):
 
             # Calcul de la position de la position cible en fonction du centre de chaque ecran
             # On veut limiter la fleches aux limites de l'ecran
@@ -370,16 +377,16 @@ class Game:
             vector_y = position[1] - player.character.feet_position[1]
 
             # Largeur
-            if vector_x < -view.view_width / 2 :
-                vector_x = - view.view_width / 2 
-            elif vector_x > view.view_width / 2 :
+            if vector_x < -view.view_width / 2:
+                vector_x = - view.view_width / 2
+            elif vector_x > view.view_width / 2:
                 # - 15 pour raprocher la fleche de l'ecran
                 vector_x = view.view_width / 2 - 15
 
             # Hauteur
-            if vector_y < -view.view_heigth / 2 :
+            if vector_y < -view.view_heigth / 2:
                 vector_y = - view.view_heigth / 2
-            elif vector_y > view.view_heigth / 2 :
+            elif vector_y > view.view_heigth / 2:
                 # - 15 pour raprocher la fleche de l'ecran
                 vector_y = view.view_heigth / 2 - 15
 
@@ -395,17 +402,18 @@ class Game:
                 multiplier = 1
             else:
                 multiplier = 3
-            arrow_x = (multiplier * self.__screen.get_width() / (2 * len(self.__players))) + vector_x
+            arrow_x = (multiplier * self.__screen.get_width() /
+                       (2 * len(self.__players))) + vector_x
             arrow_y = (self.__screen.get_height() / 2) + vector_y
 
-            # Coordonées pour l'icone (décalée de quelques %tages des bords de l'ecran, trouver une solution plus jolie si possible) 
+            # Coordonées pour l'icone (décalée de quelques %tages des bords de l'ecran, trouver une solution plus jolie si possible)
             icon_x = arrow_x - vector_x * 0.05
             icon_y = arrow_y - vector_y * 0.07
 
             # Affichage en fonction de l'ecran
             self.__screen.blit(icon, (icon_x, icon_y))
             self.__screen.blit(rotated_arrow, (arrow_x, arrow_y))
-    
+
     def __value_display(self, string_display) -> pygame.Surface:
         default_font_name = pygame.font.get_default_font()
 

@@ -21,6 +21,7 @@ class Character:
         self.__character_id = character_id
         self.__speed = speed
         self.__expertise = expertise
+        self.__locked = False
 
         # Conversion de la position d'une coordonnée en tuile vers une coordonnée en pixels
         x, y = resources.tiles_collection.tile_pos_to_pixel_pos(tile_position)
@@ -45,6 +46,7 @@ class Character:
         if display_name:
             text_char = font.render(self.__name,True,(255, 255, 255))
             destination.blit(text_char, (x- text_char.get_width() /2, y + image.get_height()))
+            
     def compute_next_feet_position(self, movement: tuple, delta_time: float) -> tuple:
         """
         Calcule une position des pieds projetée à partir du positionnement courant et d'un déplacement.
@@ -55,6 +57,16 @@ class Character:
         x = self.__feet_position[0] + (movement[0] * delta_time * self.__speed)
         y = self.__feet_position[1] + (movement[1] * delta_time * self.__speed)
         return x, y
+    
+    def lock_position(self) -> None:
+        self.__locked = True
+        
+    def unlock_position(self) -> None:
+        self.__locked = False
+
+    @property
+    def is_locked(self) -> tuple:
+        return self.__locked
 
     @property
     def feet_position(self) -> tuple:
@@ -75,3 +87,7 @@ class Character:
     @property
     def icon(self) -> pygame.Surface:
         return resources.characters_icons_collection.get(self.__character_id)
+    
+    @property
+    def expertise(self) -> pygame.Surface:
+        return self.__expertise

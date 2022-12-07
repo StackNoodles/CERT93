@@ -8,6 +8,7 @@ import pygame
 import time
 
 import incidents
+from incidents import Incident
 import input_manager
 import resources
 import settings
@@ -556,6 +557,9 @@ class Game:
             if abs(movement[0]) > 0.0 or abs(movement[1]) > 0.0:
                 # il y a mouvement sur au moins un des deux axes
                 character = player.character
+                if character.is_locked:
+                    return
+                
                 next_feet_position = character.compute_next_feet_position(
                     movement, delta_time)
                 if self.__level.office.in_navmesh(next_feet_position):
@@ -608,8 +612,37 @@ class Game:
                 inputs.solve_button = False
                 character = player.character
                 asset = self.__find_closest_actionable_asset(character)
-                if asset:
+                if asset and asset.active_incident:
+                    # Le helpdesk n'as pas de temps de resolution
+                    if asset.name != "Helpdesk":
+                        self.__solving_incident(character, asset.active_incident)
                     asset.solve_incident()
+                    
+    def __solving_incident(self, character : Character, incident: Incident) -> bool:
+        """
+        Bloque un personnage et lui fait attendre le temps de resolution de l'incident
+        :param character: Le personnage qui resoud l'incident
+        :param incident: L'incident à résoudre
+        :return: Si l'incident a été résolu
+        """
+        expiration_time = incident.duration/10 if character.expertise == incident.expertise else incident.duration/5
+        character.lock_position()
+        while not self.__event.is_set():
+            now = time.time()
+            if self.__remaining_time > 0 and not self.__is_paused:
+                self.__remaining_time -= now - previous_time
+                if self.__remaining_time < 0:
+                    self.__remaining_time = 0
+                elif self.__remaining_time <= (self.__time_to_solve/4) and self.expertise != Expertise.HELPDESK and self.__percent_25_notif is False:
+                    self.__25_percent_sound.play()
+                    self.__percent_25_notif = True
+                elif self.__remaining_time <= (self.__time_to_solve/10) and self.expertise != Expertise.HELPDESK and self.__percent_10_notif is False:
+                    self.__10_percent_sound.play()
+                    self.__percent_10_notif = True
+            previous_time = now
+
+            wait(incidents.INCIDENT_TICK)
+        
 
     def __find_closest_actionable_asset(self, character: Character) -> Asset or None:
         """

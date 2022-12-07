@@ -28,7 +28,7 @@ class Character:
         self.__current_working_incident = None
 
         font = pygame.font.SysFont(None, 24)
-        self.text_char = font.render(self.__name,True,(255, 255, 255))
+        self.text_char = font.render(self.__name, True, (255, 255, 255))
 
         # Conversion de la position d'une coordonnée en tuile vers une coordonnée en pixels
         x, y = resources.tiles_collection.tile_pos_to_pixel_pos(tile_position)
@@ -36,7 +36,7 @@ class Character:
         # On positionne le personnage au centre de la tuile
         self.__feet_position = x + (tile_width / 2), y + (tile_height/2)
 
-    def draw(self, destination: pygame.Surface , display_name) -> None:
+    def draw(self, destination: pygame.Surface, display_name) -> None:
         """
         Dessine le personnage.
         :param destination: surface sur laquelle dessiner le personnage
@@ -49,8 +49,9 @@ class Character:
 
         destination.blit(image, (x, y))
         if display_name:
-            destination.blit(self.text_char, (x- self.text_char.get_width() /2, y + image.get_height()))
-            
+            destination.blit(
+                self.text_char, (x - self.text_char.get_width() / 2, y + image.get_height()))
+
     def compute_next_feet_position(self, movement: tuple, delta_time: float) -> tuple:
         """
         Calcule une position des pieds projetée à partir du positionnement courant et d'un déplacement.
@@ -61,15 +62,25 @@ class Character:
         x = self.__feet_position[0] + (movement[0] * delta_time * self.__speed)
         y = self.__feet_position[1] + (movement[1] * delta_time * self.__speed)
         return x, y
-    
-    def add_progress_bar(self, incident : Incident) -> None:
-        expiration_time = incident.duration/10 if self.expertise == incident.expertise or self.name == "The Hulk" else incident.duration/5
+
+    def add_progress_bar(self, incident: Incident) -> None:
+        """
+        Ajoute une barre de progression au personage.
+        :param incident: l'incident que le personnage resoud
+        :reutrn: aucun
+        """
+        expiration_time = incident.duration / \
+            10 if self.expertise == incident.expertise or self.name == "The Hulk" else incident.duration/5
         self.__current_working_incident = incident
         self.__locked = True
         self.__progress_bar = ProgressBar(expiration_time)
         self.__progress_bar.start()
-        
+
     def remove_progress_bar(self) -> None:
+        """
+        Retire la barre de progression du personage.
+        :reutrn: aucun
+        """
         self.__current_working_incident = None
         self.__progress_bar.stop()
         self.__progress_bar = None
@@ -78,11 +89,11 @@ class Character:
     @property
     def is_locked(self) -> tuple:
         return self.__locked
-    
+
     @property
     def current_working_incident(self) -> Incident:
         return self.__current_working_incident
-    
+
     @property
     def progress_bar(self) -> ProgressBar:
         return self.__progress_bar
@@ -106,7 +117,7 @@ class Character:
     @property
     def icon(self) -> pygame.Surface:
         return resources.characters_icons_collection.get(self.__character_id)
-    
+
     @property
     def expertise(self) -> pygame.Surface:
         return self.__expertise

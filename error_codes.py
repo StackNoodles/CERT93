@@ -48,6 +48,6 @@ ERROR_CODES_TEXT = {
     Error_codes.SOUND_10_LEFT: "Erreur lors du chargement du l'alerte 10 restant",
     Error_codes.IMG_ICONES_CHAR: "Erreur lors de du chargement des images d'icones de personnages",
     Error_codes.SQUARES_ICONES_CHAR: "Erreur lors de la creation des icones de personnages, ils ne sont pas carrés",
-    Error_codes.IMG_PROGRESS_BAR : "Erreur lors de du chargement des images pour la barre de progression de tâches",
-    Error_codes.SQUARES_PROGRESS_BAR : "Erreur lors de la creation des images de barre de progression, elles ne sont pas carrées",
+    Error_codes.IMG_PROGRESS_BAR: "Erreur lors de du chargement des images pour la barre de progression de tâches",
+    Error_codes.SQUARES_PROGRESS_BAR: "Erreur lors de la creation des images de barre de progression, elles ne sont pas carrées",
 }

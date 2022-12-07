@@ -87,11 +87,11 @@ class Incident(Thread):
     @property
     def expertise(self) -> Expertise:
         return self.__expertise
-    
+
     @property
     def duration(self) -> Expertise:
         return self.__time_to_solve
-    
+
     @property
     def is_paused(self) -> bool:
         return self.__is_paused
@@ -103,7 +103,7 @@ class __IncidentSpawner(Thread):
     def __init__(self) -> None:
         """ Initialise le générateur d'incidents. """
         super().__init__()
-        
+
         self.__remaining_time = settings.TIME_PER_LEVEL
         self.__ticks = 0
         __max_time_between_indicents = 30
@@ -131,24 +131,25 @@ class __IncidentSpawner(Thread):
         """Si le temps avant le premier incident qui se trouve dans les settings est plus grand que 
         0 alors on attribue ce temps à la variable"""
         if settings.TIME_BEFORE_FIRST_INCIDENT > 0:
-           __time_before_first_incident = settings.TIME_BEFORE_FIRST_INCIDENT
+            __time_before_first_incident = settings.TIME_BEFORE_FIRST_INCIDENT
         return __time_before_first_incident
 
     def run(self) -> None:
-        
-
         """ Méthode principale exécutée par la tâche du générateur d'incidents. """
         self.__next_event_time = self.get_first_event_time()
 
         # tant que la tâche exécute, on génère des événements
         while not self.__event.is_set():
-                if self.__ticks >= self.__next_event_time:
-                    self.__create_and_send_next_incident()
-                    self.__next_event_time = self.__ticks + (self.__multiplier*random.randint(self.__min_time_between, self.__max_time_between))
-                self.__event.wait(1)
-                self.__ticks += 1
-                self.__remaining_time -= 1
-                self.__multiplier = 0.5+((self.__remaining_time/settings.TIME_PER_LEVEL)/2)
+            if self.__ticks >= self.__next_event_time:
+                self.__create_and_send_next_incident()
+                self.__next_event_time = self.__ticks + \
+                    (self.__multiplier*random.randint(self.__min_time_between,
+                     self.__max_time_between))
+            self.__event.wait(1)
+            self.__ticks += 1
+            self.__remaining_time -= 1
+            self.__multiplier = 0.5 + \
+                ((self.__remaining_time/settings.TIME_PER_LEVEL)/2)
 
     def pause(self) -> None:
         """ Pause la génération d'incidents. """
@@ -189,7 +190,7 @@ class __IncidentSpawner(Thread):
         """
         if not self.__event.is_set():
             self.__queue.put(incident)
-    
+
     def __create_and_send_next_incident(self) -> None:
         """
         Crée et envoie le prochain incident.

@@ -79,7 +79,7 @@ class Office:
                     # On met -1 si on sort des bords de la liste
                     try:
                         outline[delta[0] + 1][delta[1] + 1] = floor_and_walls[x + delta[0]][y + delta[1]
-                            ] if x + delta[0] > -1 and y + delta[1] > -1 else -1
+                                                                                            ] if x + delta[0] > -1 and y + delta[1] > -1 else -1
                     except IndexError:
                         outline[delta[0] + 1][delta[1] + 1] = -1
 

@@ -82,8 +82,6 @@ class Asset:
         asset_surface = resources.assets_collection.get(self._asset_id)
         destination.blit(asset_surface, self._position)
 
-
-
         # Dessin de l'incident, s'il y a lieu
         if self._active_incident:
             incident_type = self._active_incident.expertise
@@ -227,5 +225,6 @@ class Asset:
     @property
     def image_incident(self) -> pygame.Surface:
         incident_type = self._active_incident.expertise
-        incident_surface = resources.incidents_collection.get(self._timer_id, incident_type)
+        incident_surface = resources.incidents_collection.get(
+            self._timer_id, incident_type)
         return incident_surface

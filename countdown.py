@@ -37,7 +37,7 @@ class Countdown(Thread):
 
     def reset_timer(self):
         self.__time = settings.TIME_PER_LEVEL
-    
+
     def pause(self):
         self.__is_pause = True
 
@@ -56,7 +56,7 @@ class Countdown(Thread):
         """ Tâche de compilation du Countdown. """
 
         while not self.__event.is_set():
-            if self.__is_pause :
+            if self.__is_pause:
                 continue
             self.__event.wait(1)
             self.__time -= 1  # sauvegarde le FPS obtenu pour la dernière seconde écoulée

@@ -332,7 +332,7 @@ class Game:
 
             self.__screen.blit(incident_surface, ((self.__screen.get_width(
             ) / 2)-(incident_surface.get_width()/2), (self.__screen.get_height() / 10)),)
-            
+
         # Affichage des barres de progression
         for view, player in zip(self.__views.values(), self.__players):
             for character in self.__level.characters:
@@ -353,29 +353,34 @@ class Game:
         # Basculement de tampon (donc affichage de l'écran)
         pygame.display.flip()
 
-    def __update_progress_bar(self, view: View, player: Player, character: Character) -> None:        
+    def __update_progress_bar(self, view: View, player: Player, character: Character) -> None:
         # Calculs des vecteurs
-        vector_x = character.feet_position[0] - player.character.feet_position[0]
-        vector_y = character.feet_position[1] - player.character.feet_position[1] 
-        
+        vector_x = character.feet_position[0] - \
+            player.character.feet_position[0]
+        vector_y = character.feet_position[1] - \
+            player.character.feet_position[1]
+
         # Coordonées de la barre en fonction de l'ecran
         if view == self.__views[0]:
             multiplier = 1
         else:
             multiplier = 3
         bar_x = (multiplier * self.__screen.get_width() /
-                    (2 * len(self.__players))) + vector_x
+                 (2 * len(self.__players))) + vector_x
         bar_y = (self.__screen.get_height() / 2) + vector_y
-        
+
         # Affichage si la barre est dans l'ecran
         if not (character.feet_position[0] > player.character.feet_position[0] + view.view_width / 2 or
-            character.feet_position[1] > player.character.feet_position[1] + view.view_heigth / 2 or
-            character.feet_position[0] < player.character.feet_position[0] - view.view_width / 2 or
+                character.feet_position[1] > player.character.feet_position[1] + view.view_heigth / 2 or
+                character.feet_position[0] < player.character.feet_position[0] - view.view_width / 2 or
                 character.feet_position[1] < player.character.feet_position[1] - view.view_heigth / 2):
-            progress_bar_id = progress_bar.compute_progress_bar_id(character.progress_bar)
-            progress_bar_surface = resources.progress_bar_collection.get(progress_bar_id)
-            self.__screen.blit(progress_bar_surface, (bar_x - character.icon.get_width() / 2, bar_y - character.icon.get_width() * 2))
-                        
+            progress_bar_id = progress_bar.compute_progress_bar_id(
+                character.progress_bar)
+            progress_bar_surface = resources.progress_bar_collection.get(
+                progress_bar_id)
+            self.__screen.blit(progress_bar_surface, (
+                bar_x - character.icon.get_width() / 2, bar_y - character.icon.get_width() * 2))
+
     def __display_title(self, title: str) -> None:
         """Affiche un gros titre blanc"""
         text_font = pygame.font.Font(pygame.font.get_default_font(), 110)
@@ -589,7 +594,7 @@ class Game:
                 character = player.character
                 if character.is_locked:
                     return
-                
+
                 next_feet_position = character.compute_next_feet_position(
                     movement, delta_time)
                 if self.__level.office.in_navmesh(next_feet_position):
@@ -646,22 +651,24 @@ class Game:
                     # Le helpdesk n'as pas de temps de resolution
                     if asset.name != "Helpdesk":
                         if character.progress_bar:
-                            self.__stop_solving_incident(character, asset.active_incident)
+                            self.__stop_solving_incident(
+                                character, asset.active_incident)
                         else:
-                            self.__solving_incident(character, asset.active_incident)
+                            self.__solving_incident(
+                                character, asset.active_incident)
                     else:
                         asset.solve_incident()
-            
+
         for asset in self.__level.assets:
             for char in self.__level.characters:
                 if char.current_working_incident and asset.active_incident:
                     if char.current_working_incident == asset.active_incident:
                         if char.progress_bar and char.progress_bar.is_solved:
-                            self.__stop_solving_incident(char, asset.active_incident)
+                            self.__stop_solving_incident(
+                                char, asset.active_incident)
                             asset.solve_incident()
 
-                    
-    def __solving_incident(self, character : Character, incident: Incident) -> None:
+    def __solving_incident(self, character: Character, incident: Incident) -> None:
         """
         Bloque un personnage et lui fait attendre le temps de resolution de l'incident
         :param character: Le personnage qui resoud l'incident
@@ -671,7 +678,7 @@ class Game:
         incident.pause()
         character.add_progress_bar(incident)
 
-    def __stop_solving_incident(self, character : Character, incident: Incident) -> None:
+    def __stop_solving_incident(self, character: Character, incident: Incident) -> None:
         """
         Arrete la resolution de l'incident
         :param character: Le personnage qui resoud l'incident

@@ -76,7 +76,7 @@ class View:
         x, y = pixel_center
         self.__screen_rect = self.__center_to_rect(x, y)
 
-    def draw(self , display_name) -> None:
+    def draw(self, display_name) -> None:
         """ Dessine la vue à l'écran. """
         # nettoyage de la surface d'extraction
         self.__padded_office_surface.fill((0, 0, 0))
@@ -130,5 +130,3 @@ class View:
     @property
     def view_heigth(self) -> int:
         return self.__screen_rect.height
-
-    

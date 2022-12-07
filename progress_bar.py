@@ -7,6 +7,7 @@ from threading import Thread, Event
 
 PROGRESS_TICK = 0.25  # en secondes
 
+
 class ProgressBar(Thread):
     """ Barre de progression de resolution d'un incident. """
 
@@ -23,9 +24,9 @@ class ProgressBar(Thread):
         self.__event = Event()
 
         self.__is_paused = False
-        
+
         self.__is_solved = False
-        
+
     def pause(self):
         self.__is_paused = True
 
@@ -37,7 +38,7 @@ class ProgressBar(Thread):
         Retourne une surface pour l'affichage de la barre.
         :return: la surface qui contient l'image'
         """
-        return 
+        return
 
     def run(self) -> None:
         """ Méthode principale exécutée par la tâche de resolution. """
@@ -51,11 +52,11 @@ class ProgressBar(Thread):
                 if self.__remaining_time < 0:
                     self.__remaining_time = 0
                     self.__is_solved = True
-                    
+
             previous_time = now
-            
+
             self.__event.wait(PROGRESS_TICK)
-    
+
     def get_remaining_time_percentage(self) -> float:
         """
         Récupère le temps qui reste (en pourcentage).
@@ -63,15 +64,16 @@ class ProgressBar(Thread):
         """
         # le pourcentage de résolution est le temps restant sur le temps alloué (x 100 pour une valeur ##.##)
         return self.__remaining_time / self.__time_to_solve * 100
-    
+
     def stop(self) -> None:
         """ Arrête la tâche de resolution. """
         self.__event.set()
-        
+
     @property
     def is_solved(self) -> bool:
         return self.__is_solved
-        
+
+
 @staticmethod
 def compute_progress_bar_id(progress_bar: ProgressBar) -> int:
     """

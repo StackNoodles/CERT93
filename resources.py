@@ -36,7 +36,8 @@ class __CharactersCollection:
 
         self.__surfaces = []
         for i in range(settings.NB_CHARACTERS):
-            character_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+            character_surface = pygame.Surface(
+                (width, height), pygame.SRCALPHA)
             source_area = pygame.Rect(i * width, 0, width, height)
             character_surface.blit(characters_sheet, (0, 0), source_area)
             self.__surfaces.append(character_surface)
@@ -54,6 +55,7 @@ class __CharactersCollection:
             return self.__surfaces[character_id]
 
         return None
+
 
 class __CharactersIconCollection:
     """
@@ -74,7 +76,8 @@ class __CharactersIconCollection:
         """
         # charge l'image contenant tout les icones
         try:
-            icons_sheet = pygame.image.load(settings.CHARACTERS_ICON_FILENAME).convert_alpha()
+            icons_sheet = pygame.image.load(
+                settings.CHARACTERS_ICON_FILENAME).convert_alpha()
         except:
             return Error_codes.IMG_ICONES_CHAR
 
@@ -108,7 +111,8 @@ class __CharactersIconCollection:
             return self.__surfaces[icon_id]
 
         return None
-    
+
+
 class __ProgressBarCollection:
     "Collection de barres pour la progression du travail du personnage utilisée par l'objet global progress_bar_collection"
 
@@ -125,7 +129,8 @@ class __ProgressBarCollection:
         """
         # charge l'image contenant toutes les barres
         try:
-            progress_bar_sheet = pygame.image.load(settings.PROGRESS_BAR_FILENAME).convert_alpha()
+            progress_bar_sheet = pygame.image.load(
+                settings.PROGRESS_BAR_FILENAME).convert_alpha()
         except:
             return Error_codes.IMG_PROGRESS_BAR
 
@@ -140,7 +145,8 @@ class __ProgressBarCollection:
         height = width = progress_bar_sheet.get_height()
         self.__surfaces = []
         for i in range(progress_bar_sheet.get_width() // width):
-            progress_bar_surface = pygame.Surface((width, height), pygame.SRCALPHA)
+            progress_bar_surface = pygame.Surface(
+                (width, height), pygame.SRCALPHA)
             source_area = pygame.Rect(i * width, 0, width, height)
             progress_bar_surface.blit(progress_bar_sheet, (0, 0), source_area)
             self.__surfaces.append(progress_bar_surface)
@@ -158,6 +164,7 @@ class __ProgressBarCollection:
             return self.__surfaces[bar_id]
 
         return None
+
 
 class __TilesCollection:
     """ Collection de tuiles utilisée par l'objet global tiles_collection (voir plus bas). """
@@ -351,6 +358,7 @@ class __Arrow:
         assert self.__surface
         return self.__surface
 
+
 class __IncidentsCollection:
     """
     Collection de minuteries et d'icônes pour les incidents utilisée par l'objet global incidents_collection
@@ -511,7 +519,7 @@ class __SoundsCollection:
         sound.set_volume(0.3)
         self.__sounds['SQUEAKY_TOY_SOUND'] = sound
 
-        #Chargement son alarme 25%
+        # Chargement son alarme 25%
         try:
             sound = pygame.mixer.Sound(settings.PERCENT_25_ALERT_FILENAME)
         except:
@@ -521,7 +529,7 @@ class __SoundsCollection:
             return Error_codes.SOUND_25_LEFT
         self.__sounds['PERCENT_25_ALERT'] = sound
 
-        #Chargement son alarme 10%
+        # Chargement son alarme 10%
         try:
             sound = pygame.mixer.Sound(settings.PERCENT_10_ALERT_FILENAME)
         except:
@@ -531,7 +539,7 @@ class __SoundsCollection:
             return Error_codes.SOUND_10_LEFT
         self.__sounds['PERCENT_10_ALERT'] = sound
 
-        #Renvoi des codes d'erreur
+        # Renvoi des codes d'erreur
         return Error_codes.SUCCES
 
     def get(self, name: str) -> pygame.mixer.Sound or None:
@@ -586,7 +594,7 @@ def init() -> Error_codes:
         return_code = characters_icons_collection.init()
         if return_code != Error_codes.SUCCES:
             return return_code
-        
+
     global progress_bar_collection
     if not progress_bar_collection:
         progress_bar_collection = __ProgressBarCollection()

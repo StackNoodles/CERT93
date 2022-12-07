@@ -83,10 +83,11 @@ class PlayerInput:
         self.__pause = value
         self.touch()
 
+
 class __InputManager:
     """ Gestionnaire d'entrée (clavier ou gamepads). """
     __INPUT_KEYBOARD_PLAYER_ONE = {'up': pygame.K_w, 'down': pygame.K_s, 'right': pygame.K_d, 'left': pygame.K_a,
-                                   'switch_plus': pygame.K_2, 'switch_minus': pygame.K_1, 'action': pygame.K_f, 'show_name':pygame.K_n, 'pause': pygame.K_SPACE}
+                                   'switch_plus': pygame.K_2, 'switch_minus': pygame.K_1, 'action': pygame.K_f, 'show_name': pygame.K_n, 'pause': pygame.K_SPACE}
 
     __INPUT_KEYBOARD_PLAYER_TWO = {'up': pygame.K_UP, 'down': pygame.K_DOWN, 'right': pygame.K_RIGHT, 'left': pygame.K_LEFT,
                                    'switch_plus': pygame.K_0, 'switch_minus': pygame.K_9, 'action': pygame.K_p, 'show_name': pygame.K_NUMLOCK, 'pause': pygame.K_RCTRL}
@@ -111,7 +112,8 @@ class __InputManager:
         if self.get_gamepad_count() == 1:
             # Un seul gamepad -> on l'assigne au joueur 1
             self.__joysticks = [pygame.joystick.Joystick(0), ]
-            self.__player_one_instance_id = self.__joysticks[0].get_instance_id()
+            self.__player_one_instance_id = self.__joysticks[0].get_instance_id(
+            )
             self.__player_two_instance_id = self.__INVALID_INSTANCE_ID
         elif self.get_gamepad_count() == 2:
             # Deux gamepads -> on tente de préserver les identifiants connus
@@ -219,16 +221,15 @@ class __InputManager:
         elif event.key == INPUT_KEYBOARD['action']:
             player_input.solve_button = True
         elif event.key == INPUT_KEYBOARD['show_name']:
-            if player_input.show_name :
+            if player_input.show_name:
                 player_input.show_name = False
             else:
                 player_input.show_name = True
         elif event.key == INPUT_KEYBOARD['pause']:
-            if player_input.pause :
+            if player_input.pause:
                 player_input.pause = False
             else:
                 player_input.pause = True
-
 
     def trigger_event_keyboard_up(self, event, player_input, INPUT_KEYBROAD):
         """
@@ -305,7 +306,6 @@ class __InputManager:
 
             if event.button == settings.SOLVE_BUTTON:
                 player_input.solve_button = True
-
 
             if event.button == settings.SHOW_NAME_BUTTON:
                 if player_input.show_name:

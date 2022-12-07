@@ -614,8 +614,8 @@ class Game:
                 asset = self.__find_closest_actionable_asset(character)
                 if asset and asset.active_incident:
                     # Le helpdesk n'as pas de temps de resolution
-                    if asset.name != "Helpdesk":
-                        self.__solving_incident(character, asset.active_incident)
+                    # if asset.name != "Helpdesk":
+                    #     self.__solving_incident(character, asset.active_incident)
                     asset.solve_incident()
                     
     def __solving_incident(self, character : Character, incident: Incident) -> bool:

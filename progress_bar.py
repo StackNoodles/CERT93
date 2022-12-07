@@ -1,3 +1,4 @@
+import math
 import pygame
 import settings
 import time
@@ -62,3 +63,16 @@ class ProgressBar(Thread):
     def stop(self) -> None:
         """ Arrête la tâche Countdown. """
         self.__event.set()
+        
+@staticmethod
+def compute_progress_bar_id(progress_bar: ProgressBar) -> int:
+    """
+    Calcule l'index de l'image de la barre qui correspond au pourcentage de temps restant.
+    :param progress_bar: la barre pour laquelle on calcule l'index
+    :return: l'index de barre (progress_bar_id)
+    """
+    percentage = progress_bar.get_remaining_time_percentage()
+    time_slice = math.ceil(
+        percentage / settings.TIMER_PERCENTAGE_SLICE_SIZE)
+    progress_bar_id = (settings.NB_INCIDENT_TIMER_IMAGES - 1) - time_slice
+    return progress_bar_id

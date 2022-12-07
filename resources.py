@@ -458,6 +458,7 @@ class __SoundsCollection:
 
         if not sound:
             return Error_codes.SOUND_SQUEAK
+        sound.set_volume(0.3)
         self.__sounds['SQUEAKY_TOY_SOUND'] = sound
 
         #Chargement son alarme 25%

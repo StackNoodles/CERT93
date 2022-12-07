@@ -87,6 +87,10 @@ class Incident(Thread):
     @property
     def expertise(self) -> Expertise:
         return self.__expertise
+    
+    @property
+    def duration(self) -> Expertise:
+        return self.__time_to_solve
 
 
 class __IncidentSpawner(Thread):

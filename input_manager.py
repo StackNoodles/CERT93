@@ -296,7 +296,6 @@ class __InputManager:
         return : aucun
         """
         if event.type == JOYBUTTONDOWN:
-            print(event.button)
             if event.button == settings.NEXT_BUTTON:
                 player_input.focus_next_button = True
                 player_input.focus_prev_button = False
@@ -320,7 +319,6 @@ class __InputManager:
                     player_input.pause = True
 
         if event.type == JOYBUTTONUP:
-            print(event.button)
             if event.button == settings.NEXT_BUTTON:
                 player_input.focus_next_button = False
             elif event.button == settings.PREV_BUTTON:
@@ -330,7 +328,6 @@ class __InputManager:
                 player_input.solve_button = False
 
         if event.type == JOYAXISMOTION:
-            print(event.axis)
             input_x, input_y = player_input.movement
             previous_input_x, previous_input_y = player_input.movement
             if event.axis == settings.HORIZONTAL_AXIS:  # axe horizontal

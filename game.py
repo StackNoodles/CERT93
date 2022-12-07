@@ -58,15 +58,17 @@ class Game:
         else:
             self.__players = [Player(Player.PLAYER_ONE)]
         # On commence au lvl 1
-        self.__level_num = 1
+        self.__level_num = 3
         self.__level = self.__load_level(self.__level_num)
         self.__views = self.__setup_views(self.__level)
 
         self.__fps = FPS()
+        self.__notification_full_time = 5000
+        self.__notification_fade_time = 3000
 
         self.__incident_timer = pygame.time.get_ticks()
-
-        self.__new_level_notification = pygame.time.get_ticks()+2000
+        self.__new_level_notif_time = 2000
+        self.__new_level_notification = pygame.time.get_ticks()+self.__new_level_notif_time
 
         self.__active_tiles = []
 
@@ -104,7 +106,7 @@ class Game:
                 self.__countdown.reset_timer()
                 incidents.spawner.unpause()
                 incidents.spawner.reset()
-                self.__new_level_notification = pygame.time.get_ticks()+2000
+                self.__new_level_notification = pygame.time.get_ticks()+self.__new_level_notif_time
                 self.__current_incident = ""
                 self.__failed_incident_max = 0
                 new_level = False
@@ -243,7 +245,7 @@ class Game:
                 self.__current_incident = "THERE IS A " + \
                     str(incident.expertise.name) + " INCIDENT AT DESK N°" + \
                     asset.name.replace('Asset ', '')
-                self.__incident_timer = pygame.time.get_ticks() + 5000
+                self.__incident_timer = pygame.time.get_ticks() + self.__notification_full_time
                 asset.add_incident(incident)
 
     def __check_for_player_two(self) -> None:
@@ -326,8 +328,8 @@ class Game:
 
             display_time_left = self.__incident_timer - pygame.time.get_ticks()
 
-            if (display_time_left < 3000):
-                alpha = (display_time_left)/12
+            if (display_time_left < self.__notification_fade_time):
+                alpha = (display_time_left)/(self.__notification_fade_time/255)
                 incident_surface.set_alpha(alpha)
 
             self.__screen.blit(incident_surface, ((self.__screen.get_width(

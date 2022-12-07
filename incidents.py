@@ -135,13 +135,12 @@ class __IncidentSpawner(Thread):
         # tant que la tâche exécute, on génère des événements
         while not self.__event.is_set():
                 if self.__ticks >= self.__next_event_time:
-                    print("Nouvel appel entrant.")
                     self.__create_and_send_next_incident()
                     self.__next_event_time = self.__ticks + (self.__multiplier*random.randint(self.__min_time_between, self.__max_time_between))
                 self.__event.wait(1)
                 self.__ticks += 1
                 self.__remaining_time -= 1
-                self.__multiplier = 0.5+((self.__remaining_time/settings.TIME_PER_LEVEL)/2)    
+                self.__multiplier = 0.5+((self.__remaining_time/settings.TIME_PER_LEVEL)/2)
 
     def pause(self) -> None:
         """ Pause la génération d'incidents. """
@@ -186,16 +185,12 @@ class __IncidentSpawner(Thread):
     def __create_and_send_next_incident(self) -> None:
         """
         Crée et envoie le prochain incident.
-        :param min_delay: délai minimum à respecter avant de créer l'incident
-        :param max_delay: délai maximal pour créer l'incident
-        :return: aucun
         """
 
         if self.__creating_incidents:
             # Création d'un incident pour le centre d'appels (tous les incidents entrent par le centre d'appels)
             time_to_solve = random.randint(
                 settings.HELPDESK_MIN_SOLVING_TIME, settings.HELPDESK_MAX_SOLVING_TIME)
-            time_to_solve = time_to_solve*self.__multiplier
 
             incident = Incident(Expertise.HELPDESK, time_to_solve)
 

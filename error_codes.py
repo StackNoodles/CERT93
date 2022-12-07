@@ -23,6 +23,8 @@ class Error_codes(IntEnum):
     IMG_ARROW = 601
     IMG_ICONES_CHAR = 701
     SQUARES_ICONES_CHAR = 702
+    IMG_PROGRESS_BAR = 801
+    SQUARES_PROGRESS_BAR = 802
 
 
 ERROR_CODES_TEXT = {
@@ -45,5 +47,7 @@ ERROR_CODES_TEXT = {
     Error_codes.SOUND_25_LEFT: "Erreur lors du chargement de l'alerte 25 restant",
     Error_codes.SOUND_10_LEFT: "Erreur lors du chargement du l'alerte 10 restant",
     Error_codes.IMG_ICONES_CHAR: "Erreur lors de du chargement des images d'icones de personnages",
-    Error_codes.SQUARES_ICONES_CHAR: "Erreur lors de la creation des icones de personnages, ils ne sont pas carrées",
+    Error_codes.SQUARES_ICONES_CHAR: "Erreur lors de la creation des icones de personnages, ils ne sont pas carrés",
+    Error_codes.IMG_PROGRESS_BAR : "Erreur lors de du chargement des images pour la barre de progression de tâches",
+    Error_codes.SQUARES_PROGRESS_BAR : "Erreur lors de la creation des images de barre de progression, elles ne sont pas carrées",
 }

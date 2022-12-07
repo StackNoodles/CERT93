@@ -108,6 +108,56 @@ class __CharactersIconCollection:
             return self.__surfaces[icon_id]
 
         return None
+    
+class __ProgressBarCollection:
+    "Collection de barres pour la progression du travail du personnage utilisée par l'objet global progress_bar_collection"
+
+    def __init__(self) -> None:
+        self.__surfaces = None
+
+    def init(self) -> Error_codes:
+        """
+        Initialise l'instance unique de resources.progress_bar_collection.
+        La méthode init() permet d'éviter de ralentir l'importation du module avec des entrées/sorties. Elle permet
+        aussi de diminuer l'impact d'importations multiples et de gérer les erreurs à un seul endroit, une fois les
+        importations terminées.
+        :return: le code de succes si l'initialisation s'est bien passée, le code d'erreur sinon
+        """
+        # charge l'image contenant toutes les barres
+        try:
+            progress_bar_sheet = pygame.image.load(settings.PROGRESS_BAR_FILENAME).convert()
+        except:
+            return Error_codes.IMG_PROGRESS_BAR
+
+        if not progress_bar_sheet:
+            return Error_codes.IMG_PROGRESS_BAR
+
+        # s'assure que les surfaces des barres soient carrées
+        if progress_bar_sheet.get_width() % progress_bar_sheet.get_height() != 0:
+            return Error_codes.SQUARES_PROGRESS_BAR
+
+        # découpe la surface de tuiles en surfaces individuelles (une pour chaque tuile)
+        height = width = progress_bar_sheet.get_height()
+        self.__surfaces = []
+        for i in range(progress_bar_sheet.get_width() // width):
+            progress_bar_surface = pygame.Surface((width, height))
+            source_area = pygame.Rect(i * width, 0, width, height)
+            progress_bar_surface.blit(progress_bar_sheet, (0, 0), source_area)
+            self.__surfaces.append(progress_bar_surface)
+
+        return Error_codes.SUCCES
+
+    def get(self, bar_id: int) -> pygame.Surface or None:
+        """
+        Retourne la surface correspondant à l'identifiant de barre (bar_id).
+        :param bar_id: identifiant de barre
+        :return: la surface si disponible, None sinon
+        """
+        assert self.__surfaces
+        if 0 <= bar_id < len(self.__surfaces):
+            return self.__surfaces[bar_id]
+
+        return None
 
 class __TilesCollection:
     """ Collection de tuiles utilisée par l'objet global tiles_collection (voir plus bas). """
@@ -500,6 +550,9 @@ characters_collection = None
 # collection d'icones de personnages (singleton du GoF implémenté avec un Global Object Pattern de python)
 characters_icons_collection = None
 
+# collection d'de barres de progression (singleton du GoF implémenté avec un Global Object Pattern de python)
+progress_bar_collection = None
+
 # collection de tuiles (singleton du GoF implémenté avec un Global Object Pattern de python)
 tiles_collection = None
 
@@ -531,6 +584,13 @@ def init() -> Error_codes:
     if not characters_icons_collection:
         characters_icons_collection = __CharactersIconCollection()
         return_code = characters_icons_collection.init()
+        if return_code != Error_codes.SUCCES:
+            return return_code
+        
+    global progress_bar_collection
+    if not progress_bar_collection:
+        progress_bar_collection = __ProgressBarCollection()
+        return_code = progress_bar_collection.init()
         if return_code != Error_codes.SUCCES:
             return return_code
 

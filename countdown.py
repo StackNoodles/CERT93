@@ -55,7 +55,9 @@ class Countdown(Thread):
     def run(self) -> None:
         """ Tâche de compilation du Countdown. """
 
-        while not self.__event.is_set() and not self.__is_pause:
+        while not self.__event.is_set():
+            if self.__is_pause :
+                continue
             self.__event.wait(1)
             self.__time -= 1  # sauvegarde le FPS obtenu pour la dernière seconde écoulée
 

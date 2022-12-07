@@ -306,8 +306,12 @@ class __InputManager:
             if event.button == settings.SOLVE_BUTTON:
                 player_input.solve_button = True
 
+
             if event.button == settings.SHOW_NAME_BUTTON:
-                player_input.show_name = True
+                if player_input.show_name:
+                    player_input.show_name = False
+                else:
+                    player_input.show_name = True
 
             if event.button == settings.START_BUTTON:
                 if player_input.pause:
@@ -324,9 +328,6 @@ class __InputManager:
 
             if event.button == settings.SOLVE_BUTTON:
                 player_input.solve_button = False
-
-            if event.button == settings.SHOW_NAME_BUTTON:
-                player_input.show_name = False
 
         if event.type == JOYAXISMOTION:
             print(event.axis)

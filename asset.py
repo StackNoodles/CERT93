@@ -31,6 +31,8 @@ class Asset:
         # Coordonnée du centre de l'actif (en pixels) - pour le calcul des distances
         self._center_position = resources.tiles_collection.tile_pos_to_center_pixel_pos(
             tile_position)
+        font = pygame.font.SysFont(None, 24)
+        self.text_char = font.render(self._name, True, (255, 255, 255))
 
         self._incidents = Queue()
         self._active_incident = None
@@ -79,7 +81,7 @@ class Asset:
         # Dessin de l'actif
         asset_surface = resources.assets_collection.get(self._asset_id)
         destination.blit(asset_surface, self._position)
-        font = pygame.font.SysFont(None, 24)
+
 
 
         # Dessin de l'incident, s'il y a lieu
@@ -93,8 +95,7 @@ class Asset:
             position = x + offset, y + offset
             destination.blit(incident_surface, position)
         if display_name:
-            text_char = font.render(self._name, True, (255, 255, 255))
-            destination.blit(text_char, (self._position))
+            destination.blit(self.text_char, (self._position))
 
     def set_incoming_action(self, action: Callable) -> None:
         """

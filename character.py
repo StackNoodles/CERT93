@@ -23,6 +23,9 @@ class Character:
         self.__expertise = expertise
         self.__locked = False
 
+        font = pygame.font.SysFont(None, 24)
+        self.text_char = font.render(self.__name,True,(255, 255, 255))
+
         # Conversion de la position d'une coordonnée en tuile vers une coordonnée en pixels
         x, y = resources.tiles_collection.tile_pos_to_pixel_pos(tile_position)
         tile_width, tile_height = resources.tiles_collection.tile_size()
@@ -35,7 +38,6 @@ class Character:
         :param destination: surface sur laquelle dessiner le personnage
         :return: aucun
         """
-        font = pygame.font.SysFont(None, 24)
 
 
         image = resources.characters_collection.get(self.__character_id)
@@ -44,8 +46,7 @@ class Character:
 
         destination.blit(image, (x, y))
         if display_name:
-            text_char = font.render(self.__name,True,(255, 255, 255))
-            destination.blit(text_char, (x- text_char.get_width() /2, y + image.get_height()))
+            destination.blit(self.text_char, (x- self.text_char.get_width() /2, y + image.get_height()))
             
     def compute_next_feet_position(self, movement: tuple, delta_time: float) -> tuple:
         """

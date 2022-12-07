@@ -58,7 +58,7 @@ class Game:
         else:
             self.__players = [Player(Player.PLAYER_ONE)]
         # On commence au lvl 1
-        self.__level_num = 1
+        self.__level_num = 3
         self.__level = self.__load_level(self.__level_num)
         self.__views = self.__setup_views(self.__level)
 

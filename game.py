@@ -101,6 +101,7 @@ class Game:
                 self.__level.office.enable_ambience()
                 self.__countdown.reset_timer()
                 incidents.spawner.unpause()
+                incidents.spawner.reset()
                 self.__new_level_notification = pygame.time.get_ticks()+2000
                 self.__current_incident = ""
                 self.__failed_incident_max = 0
@@ -122,11 +123,11 @@ class Game:
                         delta_time)
                     self.__update_display()
 
-                if (self.__countdown.timeout() and self.__failed_incident_max < 3):  # passe de niveau
+                if (self.__countdown.timeout() and self.__failed_incident_max < settings.MAX_MISTAKES):  # passe de niveau
                     self.__running = False
                     self.__level_num += 1
                     new_level = True
-                elif self.__failed_incident_max >= 3:  # perdu
+                elif self.__failed_incident_max >= settings.MAX_MISTAKES:
                     # Ecran defaite (game over)
                     self.end_screen("img\game_over.png", 5)
 
@@ -135,7 +136,7 @@ class Game:
 
             self.__level.stop()
 
-            if self.__level_num <= 3:
+            if self.__level_num <= settings.MAX_MISTAKES:
                 self.__level = self.__load_level(self.__level_num)
                 self.__views = self.__setup_views(self.__level)
             else:

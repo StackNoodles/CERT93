@@ -1,4 +1,6 @@
 import pygame
+from incidents import Incident
+from progress_bar import ProgressBar
 
 import resources
 
@@ -22,6 +24,8 @@ class Character:
         self.__speed = speed
         self.__expertise = expertise
         self.__locked = False
+        self.__progress_bar = None
+        self.__current_working_incident = None
 
         font = pygame.font.SysFont(None, 24)
         self.text_char = font.render(self.__name,True,(255, 255, 255))
@@ -38,7 +42,6 @@ class Character:
         :param destination: surface sur laquelle dessiner le personnage
         :return: aucun
         """
-
 
         image = resources.characters_collection.get(self.__character_id)
         x = self.__feet_position[0] - (image.get_width() / 2)
@@ -59,15 +62,30 @@ class Character:
         y = self.__feet_position[1] + (movement[1] * delta_time * self.__speed)
         return x, y
     
-    def lock_position(self) -> None:
+    def add_progress_bar(self, incident : Incident) -> None:
+        expiration_time = incident.duration/10 if self.expertise == incident.expertise or self.name == "The Hulk" else incident.duration/5
+        self.__current_working_incident = incident
         self.__locked = True
+        self.__progress_bar = ProgressBar(expiration_time)
+        self.__progress_bar.start()
         
-    def unlock_position(self) -> None:
+    def remove_progress_bar(self) -> None:
+        self.__current_working_incident = None
+        self.__progress_bar.stop()
+        self.__progress_bar = None
         self.__locked = False
 
     @property
     def is_locked(self) -> tuple:
         return self.__locked
+    
+    @property
+    def current_working_incident(self) -> Incident:
+        return self.__current_working_incident
+    
+    @property
+    def progress_bar(self) -> ProgressBar:
+        return self.__progress_bar
 
     @property
     def feet_position(self) -> tuple:

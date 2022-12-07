@@ -23,12 +23,14 @@ class ProgressBar(Thread):
         self.__event = Event()
 
         self.__is_paused = False
-
+        
+        self.__is_solved = False
+        
     def pause(self):
-        self.__is_pause = True
+        self.__is_paused = True
 
     def unpause(self):
-        self.__is_pause = False
+        self.__is_paused = False
 
     def get(self) -> pygame.Surface:
         """
@@ -48,10 +50,12 @@ class ProgressBar(Thread):
                 self.__remaining_time -= now - previous_time
                 if self.__remaining_time < 0:
                     self.__remaining_time = 0
+                    self.__is_solved = True
+                    
             previous_time = now
-
+            
             self.__event.wait(PROGRESS_TICK)
-
+    
     def get_remaining_time_percentage(self) -> float:
         """
         Récupère le temps qui reste (en pourcentage).
@@ -61,8 +65,12 @@ class ProgressBar(Thread):
         return self.__remaining_time / self.__time_to_solve * 100
     
     def stop(self) -> None:
-        """ Arrête la tâche Countdown. """
+        """ Arrête la tâche de resolution. """
         self.__event.set()
+        
+    @property
+    def is_solved(self) -> bool:
+        return self.__is_solved
         
 @staticmethod
 def compute_progress_bar_id(progress_bar: ProgressBar) -> int:
@@ -72,7 +80,6 @@ def compute_progress_bar_id(progress_bar: ProgressBar) -> int:
     :return: l'index de barre (progress_bar_id)
     """
     percentage = progress_bar.get_remaining_time_percentage()
-    time_slice = math.ceil(
-        percentage / settings.TIMER_PERCENTAGE_SLICE_SIZE)
-    progress_bar_id = (settings.NB_INCIDENT_TIMER_IMAGES - 1) - time_slice
+    time_slice = math.ceil(percentage / settings.PROGRESS_BAR_SLICE_SIZE)
+    progress_bar_id = (settings.NB_PROGRESS_BAR_IMAGES - 1) - time_slice
     return progress_bar_id

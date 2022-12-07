@@ -52,6 +52,10 @@ DEFAULT_TIME_TO_SOLVE_MIN = int(config.get(
 DEFAULT_TIME_TO_SOLVE_MAX = int(config.get(
     "Settings", "DEFAULT_TIME_TO_SOLVE_MAX"))
 
+NB_PROGRESS_BAR_IMAGES = int(config.get(
+    "Settings", "NB_PROGRESS_BAR_IMAGES"))
+PROGRESS_BAR_SLICE_SIZE = int(config.get(
+    "Settings", "TIMER_PERCENTAGE_SLICE_SIZE")) / (NB_PROGRESS_BAR_IMAGES - 1)
 NB_INCIDENT_TIMER_IMAGES = int(config.get(
     "Settings", "NB_INCIDENT_TIMER_IMAGES"))
 TIMER_PERCENTAGE_SLICE_SIZE = int(config.get(

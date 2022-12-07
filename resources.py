@@ -125,7 +125,7 @@ class __ProgressBarCollection:
         """
         # charge l'image contenant toutes les barres
         try:
-            progress_bar_sheet = pygame.image.load(settings.PROGRESS_BAR_FILENAME).convert()
+            progress_bar_sheet = pygame.image.load(settings.PROGRESS_BAR_FILENAME).convert_alpha()
         except:
             return Error_codes.IMG_PROGRESS_BAR
 
@@ -140,7 +140,7 @@ class __ProgressBarCollection:
         height = width = progress_bar_sheet.get_height()
         self.__surfaces = []
         for i in range(progress_bar_sheet.get_width() // width):
-            progress_bar_surface = pygame.Surface((width, height))
+            progress_bar_surface = pygame.Surface((width, height), pygame.SRCALPHA)
             source_area = pygame.Rect(i * width, 0, width, height)
             progress_bar_surface.blit(progress_bar_sheet, (0, 0), source_area)
             self.__surfaces.append(progress_bar_surface)

@@ -10,6 +10,7 @@ import time
 import incidents
 from incidents import Incident
 import input_manager
+import progress_bar
 import resources
 import settings
 
@@ -318,7 +319,7 @@ class Game:
         self.__screen.blit(
             fps_surface, (10, self.__screen.get_height()-fps_surface.get_height()-10))
 
-        # Affichage incident
+        # Affichage nouvel incident
         if pygame.time.get_ticks() < self.__incident_timer:
             incident_surface = self.__font.render(
                 self.__current_incident, True, (255, 45, 40))
@@ -331,6 +332,12 @@ class Game:
 
             self.__screen.blit(incident_surface, ((self.__screen.get_width(
             ) / 2)-(incident_surface.get_width()/2), (self.__screen.get_height() / 10)),)
+            
+        # Affichage des barres de progression
+        for view, player in zip(self.__views.values(), self.__players):
+            for character in self.__level.characters:
+                if character.progress_bar:
+                    self.__update_progress_bar(view, player, character)
 
         # Affichage notif nouveau niveau
         if self.__new_level_notification > pygame.time.get_ticks():
@@ -346,7 +353,30 @@ class Game:
         # Basculement de tampon (donc affichage de l'écran)
         pygame.display.flip()
 
-    def __display_title(self, title: str):
+    def __update_progress_bar(self, view: View, player: Player, character: Character) -> None:        
+        # Calculs des vecteurs
+        vector_x = character.feet_position[0] - player.character.feet_position[0]
+        vector_y = character.feet_position[1] - player.character.feet_position[1] 
+        
+        # Coordonées de la barre en fonction de l'ecran
+        if view == self.__views[0]:
+            multiplier = 1
+        else:
+            multiplier = 3
+        bar_x = (multiplier * self.__screen.get_width() /
+                    (2 * len(self.__players))) + vector_x
+        bar_y = (self.__screen.get_height() / 2) + vector_y
+        
+        # Affichage si la barre est dans l'ecran
+        if not (character.feet_position[0] > player.character.feet_position[0] + view.view_width / 2 or
+            character.feet_position[1] > player.character.feet_position[1] + view.view_heigth / 2 or
+            character.feet_position[0] < player.character.feet_position[0] - view.view_width / 2 or
+                character.feet_position[1] < player.character.feet_position[1] - view.view_heigth / 2):
+            progress_bar_id = progress_bar.compute_progress_bar_id(character.progress_bar)
+            progress_bar_surface = resources.progress_bar_collection.get(progress_bar_id)
+            self.__screen.blit(progress_bar_surface, (bar_x - character.icon.get_width() / 2, bar_y - character.icon.get_width() * 2))
+                        
+    def __display_title(self, title: str) -> None:
         """Affiche un gros titre blanc"""
         text_font = pygame.font.Font(pygame.font.get_default_font(), 110)
         outline_font = pygame.font.Font(pygame.font.get_default_font(), 120)
@@ -436,7 +466,7 @@ class Game:
             icon_x = arrow_x - vector_x * 0.05
             icon_y = arrow_y - vector_y * 0.07
 
-            # Affichage en fonction de l'ecran
+            # Affichage
             self.__screen.blit(icon, (icon_x, icon_y))
             self.__screen.blit(rotated_arrow, (arrow_x, arrow_y))
 
@@ -612,37 +642,44 @@ class Game:
                 inputs.solve_button = False
                 character = player.character
                 asset = self.__find_closest_actionable_asset(character)
-                if asset and asset.active_incident:
+                if asset and asset.active_incident and not asset.active_incident.is_paused:
                     # Le helpdesk n'as pas de temps de resolution
-                    # if asset.name != "Helpdesk":
-                    #     self.__solving_incident(character, asset.active_incident)
-                    asset.solve_incident()
+                    if asset.name != "Helpdesk":
+                        if character.progress_bar:
+                            self.__stop_solving_incident(character, asset.active_incident)
+                        else:
+                            self.__solving_incident(character, asset.active_incident)
+                    else:
+                        asset.solve_incident()
+            
+        for asset in self.__level.assets:
+            for char in self.__level.characters:
+                if char.current_working_incident and asset.active_incident:
+                    if char.current_working_incident == asset.active_incident:
+                        if char.progress_bar and char.progress_bar.is_solved:
+                            self.__stop_solving_incident(char, asset.active_incident)
+                            asset.solve_incident()
+
                     
-    def __solving_incident(self, character : Character, incident: Incident) -> bool:
+    def __solving_incident(self, character : Character, incident: Incident) -> None:
         """
         Bloque un personnage et lui fait attendre le temps de resolution de l'incident
         :param character: Le personnage qui resoud l'incident
         :param incident: L'incident à résoudre
-        :return: Si l'incident a été résolu
+        :return: aucun
         """
-        expiration_time = incident.duration/10 if character.expertise == incident.expertise else incident.duration/5
-        character.lock_position()
-        while not self.__event.is_set():
-            now = time.time()
-            if self.__remaining_time > 0 and not self.__is_paused:
-                self.__remaining_time -= now - previous_time
-                if self.__remaining_time < 0:
-                    self.__remaining_time = 0
-                elif self.__remaining_time <= (self.__time_to_solve/4) and self.expertise != Expertise.HELPDESK and self.__percent_25_notif is False:
-                    self.__25_percent_sound.play()
-                    self.__percent_25_notif = True
-                elif self.__remaining_time <= (self.__time_to_solve/10) and self.expertise != Expertise.HELPDESK and self.__percent_10_notif is False:
-                    self.__10_percent_sound.play()
-                    self.__percent_10_notif = True
-            previous_time = now
+        incident.pause()
+        character.add_progress_bar(incident)
 
-            wait(incidents.INCIDENT_TICK)
-        
+    def __stop_solving_incident(self, character : Character, incident: Incident) -> None:
+        """
+        Arrete la resolution de l'incident
+        :param character: Le personnage qui resoud l'incident
+        :param incident: L'incident en train d'être résolu
+        :return: aucun
+        """
+        incident.unpause()
+        character.remove_progress_bar()
 
     def __find_closest_actionable_asset(self, character: Character) -> Asset or None:
         """
@@ -686,12 +723,18 @@ class Game:
                 for asset in self.__level.assets:
                     if asset.active_incident:
                         asset.pause_incident()
+                for character in self.__level.characters:
+                    if character.progress_bar:
+                        character.progress_bar.pause()
             else:
                 self.__countdown.unpause()
                 incidents.spawner.unpause()
                 for asset in self.__level.assets:
                     if asset.active_incident:
                         asset.unpause_incident()
+                for character in self.__level.characters:
+                    if character.progress_bar:
+                        character.progress_bar.unpause()
 
     def __check_pause_pressed(self) -> bool:
         """Verifie si un des deux joueurs a changé l'état de pause"""

@@ -91,6 +91,10 @@ class Incident(Thread):
     @property
     def duration(self) -> Expertise:
         return self.__time_to_solve
+    
+    @property
+    def is_paused(self) -> bool:
+        return self.__is_paused
 
 
 class __IncidentSpawner(Thread):

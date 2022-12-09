@@ -35,6 +35,7 @@ class Incident(Thread):
         self.__event = Event()
 
         self.__is_paused = False
+        self.__is_being_resolved = False
 
     def run(self) -> None:
         """ Méthode principale exécutée par la tâche d'incident. """
@@ -43,7 +44,7 @@ class Incident(Thread):
 
         while not self.__event.is_set():
             now = time.time()
-            if self.__remaining_time > 0 and not self.__is_paused:
+            if self.__remaining_time > 0 and not self.__is_paused and not self.__is_being_resolved:
                 self.__remaining_time -= now - previous_time
                 if self.__remaining_time < 0:
                     self.__remaining_time = 0
@@ -68,6 +69,14 @@ class Incident(Thread):
     def unpause(self) -> None:
         """ Relance la tâche. """
         self.__is_paused = False
+
+    def resolve(self) -> None:
+        """ Pause la tâche. """
+        self.__is_being_resolved = True
+
+    def unresolve(self) -> None:
+        """ Relance la tâche. """
+        self.__is_being_resolved = False
 
     def get_remaining_time_percentage(self) -> float:
         """
@@ -95,6 +104,10 @@ class Incident(Thread):
     @property
     def is_paused(self) -> bool:
         return self.__is_paused
+
+    @property
+    def is_being_resolved(self) -> bool:
+        return self.__is_being_resolved
 
 
 class __IncidentSpawner(Thread):

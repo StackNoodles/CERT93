@@ -651,15 +651,14 @@ class Game:
                 asset = self.__find_closest_actionable_asset(character)
                 if asset and asset.active_incident and not asset.active_incident.is_paused:
                     # Le helpdesk n'as pas de temps de resolution
-                    if asset.name != "Helpdesk":
-                        if character.progress_bar:
-                            self.__stop_solving_incident(
-                                character, asset.active_incident)
-                        else:
-                            self.__solving_incident(
-                                character, asset.active_incident)
-                    else:
+                    if asset.name == "Helpdesk":
                         asset.solve_incident()
+                    # On stop la resultion si le personnage est en train de resoudre un probleme
+                    elif character.progress_bar:
+                        self.__stop_solving_incident(character, asset.active_incident)
+                    # On verifie que l'incident n'est pas deja en cours de resolution
+                    elif not asset.active_incident.is_being_resolved:
+                        self.__solving_incident(character, asset.active_incident)
 
         for asset in self.__level.assets:
             for char in self.__level.characters:
@@ -677,7 +676,7 @@ class Game:
         :param incident: L'incident à résoudre
         :return: aucun
         """
-        incident.pause()
+        incident.resolve()
         character.add_progress_bar(incident)
 
     def __stop_solving_incident(self, character: Character, incident: Incident) -> None:
@@ -687,7 +686,7 @@ class Game:
         :param incident: L'incident en train d'être résolu
         :return: aucun
         """
-        incident.unpause()
+        incident.unresolve()
         character.remove_progress_bar()
 
     def __find_closest_actionable_asset(self, character: Character) -> Asset or None:

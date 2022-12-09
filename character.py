@@ -65,8 +65,8 @@ class Character:
 
     def add_progress_bar(self, incident: Incident) -> None:
         """
-        Ajoute une barre de progression au personage.
-        :param incident: l'incident que le personnage resoud
+        Bloque un personnage et lui ajoute une barre pour attendre le temps de resolution de l'incident
+        :param incident: l'incident que le personnage resoud.
         :reutrn: aucun
         """
         incident.resolve()
@@ -80,7 +80,8 @@ class Character:
 
     def remove_progress_bar(self, incident: Incident) -> None:
         """
-        Retire la barre de progression du personage.
+        Arrete la resolution, retire la barre de progression et debloque le personage.
+        :param incident: l'incident que le personnage resoud.
         :reutrn: aucun
         """
         incident.unresolve()

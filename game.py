@@ -655,18 +655,22 @@ class Game:
                         asset.solve_incident()
                     # On stop la resultion si le personnage est en train de resoudre un probleme
                     elif character.progress_bar:
-                        self.__stop_solving_incident(character, asset.active_incident)
+                        # Passage a l'etat de resolution
+                        # Retour a l'etat normal
+                        character.remove_progress_bar(asset.active_incident)
                     # On verifie que l'incident n'est pas deja en cours de resolution
                     elif not asset.active_incident.is_being_resolved:
-                        self.__solving_incident(character, asset.active_incident)
+                        character.add_progress_bar(asset.active_incident)
 
         for asset in self.__level.assets:
             for char in self.__level.characters:
+                # On verifie si un personnage est actuellement attribué a la resolution d'un incident
                 if char.current_working_incident and asset.active_incident:
                     if char.current_working_incident == asset.active_incident:
+                        # On verifie si l'incident a été résolu (que le temps d'attente est terminé)
                         if char.progress_bar and char.progress_bar.is_solved:
-                            self.__stop_solving_incident(
-                                char, asset.active_incident)
+                            # On retire la barre et on resoud l'incident
+                            char.remove_progress_bar(asset.active_incident)
                             asset.solve_incident()
 
     def __solving_incident(self, character: Character, incident: Incident) -> None:
@@ -686,8 +690,7 @@ class Game:
         :param incident: L'incident en train d'être résolu
         :return: aucun
         """
-        # Retour a l'etat normal
-        character.remove_progress_bar(incident)
+        
 
     def __find_closest_actionable_asset(self, character: Character) -> Asset or None:
         """

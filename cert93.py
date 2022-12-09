@@ -1,5 +1,4 @@
 #! python3
-
 import pygame
 from error_codes import ERROR_CODES_TEXT, Error_codes
 import incidents

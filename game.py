@@ -1,14 +1,12 @@
 import math
 from multiprocessing import Event
 import random
-import sys
-from threading import Thread
+import sys 
 
 import pygame
 import time
 
 import incidents
-from incidents import Incident
 import input_manager
 import progress_bar
 import resources

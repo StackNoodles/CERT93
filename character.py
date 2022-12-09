@@ -26,6 +26,8 @@ class Character:
         self.__locked = False
         self.__progress_bar = None
         self.__current_working_incident = None
+        print(name)
+        print(character_id)
 
         font = pygame.font.SysFont(None, 24)
         self.text_char = font.render(self.__name, True, (255, 255, 255))
@@ -69,8 +71,9 @@ class Character:
         :param incident: l'incident que le personnage resoud
         :reutrn: aucun
         """
+        # The Hulk est un expert en tout (id 5)
         expiration_time = incident.duration / \
-            10 if self.expertise == incident.expertise or self.name == "The Hulk" else incident.duration/5
+            10 if self.expertise == incident.expertise or self.__character_id == 5 else incident.duration/5
         self.__current_working_incident = incident
         self.__locked = True
         self.__progress_bar = ProgressBar(expiration_time)

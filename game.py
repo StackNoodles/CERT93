@@ -673,25 +673,6 @@ class Game:
                             char.remove_progress_bar(asset.active_incident)
                             asset.solve_incident()
 
-    def __solving_incident(self, character: Character, incident: Incident) -> None:
-        """
-        Bloque un personnage et lui fait attendre le temps de resolution de l'incident
-        :param character: Le personnage qui resoud l'incident
-        :param incident: L'incident à résoudre
-        :return: aucun
-        """
-        # Passage a l'etat de resolution
-        character.add_progress_bar(incident)
-
-    def __stop_solving_incident(self, character: Character, incident: Incident) -> None:
-        """
-        Arrete la resolution de l'incident
-        :param character: Le personnage qui resoud l'incident
-        :param incident: L'incident en train d'être résolu
-        :return: aucun
-        """
-        
-
     def __find_closest_actionable_asset(self, character: Character) -> Asset or None:
         """
         Trouve l'actif le plus près du personnage spécifié (character).

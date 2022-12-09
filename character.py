@@ -69,6 +69,7 @@ class Character:
         :param incident: l'incident que le personnage resoud
         :reutrn: aucun
         """
+        incident.resolve()
         # The Hulk est un expert en tout (id 5)
         expiration_time = incident.duration / \
             10 if self.expertise == incident.expertise or self.__character_id == 5 else incident.duration/5
@@ -77,11 +78,12 @@ class Character:
         self.__progress_bar = ProgressBar(expiration_time)
         self.__progress_bar.start()
 
-    def remove_progress_bar(self) -> None:
+    def remove_progress_bar(self, incident: Incident) -> None:
         """
         Retire la barre de progression du personage.
         :reutrn: aucun
         """
+        incident.unresolve()
         self.__current_working_incident = None
         self.__progress_bar.stop()
         self.__progress_bar = None

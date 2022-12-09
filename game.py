@@ -676,7 +676,7 @@ class Game:
         :param incident: L'incident à résoudre
         :return: aucun
         """
-        incident.resolve()
+        # Passage a l'etat de resolution
         character.add_progress_bar(incident)
 
     def __stop_solving_incident(self, character: Character, incident: Incident) -> None:
@@ -686,8 +686,8 @@ class Game:
         :param incident: L'incident en train d'être résolu
         :return: aucun
         """
-        incident.unresolve()
-        character.remove_progress_bar()
+        # Retour a l'etat normal
+        character.remove_progress_bar(incident)
 
     def __find_closest_actionable_asset(self, character: Character) -> Asset or None:
         """

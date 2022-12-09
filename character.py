@@ -26,8 +26,6 @@ class Character:
         self.__locked = False
         self.__progress_bar = None
         self.__current_working_incident = None
-        print(name)
-        print(character_id)
 
         font = pygame.font.SysFont(None, 24)
         self.text_char = font.render(self.__name, True, (255, 255, 255))
